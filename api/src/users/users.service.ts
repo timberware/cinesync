@@ -40,6 +40,10 @@ export class UsersService {
 
 		throw new NotFoundException('Avatar not found');
 	}
+	
+	async getUserData(userId: string) {
+		return await this.userDao.getUserData(userId);
+	}
 
 	async getFriends(userId: string) {
 		const { user1, user2 } = await this.userDao.getFriends(userId);
