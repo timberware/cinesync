@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'CourierPrime';
+  src: url('./CourierPrime-Regular.ttf');
+}
+
+@layer base {
+  html {
+    font-family: 'CourierPrime';
+  }
+}
+
+.tooltip {
+  @apply invisible absolute;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply visible z-50;
+}
