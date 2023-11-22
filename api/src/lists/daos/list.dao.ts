@@ -128,7 +128,7 @@ export class ListsDao {
 			newMovies = await Promise.all(
 				createList.movie.map((movie) =>
 					this.prisma.movie.upsert({
-						where: { title: movie.title },
+						where: { imdbId: movie.imdbId },
 						create: {
 							title: movie.title,
 							description: movie.description,
@@ -192,7 +192,7 @@ export class ListsDao {
 			newMovies = await Promise.all(
 				updateListDto.movie.map((movie) =>
 					this.prisma.movie.upsert({
-						where: { title: movie.title },
+						where: { imdbId: movie.imdbId },
 						create: {
 							title: movie.title,
 							description: movie.description,

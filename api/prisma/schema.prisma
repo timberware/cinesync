@@ -21,13 +21,13 @@ model List {
 
 model Movie {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String   @unique
+  title       String
   description String
   genre       String[]
   releaseDate String   @map("release_date")
   posterUrl   String   @map("poster_url")
   rating      Float
-  imdbId      String   @map("imdb_id")
+  imdbId      String   @map("imdb_id") @unique
   list        List[]
   user        User[]
 }
