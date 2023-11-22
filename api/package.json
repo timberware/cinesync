@@ -19,7 +19,8 @@
 		"prepare": "cd ../ && husky install api/.husky",
 		"db:generate": "npx --yes prisma generate --schema=prisma/schema.prisma",
 		"db:migrate": "npx --yes prisma migrate dev",
-		"db:push": "npx --yes prisma db push"
+		"db:push": "npx --yes prisma db push",
+		"db:format": "npx --yes prisma format"
 	},
 	"dependencies": {
 		"@nestjs/common": "^10.0.0",

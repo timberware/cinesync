@@ -8,7 +8,7 @@ datasource db {
 }
 
 model List {
-  id        String    @id @default(uuid())
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
   isPrivate Boolean   @map("is_private")
   creatorId String    @map("creator_id")
@@ -20,7 +20,7 @@ model List {
 }
 
 model Movie {
-  id          String   @id @default(uuid())
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String   @unique
   description String
   genre       String[]
@@ -33,7 +33,7 @@ model Movie {
 }
 
 model User {
-  id             String    @id @default(uuid())
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   username       String    @unique
   email          String    @unique
   password       String
@@ -49,9 +49,9 @@ model User {
 
 model Friends {
   user_1    User     @relation("user_1", fields: [userId1], references: [id], onDelete: Cascade)
-  userId1   String   @map("id_1")
+  userId1   String   @map("id_1") @db.Uuid
   user_2    User     @relation("user_2", fields: [userId2], references: [id], onDelete: Cascade)
-  userId2   String   @map("id_2")
+  userId2   String   @map("id_2") @db.Uuid
   isFriend  Boolean  @map("is_friend")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -60,19 +60,19 @@ model Friends {
 }
 
 model Comment {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   text      String
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @map("author_id")
-  list      List     @relation(fields: [listId], references: [id])
-  listId    String   @map("list_id")
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String   @map("author_id") @db.Uuid
+  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId    String   @map("list_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model Avatar {
-  id     String @id @default(uuid())
-  userId String @unique @map("user_id")
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @unique @map("user_id") @db.Uuid
   avatar Bytes?
 }
 
