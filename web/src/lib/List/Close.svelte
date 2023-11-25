@@ -7,7 +7,6 @@
 
 <SubmitButton
   formAction="lists?/deleteList"
-  name="listId"
-  value="{listId}"
+  inputs="{[{ name: 'listId', value: listId }]}"
   icon="{faTrash}"
 />

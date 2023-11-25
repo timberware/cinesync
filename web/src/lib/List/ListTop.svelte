@@ -2,7 +2,12 @@
   import '@fortawesome/fontawesome-svg-core/styles.css';
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-  import { faLock, faLockOpen, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+  import {
+    faLock,
+    faLockOpen,
+    faShareNodes,
+    faClone
+  } from '@fortawesome/free-solid-svg-icons';
   import SubmitButton from '$lib/SubmitButton.svelte';
   import MovieModal from '$lib/Movie/MovieModal.svelte';
   import type { ListType } from '../../ambient';
@@ -26,9 +31,17 @@
       <Close listId="{list.id}" />
       <SubmitButton
         formAction="lists?/togglePrivacy"
-        name="listId"
-        value="{list.id}"
+        inputs="{[{ name: 'listId', value: list.id }]}"
         icon="{list.isPrivate ? faLock : faLockOpen}"
+      />
+    {:else}
+      <SubmitButton
+        formAction="lists?/cloneList"
+        inputs="{[
+          { name: 'listId', value: list.id },
+          { name: 'name', value: list.name }
+        ]}"
+        icon="{faClone}"
       />
     {/if}
     <FontAwesomeIcon class="text-text" icon="{faShareNodes}" />

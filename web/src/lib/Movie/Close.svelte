@@ -1,17 +1,16 @@
 <script lang="ts">
   import { faTrash } from '@fortawesome/free-solid-svg-icons';
-  import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+  import SubmitButton from '$lib/SubmitButton.svelte';
 
   export let listId: string;
   export let movieId: string;
 </script>
 
-<div>
-  <form method="POST" action="lists?/deleteMovie">
-    <input type="hidden" name="listId" value="{listId}" />
-    <input type="hidden" name="movieId" value="{movieId}" />
-    <button type="submit">
-      <FontAwesomeIcon class="text-text" icon="{faTrash}" />
-    </button>
-  </form>
-</div>
+<SubmitButton
+  formAction="lists?/deleteMovie"
+  inputs="{[
+    { name: 'listId', value: listId },
+    { name: 'movieId', value: movieId }
+  ]}"
+  icon="{faTrash}"
+/>

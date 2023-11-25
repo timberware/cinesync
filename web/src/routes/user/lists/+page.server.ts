@@ -254,5 +254,29 @@ export const actions = {
     }
 
     throw redirect(302, '/user/lists');
+  },
+  cloneList: async ({ request, fetch, locals }: RequestEvent) => {
+    const data = await request.formData();
+    const listId = data.get('listId');
+    const name = data.get('name');
+
+    try {
+      const response = await fetch(`${API_HOST || 'http://localhost:3000'}/lists/clone`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie || ''
+        },
+        body: JSON.stringify({ listId, name })
+      });
+
+      if (response.status !== 201) {
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    throw redirect(302, '/user/lists');
   }
 };
