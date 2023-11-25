@@ -36,7 +36,9 @@
   <div class="flex gap-x-4">
     {#if list?.sharees?.length}
       {#each list.sharees as sharee (sharee.email)}
-        <Avatar username="{sharee.username}" />
+        {#if sharee.username !== list.creatorUsername}
+          <Avatar username="{sharee.username}" />
+        {/if}
       {/each}
     {/if}
   </div>
