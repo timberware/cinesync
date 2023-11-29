@@ -1,7 +1,3 @@
-<h1 align="center">
-	<img width="430" height="130" src="web\public\cinesync-logo-dark.png">
-</h1>
-
 ![Node.js CI](https://github.com/chrispinkney/cinesync/actions/workflows/docker.yml/badge.svg)
 ![Node.js CI](https://github.com/chrispinkney/cinesync/actions/workflows/format_lint.yml/badge.svg)
 ![Vercel](https://vercelbadge.vercel.app/api/chrispinkney/cinesync)
