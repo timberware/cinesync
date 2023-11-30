@@ -27,4 +27,4 @@ FROM build AS release
 COPY --from=dependencies /cinesync-web/node_modules /cinesync-web/node_modules
 COPY --from=builder /cinesync-web/build /cinesync-web/build
 
-CMD ["sh", "-c", "ORIGIN=http://localhost:3000 PORT=3000 node build"]
+CMD ["sh", "-c", "node ./build"]
