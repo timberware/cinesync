@@ -9,6 +9,7 @@
     faClone
   } from '@fortawesome/free-solid-svg-icons';
   import SubmitButton from '$lib/SubmitButton.svelte';
+  import ListShareModal from './ListShareModal.svelte';
   import MovieModal from '$lib/Movie/MovieModal.svelte';
   import type { ListType } from '../../ambient';
   import { config } from '@fortawesome/fontawesome-svg-core';
@@ -17,14 +18,15 @@
   config.autoAddCss = false;
 
   export let list: ListType;
-  let showModal = false;
+  let showMovieModal = false;
+  let showShareListModal = false;
 </script>
 
 <div class="flex justify-between mx-1">
   <div class="flex gap-x-4">
     <Avatar username="{list.creatorUsername || ''}" />
     <div class="text-lg font-black">{list.name}</div>
-    <button type="button" class=" min-h-full" on:click="{() => (showModal = true)}"
+    <button type="button" class=" min-h-full" on:click="{() => (showMovieModal = true)}"
       ><FontAwesomeIcon class="text-text text-xl" icon="{faPlusCircle}" /></button
     >
     {#if list?.sharees?.findIndex(sharee => sharee.username === list.creatorUsername) === -1}
@@ -44,7 +46,13 @@
         icon="{faClone}"
       />
     {/if}
-    <FontAwesomeIcon class="text-text" icon="{faShareNodes}" />
+    <button
+      type="button"
+      class=" min-h-full"
+      on:click="{() => (showShareListModal = true)}"
+    >
+      <FontAwesomeIcon class="text-text" icon="{faShareNodes}" />
+    </button>
   </div>
   <div class="flex gap-x-4">
     {#if list?.sharees?.length}
@@ -57,4 +65,5 @@
   </div>
 </div>
 
-<MovieModal bind:showModal listId="{list.id}" />
+<ListShareModal bind:showShareListModal listId="{list.id}" />
+<MovieModal bind:showMovieModal listId="{list.id}" />

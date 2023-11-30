@@ -278,5 +278,32 @@ export const actions = {
     }
 
     throw redirect(302, '/user/lists');
+  },
+  shareList: async ({ request, fetch, locals }: RequestEvent) => {
+    const data = await request.formData();
+    const listId = data.get('listId');
+    const username = data.get('username');
+
+    try {
+      const response = await fetch(
+        `${API_HOST || 'http://localhost:3000'}/lists/toggleShareByUsername`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: locals.cookie || ''
+          },
+          body: JSON.stringify({ listId, username })
+        }
+      );
+
+      if (response.status !== 204) {
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    throw redirect(302, '/user/lists');
   }
 };

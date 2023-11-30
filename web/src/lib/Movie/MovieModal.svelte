@@ -41,13 +41,13 @@
   import MovieResult from './MovieResult.svelte';
   import type { TMDBMovieResult } from '../../ambient';
 
-  export let showModal: boolean;
+  export let showMovieModal: boolean;
   export let listId: string;
   let movieTitle: string;
   let movies: TMDBMovieResult[] = [];
   let dialog: HTMLDialogElement;
 
-  $: if (dialog && showModal) {
+  $: if (dialog && showMovieModal) {
     dialog.showModal();
   }
 
@@ -70,7 +70,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
   bind:this="{dialog}"
-  on:close="{() => (showModal = false)}"
+  on:close="{() => (showMovieModal = false)}"
   on:click|self="{closeDialog}"
   class="bg-background text-text rounded-xl"
 >
