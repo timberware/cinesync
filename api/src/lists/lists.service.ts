@@ -188,9 +188,17 @@ export class ListsService {
 		return await this.listsDao.toggleShareList(listId, shareeEmail);
 	}
 
-	async toggleShareByUsername(listId: string, username: string) {
-		const { email } = await this.usersDao.getUserByUsername(username);
+	async toggleShareByUsername(
+		listId: string,
+		username: string,
+		userId: string,
+	) {
+		const list = await this.listsDao.getList(listId);
+		const user = await this.usersDao.getUser(userId);
+		const sharee = await this.usersDao.getUserByUsername(username);
 
-		return this.listsDao.toggleShareList(listId, email);
+		await this.emailService.sendListSharingEmail([user, sharee], list);
+
+		return await this.listsDao.toggleShareList(listId, sharee.email);
 	}
 }

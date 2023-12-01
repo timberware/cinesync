@@ -90,7 +90,11 @@ export class ListsController {
 		@Req() req: Request,
 	) {
 		if (!req.user) throw new BadRequestException('req contains no user');
-		return this.listsService.toggleShareByUsername(listId, username);
+		return this.listsService.toggleShareByUsername(
+			listId,
+			username,
+			req.user.id,
+		);
 	}
 
 	@UseInterceptors(RemoveListFieldsInterceptor)
