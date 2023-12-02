@@ -17,7 +17,7 @@
 <Nav username="{user.username}" />
 <div class="flex mt-7 mb-4">
   <button type="button" class="min-h-full pt-2" on:click="{() => (showModal = true)}">
-    <FontAwesomeIcon class="text-text text-4xl" icon="{faPlusCircle}" />
+    <FontAwesomeIcon class="text-text text-3xl" icon="{faPlusCircle}" />
   </button>
 </div>
 <div>

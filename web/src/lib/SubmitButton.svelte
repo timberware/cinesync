@@ -4,6 +4,7 @@
   export let formAction: string;
   export let inputs: { name: string; value: string }[];
   export let icon: any;
+  export let tooltip: string = '';
 </script>
 
 <form method="POST" action="{formAction}">
@@ -12,11 +13,16 @@
       <input type="hidden" name="{input.name}" value="{input.value}" />
     {/each}
   {/if}
-  <button type="submit">
+  <button class="has-tooltip" type="submit">
+    {#if tooltip}
+      <span class="tooltip rounded-lg bg-background text-text p-2 mt-5 -ml-5"
+        >{tooltip}</span
+      >
+    {/if}
     {#if typeof icon === 'string'}
       {icon}
     {:else}
-      <FontAwesomeIcon class="text-text" icon="{icon}" />
+      <FontAwesomeIcon class="text-text text-lg" icon="{icon}" />
     {/if}
   </button>
 </form>

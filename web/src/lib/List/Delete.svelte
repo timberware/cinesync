@@ -3,14 +3,11 @@
   import SubmitButton from '$lib/SubmitButton.svelte';
 
   export let listId: string;
-  export let movieId: string;
 </script>
 
 <SubmitButton
-  formAction="lists?/deleteMovie"
-  inputs="{[
-    { name: 'listId', value: listId },
-    { name: 'movieId', value: movieId }
-  ]}"
+  formAction="lists?/deleteList"
+  inputs="{[{ name: 'listId', value: listId }]}"
   icon="{faTrash}"
+  tooltip="delete list"
 />

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { MovieType } from '../../ambient';
-  import Close from './Close.svelte';
+  import Delete from './Delete.svelte';
   import Watch from './Watched.svelte';
   import Image from '$lib/Image.svelte';
   import MovieContainer from './MovieContainer.svelte';
@@ -13,8 +13,8 @@
 
 <MovieContainer>
   <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md">
-    <Close listId="{listId}" movieId="{movie.id}" />
     <Watch movieId="{movie.id}" watched="{movie.watched}" />
+    <Delete listId="{listId}" movieId="{movie.id}" />
   </div>
   <div class="w-2/5 mr-3">
     <div><Image src="{getPosterUrl(movie.posterUrl)}" /></div>

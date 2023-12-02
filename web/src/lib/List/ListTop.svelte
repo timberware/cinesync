@@ -1,21 +1,18 @@
 <script lang="ts">
-  import '@fortawesome/fontawesome-svg-core/styles.css';
-  import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
-  import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
   import {
+    faPlusCircle,
     faLock,
     faLockOpen,
     faShareNodes,
     faClone
   } from '@fortawesome/free-solid-svg-icons';
   import SubmitButton from '$lib/SubmitButton.svelte';
-  import ListShareModal from './ListShareModal.svelte';
+  import Delete from './Delete.svelte';
   import MovieModal from '$lib/Movie/MovieModal.svelte';
-  import type { ListType } from '../../ambient';
-  import { config } from '@fortawesome/fontawesome-svg-core';
+  import IconButton from '$lib/IconButton.svelte';
   import Avatar from '$lib/Avatar.svelte';
-  import Close from './Close.svelte';
-  config.autoAddCss = false;
+  import ListShareModal from './ListShareModal.svelte';
+  import type { ListType } from '../../ambient';
 
   export let list: ListType;
   let showMovieModal = false;
@@ -26,15 +23,20 @@
   <div class="flex gap-x-4">
     <Avatar username="{list.creatorUsername || ''}" />
     <div class="text-lg font-black">{list.name}</div>
-    <button type="button" class=" min-h-full" on:click="{() => (showMovieModal = true)}"
-      ><FontAwesomeIcon class="text-text text-xl" icon="{faPlusCircle}" /></button
-    >
+    <IconButton
+      type="button"
+      classes="min-h-full"
+      icon="{faPlusCircle}"
+      tooltip="add movie"
+      on:click="{() => (showMovieModal = true)}"
+    />
     {#if list?.sharees?.findIndex(sharee => sharee.username === list.creatorUsername) === -1}
-      <Close listId="{list.id}" />
+      <Delete listId="{list.id}" />
       <SubmitButton
         formAction="lists?/togglePrivacy"
         inputs="{[{ name: 'listId', value: list.id }]}"
         icon="{list.isPrivate ? faLock : faLockOpen}"
+        tooltip="{list.isPrivate ? 'private list' : 'public list'}"
       />
     {:else}
       <SubmitButton
@@ -44,15 +46,16 @@
           { name: 'name', value: list.name }
         ]}"
         icon="{faClone}"
+        tooltip="clone list"
       />
     {/if}
-    <button
+    <IconButton
       type="button"
-      class=" min-h-full"
+      classes="min-h-full"
+      icon="{faShareNodes}"
+      tooltip="share list"
       on:click="{() => (showShareListModal = true)}"
-    >
-      <FontAwesomeIcon class="text-text" icon="{faShareNodes}" />
-    </button>
+    />
   </div>
   <div class="flex gap-x-4">
     {#if list?.sharees?.length}
