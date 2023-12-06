@@ -11,7 +11,7 @@
 
 <Nav username="{user.username}" />
 <div class="mt-7 max-w-5xl mx-auto">
-  <h2 class="mb-3 text-2xl underline">about cinesync</h2>
+  <h2 class="mb-3 text-2xl underline">cinesync</h2>
   <p>
     cinesync is designed to bring the magic of cinema closer to movie enthusiasts. It is a
     modern and user-friendly web application that caters to the needs of movie enthusiasts
@@ -32,11 +32,12 @@
     Join us on this cinematic journey, and let cinesync enhance your love for movies,
     making every film-watching experience a shared adventure.
   </p>
-  <h2 class="text-xl mt-2 mb-2 underline">attribution</h2>
-  <a class="mt-2" href="https://www.themoviedb.org/">
-    <img src="{THE_MOVIE_DB_BIG_AVATAR}" alt="TMDB logo" height="{12}" width="{165}" />
-  </a>
-  <p class="mt-1">
-    This product uses the TMDB API but is not endorsed or certified by TMDB.
-  </p>
+  <div class="mt-10">
+    <a href="https://www.themoviedb.org/">
+      <img src="{THE_MOVIE_DB_BIG_AVATAR}" alt="TMDB logo" height="{12}" width="{165}" />
+    </a>
+    <p class="mt-1">
+      This product uses the TMDB API but is not endorsed or certified by TMDB.
+    </p>
+  </div>
 </div>

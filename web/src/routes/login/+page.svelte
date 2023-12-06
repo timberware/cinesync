@@ -1,10 +1,11 @@
 <script lang="ts">
+  import Footer from '$lib/Footer.svelte';
   /** @type {import('./$types').ActionData} */
   export let form;
 </script>
 
 <header class="container xl:max-w-screen-xl lg:max-w-screen-lg mx-auto">
-  <h1 class="text-7xl max-w-fit m-auto pt-20">cinesync</h1>
+  <h1 class="text-7xl max-w-fit m-auto mt-20">cinesync</h1>
 </header>
 
 <form method="POST" action="?/login">
@@ -45,3 +46,5 @@
     <div class="m-auto w-fit"><a href="/signup">sign up!</a></div>
   </div>
 </form>
+
+<Footer />

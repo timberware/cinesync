@@ -1,4 +1,6 @@
 <script>
+  import Footer from '$lib/Footer.svelte';
+
   /** @type {import('./$types').ActionData} */
   export let form;
 </script>
@@ -56,3 +58,5 @@
     <div class="m-auto w-fit"><a href="/login">log in!</a></div>
   </div>
 </form>
+
+<Footer />
