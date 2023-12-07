@@ -1,5 +1,6 @@
 <script>
   import Footer from '$lib/Footer.svelte';
+  import { selectRandomDirector } from '../../utils';
 
   /** @type {import('./$types').ActionData} */
   export let form;
@@ -10,33 +11,33 @@
 </header>
 
 <form method="POST" action="?/signup">
-  <div class="max-w-xs m-auto pt-5">
-    <div class="flex pt-2 pb-2">
+  <div class="max-w-md m-auto mt-5">
+    <div class="flex pt-2 pb-2 justify-center">
       <label class="w-24 text-center" for="username">username</label>
       <input
-        class=" text-background pl-1"
+        class=" text-background pl-1 w-60"
         type="text"
         name="username"
         id="username"
-        placeholder="clint-eastwood"
+        placeholder="cinephile"
         required
       />
     </div>
-    <div class="flex pt-2 pb-2">
+    <div class="flex pt-2 pb-2 justify-center">
       <label class="w-24 text-center" for="login">email</label>
       <input
-        class=" text-background pl-1"
+        class=" text-background pl-1 w-60"
         type="email"
         name="email"
         id="login"
-        placeholder="clint@eastwood.org"
+        placeholder="{selectRandomDirector()}"
         required
       />
     </div>
-    <div class="flex pt-2 pb-2">
+    <div class="flex pt-2 pb-2 justify-center">
       <label class="w-24 text-center " for="password">password</label>
       <input
-        class=" text-background pl-1"
+        class=" text-background pl-1 w-60"
         type="password"
         name="password"
         id="password"
