@@ -3,7 +3,6 @@ FROM node:lts-alpine as build
 WORKDIR "/cinesync-web"
 
 COPY package.json .
-COPY package-lock.json .
 COPY .env .
 COPY static static
 
