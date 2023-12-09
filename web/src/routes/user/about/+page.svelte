@@ -10,7 +10,7 @@
 </script>
 
 <Nav username="{user.username}" />
-<div class="mt-7 max-w-5xl mx-auto">
+<div class="mt-7 max-w-6xl mx-auto">
   <h2 class="mb-3 text-2xl underline">cinesync</h2>
   <p>
     cinesync is designed to bring the magic of cinema closer to movie enthusiasts. It is a
