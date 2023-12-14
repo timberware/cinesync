@@ -12,7 +12,7 @@
 <Nav username="{user.username}" />
 <div class="flex max-w-4xl mt-20">
   <div class="w-1/5 mx-auto">
-    <div class="m-auto w-24">
+    <div class="m-auto text-center">
       <Avatar username="{user.username}" isLarge />
       <div class="mt-2">{user.username}</div>
     </div>
