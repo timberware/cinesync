@@ -1,9 +1,13 @@
 {
   "root": true,
-  "extends": ["plugin:svelte/recommended"],
-  "parser": "@typescript-eslint/parser",
+  "extends": ["eslint:recommended"],
+  "parser": "svelte-eslint-parser",
   "parserOptions": {
-    "ecmaVersion": 2020,
+    "parser": {
+      "ts": "@typescript-eslint/parser",
+      "typescript": "@typescript-eslint/parser"
+    },
+    "ecmaVersion": 2022,
     "sourceType": "module",
     "tsconfigRootDir": ".",
     "project": ["./tsconfig.json"],

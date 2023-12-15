@@ -6,8 +6,10 @@ export const actions = {
   logout: async ({ locals, cookies }: RequestEvent) => {
     locals.user = null;
     locals.cookie = null;
-    cookies.delete('Authorization');
+    cookies.delete('Authorization', {
+      path: '/'
+    });
 
-    throw redirect(301, '/signin');
+    redirect(301, '/signin');
   }
 };

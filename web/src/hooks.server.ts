@@ -25,9 +25,9 @@ export const handle = async ({ event, resolve }) => {
   }
 
   if (!event.locals.user && !AUTH_PATHS.includes(event.url.pathname)) {
-    throw redirect(302, '/login');
+    redirect(302, '/login');
   } else if (event.locals.user && AUTH_PATHS.includes(event.url.pathname)) {
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   }
 
   return await resolve(event);

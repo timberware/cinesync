@@ -7,7 +7,9 @@ export const actions = {
   login: async ({ request, fetch, cookies, locals }: RequestEvent) => {
     locals.user = null;
     locals.cookie = null;
-    cookies.delete('Authorization');
+    cookies.delete('Authorization', {
+      path: '/'
+    });
 
     const data = await request.formData();
     const email = data.get('email');
@@ -40,6 +42,6 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   }
 };

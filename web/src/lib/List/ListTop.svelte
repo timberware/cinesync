@@ -68,5 +68,5 @@
   </div>
 </div>
 
-<ListShareModal bind:showShareListModal listId="{list.id}" />
-<MovieModal bind:showMovieModal listId="{list.id}" />
+<ListShareModal bind:showShareListModal="{showShareListModal}" listId="{list.id}" />
+<MovieModal bind:showMovieModal="{showMovieModal}" listId="{list.id}" />

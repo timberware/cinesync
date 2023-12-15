@@ -28,4 +28,4 @@
   {/if}
 </div>
 
-<ListModal bind:showModal />
+<ListModal bind:showModal="{showModal}" />

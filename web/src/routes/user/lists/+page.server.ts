@@ -95,7 +95,7 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   },
   createList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -125,7 +125,7 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   },
   deleteList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -151,7 +151,7 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   },
   updateList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -199,7 +199,7 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   },
   toggleWatched: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -226,7 +226,7 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   },
   deleteMovie: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -253,7 +253,7 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   },
   cloneList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -277,7 +277,7 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   },
   shareList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -304,6 +304,6 @@ export const actions = {
       console.error(e);
     }
 
-    throw redirect(302, '/user/lists');
+    redirect(302, '/user/lists');
   }
 };

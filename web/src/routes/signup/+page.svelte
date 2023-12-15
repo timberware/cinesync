@@ -35,7 +35,7 @@
       />
     </div>
     <div class="flex pt-2 pb-2 justify-center">
-      <label class="w-24 text-center " for="password">password</label>
+      <label class="w-24 text-center" for="password">password</label>
       <input
         class=" text-background pl-1 w-60"
         type="password"

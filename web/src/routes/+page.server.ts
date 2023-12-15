@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import { API_HOST } from '$env/static/private';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ fetch, locals }) {
+export const load = async ({ fetch, locals }) => {
   let status = 404;
 
   try {
@@ -18,5 +18,5 @@ export async function load({ fetch, locals }) {
     console.error(e);
   }
 
-  throw redirect(301, status === 200 ? '/home' : '/login');
-}
+  redirect(301, status === 200 ? '/home' : '/login');
+};
