@@ -18,5 +18,5 @@ export const load = async ({ fetch, locals }) => {
     console.error(e);
   }
 
-  redirect(301, status === 200 ? '/home' : '/login');
+  redirect(301, status === 200 ? '/user/lists' : '/login');
 };
