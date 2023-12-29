@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { logLevels } from './utils/logLevels';
 import { PrismaClientExceptionFilter } from './prisma/filter/prisma-client-exception.filter';
 
-const port = 3000;
+const port = 4000;
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {

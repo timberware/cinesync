@@ -6,7 +6,7 @@ export const load = async ({ fetch, locals }) => {
   let status = 404;
 
   try {
-    const response = await fetch(`${API_HOST || 'http://localhost:3000'}/auth/whoami`, {
+    const response = await fetch(`${API_HOST || 'http://localhost:4000'}/auth/whoami`, {
       method: 'GET',
       headers: {
         Authorization: locals.cookie || ''

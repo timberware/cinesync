@@ -8,7 +8,7 @@ export const handle = async ({ event, resolve }) => {
   const jwt = event.cookies.get('Authorization');
 
   const response = await event.fetch(
-    `${API_HOST || 'http://localhost:3000'}/auth/whoami`,
+    `${API_HOST || 'http://localhost:4000'}/auth/whoami`,
     {
       method: 'GET',
       headers: {

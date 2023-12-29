@@ -10,7 +10,7 @@ export const actions = {
     const password = data.get('password');
 
     try {
-      const response = await fetch(`${API_HOST || 'http://localhost:3000'}/auth/signup`, {
+      const response = await fetch(`${API_HOST || 'http://localhost:4000'}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json'

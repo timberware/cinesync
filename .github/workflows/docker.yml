@@ -23,6 +23,6 @@ jobs:
       - name: Build the Docker image
         run: |
           cd web
-          echo "API_HOST=http://localhost:3000" > .env
+          echo "API_HOST=http://localhost:4000" > .env
           echo "TMDB_TOKEN=tmdbtoken_" >> .env
           docker build --tag cinesync-web:$(date +%s) .

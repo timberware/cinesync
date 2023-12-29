@@ -1,19 +1,19 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
-import type { ListType, Sharee } from '../../../ambient.js';
+import type { ListType, Sharee } from '../../../ambient';
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals }) => {
   try {
     const [response, w] = await Promise.all([
-      fetch(`${API_HOST || 'http://localhost:3000'}/lists/`, {
+      fetch(`${API_HOST || 'http://localhost:4000'}/lists/`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie || ''
         }
       }),
-      fetch(`${API_HOST || 'http://localhost:3000'}/lists/watched`, {
+      fetch(`${API_HOST || 'http://localhost:4000'}/lists/watched`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie || ''
@@ -30,7 +30,7 @@ export const load = async ({ fetch, locals }) => {
 
       const s = await Promise.all(
         list.map((l: ListType) =>
-          fetch(`${API_HOST || 'http://localhost:3000'}/lists/sharees?listId=${l.id}`, {
+          fetch(`${API_HOST || 'http://localhost:4000'}/lists/sharees?listId=${l.id}`, {
             method: 'GET',
             headers: {
               Authorization: locals.cookie || ''
@@ -77,7 +77,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:3000'}/lists/updatePrivacy`,
+        `${API_HOST || 'http://localhost:4000'}/lists/updatePrivacy`,
         {
           method: 'PATCH',
           headers: {
@@ -107,7 +107,7 @@ export const actions = {
       };
 
       const response = await fetch(
-        `${API_HOST || 'http://localhost:3000'}/lists/create`,
+        `${API_HOST || 'http://localhost:4000'}/lists/create`,
         {
           method: 'POST',
           headers: {
@@ -133,7 +133,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:3000'}/lists/delete`,
+        `${API_HOST || 'http://localhost:4000'}/lists/delete`,
         {
           method: 'DELETE',
           headers: {
@@ -166,7 +166,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:3000'}/lists/update`,
+        `${API_HOST || 'http://localhost:4000'}/lists/update`,
         {
           method: 'PATCH',
           headers: {
@@ -207,7 +207,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:3000'}/lists/updateWatchedStatus`,
+        `${API_HOST || 'http://localhost:4000'}/lists/updateWatchedStatus`,
         {
           method: 'PATCH',
           headers: {
@@ -235,7 +235,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:3000'}/lists/deleteMovie`,
+        `${API_HOST || 'http://localhost:4000'}/lists/deleteMovie`,
         {
           method: 'DELETE',
           headers: {
@@ -261,7 +261,7 @@ export const actions = {
     const name = data.get('name');
 
     try {
-      const response = await fetch(`${API_HOST || 'http://localhost:3000'}/lists/clone`, {
+      const response = await fetch(`${API_HOST || 'http://localhost:4000'}/lists/clone`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:3000'}/lists/toggleShareByUsername`,
+        `${API_HOST || 'http://localhost:4000'}/lists/toggleShareByUsername`,
         {
           method: 'POST',
           headers: {
