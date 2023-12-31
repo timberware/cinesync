@@ -10,6 +10,9 @@ export default {
         secondary: '#1f1f1f',
         accent: '#858585'
       },
+      brightness: {
+        25: '.25'
+      },
       fontFamily: {
         mono: 'CourierPrime, courier'
       }

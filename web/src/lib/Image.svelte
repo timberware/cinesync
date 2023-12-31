@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   export let src: string;
+  export let watched: boolean;
 
   let loaded = false;
   let failed = false;
@@ -23,7 +24,11 @@
 </script>
 
 {#if loaded}
-  <img class="h-full w-full object-scale-down rounded-md" src="{src}" alt="Document" />
+  <img
+    class="{`h-full w-full object-scale-down rounded-md ${!watched && ' brightness-25'}`}"
+    src="{src}"
+    alt="Document"
+  />
 {:else if failed}
   <img
     class="h-full w-full object-scale-down"

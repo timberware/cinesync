@@ -12,12 +12,12 @@
 </script>
 
 <MovieContainer>
-  <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md">
+  <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md z-50">
     <Watch movieId="{movie.id}" watched="{movie.watched}" />
     <Delete listId="{listId}" movieId="{movie.id}" />
   </div>
   <div class="w-2/5 mr-3">
-    <div><Image src="{getPosterUrl(movie.posterUrl)}" /></div>
+    <div><Image src="{getPosterUrl(movie.posterUrl)}" watched="{movie.watched}" /></div>
     <p class="pt-2"><Label>rating:</Label> {movie.rating.toFixed(1)}</p>
     <p>
       <Label>released</Label>: {new Date(
