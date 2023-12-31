@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -16,7 +17,7 @@ export class AvatarDao {
 	async updateAvatar(userId: string, avatar: Buffer) {
 		const { id } = await this.prisma.avatar.upsert({
 			where: { userId },
-			create: { userId, avatar },
+			create: { id: uuidv4(), userId, avatar },
 			update: { avatar },
 		});
 

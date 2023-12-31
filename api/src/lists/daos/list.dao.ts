@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateListDto } from '../dtos/update-list.dto';
 import { CreateListDto } from '../dtos/create-list.dto';
@@ -111,6 +112,7 @@ export class ListsDao {
 		let newMovies;
 		const list = await this.prisma.list.create({
 			data: {
+				id: uuidv4(),
 				name: createList.name,
 				isPrivate: true,
 				creatorId: userId,
@@ -130,6 +132,7 @@ export class ListsDao {
 					this.prisma.movie.upsert({
 						where: { imdbId: movie.imdbId },
 						create: {
+							id: uuidv4(),
 							title: movie.title,
 							description: movie.description,
 							genre: movie.genre,
@@ -186,14 +189,14 @@ export class ListsDao {
 
 	async updateList(updateListDto: UpdateListDto) {
 		let newMovies = [];
-		// add new movies to list
+
 		if (updateListDto?.movie?.length) {
-			// iterate over new movies, get new ids
 			newMovies = await Promise.all(
 				updateListDto.movie.map((movie) =>
 					this.prisma.movie.upsert({
 						where: { imdbId: movie.imdbId },
 						create: {
+							id: uuidv4(),
 							title: movie.title,
 							description: movie.description,
 							genre: movie.genre,
@@ -202,13 +205,11 @@ export class ListsDao {
 							rating: movie.rating,
 							imdbId: movie.imdbId,
 						},
-						// do not update the movie table
 						update: {},
 					}),
 				),
 			);
 
-			// associate ids
 			await Promise.all(
 				newMovies.map((movie) =>
 					this.prisma.movie.update({
