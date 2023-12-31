@@ -8,9 +8,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=simple_password
-      - POSTGRES_DB=cinesync-prod
+      - POSTGRES_USER=cinesync-dev
+      - POSTGRES_PASSWORD=@BarelyAnInconvenience@
+      - POSTGRES_DB=cinesync-dev
       - TZ=America/Toronto
     volumes:
       - ./api/db-data:/var/lib/postgresql/data
@@ -38,7 +38,6 @@ services:
     environment:
       - API_HOST=${API_HOST}
       - TMDB_TOKEN=${TMDB_TOKEN}
-      - ORIGIN=http://localhost:4000
       - NODE_ENV=${NODE_ENV}
     ports:
       - 3000:3000
