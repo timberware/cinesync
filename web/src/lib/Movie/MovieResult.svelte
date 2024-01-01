@@ -10,9 +10,9 @@
   export let listId: string;
 </script>
 
-<div class=" w-92 h-80 flex rounded-xl bg-background p-3 flex-shrink-0 mb-5">
+<div class="w-96 h-80 flex rounded-xl bg-background p-3 flex-shrink-0 mb-5">
   <div class="relative w-2/5 mr-3 rounded-md">
-    <div><Image src="{getPosterUrl(movie.poster_path)}" /></div>
+    <div><Image src="{getPosterUrl(movie.poster_path)}" watched="{true}" /></div>
     <p class="pt-2"><Label>rating:</Label> {movie.vote_average.toFixed(1)}</p>
     <p>
       <Label>released</Label>: {new Date(movie.release_date).getFullYear() ||

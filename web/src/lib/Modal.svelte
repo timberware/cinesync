@@ -53,13 +53,15 @@
   bind:this="{dialog}"
   on:close="{() => (showModal = false)}"
   on:click|self="{closeDialog}"
-  class="bg-background text-text rounded-xl"
+  class=" min-w-96 bg-background text-text rounded-xl"
 >
   <div on:click|stopPropagation>
     <slot />
     <div class="flex pb-5 justify-around">
-      <button type="submit">{ctaLabel}</button>
-      <button on:click|self="{closeDialog}">cancel</button>
+      {#if ctaLabel}
+        <button type="submit">{ctaLabel}</button>
+      {/if}
+      <button on:click|self="{closeDialog}">close</button>
     </div>
   </div>
 </dialog>

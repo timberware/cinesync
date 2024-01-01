@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconButton from '$lib/IconButton.svelte';
-  import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+  import { faEye } from '@fortawesome/free-solid-svg-icons';
 
   export let movieId: string;
   export let watched: boolean;
@@ -11,8 +11,8 @@
     <input type="hidden" name="movieId" value="{movieId}" />
     <IconButton
       type="submit"
-      icon="{watched ? faEye : faEyeSlash}"
-      tooltip="{watched ? 'watched' : ' not watched'}"
+      icon="{faEye}"
+      tooltip="{`tag as ${watched ? 'not watched' : 'watched'}`}"
     />
   </form>
 </div>

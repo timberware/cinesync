@@ -46,5 +46,5 @@ export type Sharee = {
   username: string;
   email: string;
   creator: boolean;
-  watched: MovieType[];
+  watched: String[];
 };

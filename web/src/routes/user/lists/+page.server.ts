@@ -191,7 +191,6 @@ export const actions = {
       );
 
       if (response.status !== 200) {
-        console.log(response.status);
         console.error('There was an error modifying the list', response.statusText);
         return;
       }

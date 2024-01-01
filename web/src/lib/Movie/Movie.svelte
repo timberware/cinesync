@@ -12,7 +12,7 @@
 </script>
 
 <MovieContainer>
-  <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md z-50">
+  <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md z-10">
     <Watch movieId="{movie.id}" watched="{movie.watched}" />
     <Delete listId="{listId}" movieId="{movie.id}" />
   </div>

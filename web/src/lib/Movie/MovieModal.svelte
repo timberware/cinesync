@@ -24,11 +24,11 @@
   };
 </script>
 
-<Modal showModal="{showMovieModal}">
-  <div class="p-4 w-4/5">
+<Modal bind:showModal="{showMovieModal}">
+  <div class="p-4">
     <h2 class="font-bold text-4xl underline text-center mb-4">movie</h2>
-    <div class="flex pt-2 pb-2 justify-around">
-      <label class="w-20 text-right" for="list-name">title</label>
+    <div class="flex pt-2 pb-2 justify-center">
+      <label class="text-right pr-4" for="list-name">title</label>
       <input
         class=" text-background pl-1"
         type="text"
@@ -38,7 +38,7 @@
         bind:value="{movieTitle}"
         required
       />
-      <button type="button" on:click="{handleOnClick}"
+      <button class="pl-4" type="button" on:click="{handleOnClick}"
         ><FontAwesomeIcon class="text-text text-md" icon="{faMagnifyingGlass}" /></button
       >
     </div>
