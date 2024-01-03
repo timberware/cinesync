@@ -1,19 +1,18 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
-import { API_HOST } from '$env/static/private';
 import type { ListType, Sharee } from '../../../ambient';
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals }) => {
   try {
     const [response, w] = await Promise.all([
-      fetch(`${API_HOST || 'http://localhost:4000'}/lists/`, {
+      fetch(`${process.env.API_HOST || 'http://localhost:4000'}/lists/`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie || ''
         }
       }),
-      fetch(`${API_HOST || 'http://localhost:4000'}/lists/watched`, {
+      fetch(`${process.env.API_HOST || 'http://localhost:4000'}/lists/watched`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie || ''
@@ -30,12 +29,17 @@ export const load = async ({ fetch, locals }) => {
 
       const s = await Promise.all(
         list.map((l: ListType) =>
-          fetch(`${API_HOST || 'http://localhost:4000'}/lists/sharees?listId=${l.id}`, {
-            method: 'GET',
-            headers: {
-              Authorization: locals.cookie || ''
+          fetch(
+            `${process.env.API_HOST || 'http://localhost:4000'}/lists/sharees?listId=${
+              l.id
+            }`,
+            {
+              method: 'GET',
+              headers: {
+                Authorization: locals.cookie || ''
+              }
             }
-          })
+          )
         )
       );
 
@@ -77,7 +81,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:4000'}/lists/updatePrivacy`,
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/updatePrivacy`,
         {
           method: 'PATCH',
           headers: {
@@ -107,7 +111,7 @@ export const actions = {
       };
 
       const response = await fetch(
-        `${API_HOST || 'http://localhost:4000'}/lists/create`,
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/create`,
         {
           method: 'POST',
           headers: {
@@ -133,7 +137,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:4000'}/lists/delete`,
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/delete`,
         {
           method: 'DELETE',
           headers: {
@@ -166,7 +170,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:4000'}/lists/update`,
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/update`,
         {
           method: 'PATCH',
           headers: {
@@ -206,7 +210,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:4000'}/lists/updateWatchedStatus`,
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/updateWatchedStatus`,
         {
           method: 'PATCH',
           headers: {
@@ -234,7 +238,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:4000'}/lists/deleteMovie`,
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/deleteMovie`,
         {
           method: 'DELETE',
           headers: {
@@ -260,14 +264,17 @@ export const actions = {
     const name = data.get('name');
 
     try {
-      const response = await fetch(`${API_HOST || 'http://localhost:4000'}/lists/clone`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: locals.cookie || ''
-        },
-        body: JSON.stringify({ listId, name })
-      });
+      const response = await fetch(
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/clone`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: locals.cookie || ''
+          },
+          body: JSON.stringify({ listId, name })
+        }
+      );
 
       if (response.status !== 201) {
         return;
@@ -285,7 +292,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${API_HOST || 'http://localhost:4000'}/lists/toggleShareByUsername`,
+        `${process.env.API_HOST || 'http://localhost:4000'}/lists/toggleShareByUsername`,
         {
           method: 'POST',
           headers: {

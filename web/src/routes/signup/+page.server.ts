@@ -1,4 +1,3 @@
-import { API_HOST } from '$env/static/private';
 import type { RequestEvent } from './$types.js';
 
 /** @type {import('./$types').Actions} */
@@ -10,17 +9,20 @@ export const actions = {
     const password = data.get('password');
 
     try {
-      const response = await fetch(`${API_HOST || 'http://localhost:4000'}/auth/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password
-        })
-      });
+      const response = await fetch(
+        `${process.env.API_HOST || 'http://localhost:4000'}/auth/signup`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password
+          })
+        }
+      );
 
       const r = await response.json();
       return r;

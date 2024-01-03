@@ -1,14 +1,15 @@
 import { redirect } from '@sveltejs/kit';
-import { API_HOST } from '$env/static/private';
 
 const AUTH_PATHS = ['/login', '/', '/signup'];
+
+console.log(process.env.API_HOST);
 
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle = async ({ event, resolve }) => {
   const jwt = event.cookies.get('Authorization');
 
   const response = await event.fetch(
-    `${API_HOST || 'http://localhost:4000'}/auth/whoami`,
+    `${process.env.API_HOST || 'http://localhost:4000'}/auth/whoami`,
     {
       method: 'GET',
       headers: {

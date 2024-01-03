@@ -1,5 +1,4 @@
 import { json } from '@sveltejs/kit';
-import { TMDB_TOKEN } from '$env/static/private';
 import type { TMDBMovieResult } from '../../ambient.js';
 import { GENRES, searchMovieUrl } from '../../utils';
 
@@ -18,14 +17,14 @@ export const GET = async ({ url }) => {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: `Bearer ${TMDB_TOKEN}`
+        Authorization: `Bearer ${process.env.TMDB_TOKEN}`
       }
     }),
     fetch(GENRES, {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: `Bearer ${TMDB_TOKEN}`
+        Authorization: `Bearer ${process.env.TMDB_TOKEN}`
       }
     })
   ]);
