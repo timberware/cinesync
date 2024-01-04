@@ -1,4 +1,5 @@
 import type { RequestEvent } from './$types.js';
+import { API_HOST } from '$env/static/private';
 
 /** @type {import('./$types').Actions} */
 export const actions = {
@@ -10,7 +11,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${process.env.API_HOST || 'http://localhost:4000'}/auth/signup`,
+        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/auth/signup`,
         {
           method: 'POST',
           headers: {

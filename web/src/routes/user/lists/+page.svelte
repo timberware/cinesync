@@ -15,15 +15,26 @@
 </script>
 
 <Nav username="{user.username}" />
-<div class="flex mt-7 mb-4">
-  <button type="button" class="min-h-full pt-2" on:click="{() => (showModal = true)}">
-    <FontAwesomeIcon class="text-text text-3xl" icon="{faPlusCircle}" />
+<div class="flex text-3xl mt-10 mb-2 justify-between">
+  <div class="pl-2">your lists</div>
+  <button type="button" class="min-h-full" on:click="{() => (showModal = true)}">
+    <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
   </button>
 </div>
 <div>
   {#if lists?.length}
-    {#each lists as list (list.id)}
-      <List list="{list}" />
+    {#each lists.filter(list => list.creatorUsername === user.username) as list (list.id)}
+      <List list="{list}" user="{user}" />
+    {/each}
+  {/if}
+</div>
+<div class="flex text-3xl mt-14 mb-2 justify-between">
+  <div class="pl-2">shared with you</div>
+</div>
+<div>
+  {#if lists?.length}
+    {#each lists.filter(list => list.creatorUsername !== user.username) as list (list.id)}
+      <List list="{list}" user="{user}" />
     {/each}
   {/if}
 </div>

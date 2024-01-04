@@ -13,9 +13,11 @@
   import Avatar from '$lib/Avatar.svelte';
   import ListShareModal from './ListShareModal.svelte';
   import UserModal from './UserModal.svelte';
-  import type { ListType } from '../../ambient';
+  import type { ListType, User } from '../../ambient';
 
   export let list: ListType;
+  export let user: User;
+
   let showMovieModal = false;
   let showShareListModal = false;
   let showUserModal = false;
@@ -24,7 +26,9 @@
 
 <div class="flex justify-between mx-1">
   <div class="flex gap-x-4">
-    <Avatar username="{list.creatorUsername || ''}" />
+    {#if list.creatorUsername === user.username}
+      <Avatar username="{list.creatorUsername || ''}" />
+    {/if}
     <div class="text-lg font-black">{list.name}</div>
     <IconButton
       type="button"
@@ -63,16 +67,14 @@
   <div class="flex gap-x-4">
     {#if list?.sharees?.length}
       {#each list.sharees as sharee (sharee.email)}
-        {#if sharee.username !== list.creatorUsername}
-          <button
-            on:click="{() => {
-              selectedSharee = sharee.username;
-              showUserModal = true;
-            }}"
-          >
-            <Avatar username="{sharee.username}" />
-          </button>
-        {/if}
+        <button
+          on:click="{() => {
+            selectedSharee = sharee.username;
+            showUserModal = true;
+          }}"
+        >
+          <Avatar username="{sharee.username}" />
+        </button>
       {/each}
     {/if}
   </div>

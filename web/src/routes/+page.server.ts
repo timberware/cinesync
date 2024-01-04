@@ -1,4 +1,5 @@
 import { redirect } from '@sveltejs/kit';
+import { API_HOST } from '$env/static/private';
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals }) => {
@@ -6,7 +7,7 @@ export const load = async ({ fetch, locals }) => {
 
   try {
     const response = await fetch(
-      `${process.env.API_HOST || 'http://localhost:4000'}/auth/whoami`,
+      `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/auth/whoami`,
       {
         method: 'GET',
         headers: {
