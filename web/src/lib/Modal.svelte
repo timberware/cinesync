@@ -36,7 +36,6 @@
 
 <script lang="ts">
   export let showModal: boolean;
-  export let ctaLabel: string = '';
   let dialog: HTMLDialogElement;
 
   $: if (dialog && showModal) {
@@ -53,15 +52,9 @@
   bind:this="{dialog}"
   on:close="{() => (showModal = false)}"
   on:click|self="{closeDialog}"
-  class=" min-w-96 bg-background text-text rounded-xl"
+  class="min-w-96 bg-background text-text rounded-xl"
 >
-  <div on:click|stopPropagation>
+  <div class="relative" on:click|stopPropagation>
     <slot />
-    <div class="flex pb-5 justify-around">
-      {#if ctaLabel}
-        <button type="submit">{ctaLabel}</button>
-      {/if}
-      <button on:click|self="{closeDialog}">close</button>
-    </div>
   </div>
 </dialog>

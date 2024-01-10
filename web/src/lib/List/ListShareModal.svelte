@@ -4,7 +4,7 @@
   export let showShareListModal: boolean;
 </script>
 
-<Modal showModal="{showShareListModal}" ctaLabel="share">
+<Modal showModal="{showShareListModal}">
   <form method="POST" action="lists?/shareList">
     <div class="w-xl p-4">
       <h2 class="font-bold text-4xl underline text-center mb-4">share list</h2>
@@ -20,6 +20,9 @@
         />
         <input type="hidden" name="listId" value="{listId}" />
       </div>
+    </div>
+    <div class="flex pb-5 justify-around">
+      <button type="submit">share</button>
     </div>
   </form>
 </Modal>

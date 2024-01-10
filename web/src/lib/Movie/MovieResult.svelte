@@ -18,7 +18,11 @@
       <Label>released</Label>: {new Date(movie.release_date).getFullYear() ||
         'unavailable'}
     </p>
-    <form method="POST" action="lists?/updateList" class="absolute top-1 left-1">
+    <form
+      method="POST"
+      action="lists?/updateList"
+      class="absolute top-0 left-0 px-1 bg-background rounded-br-md"
+    >
       <input type="hidden" name="listId" value="{listId}" />
       <input type="hidden" name="title" value="{movie.title}" />
       <input type="hidden" name="overview" value="{movie.overview}" />

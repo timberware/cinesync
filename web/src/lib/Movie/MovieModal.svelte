@@ -27,7 +27,7 @@
 <Modal bind:showModal="{showMovieModal}">
   <div class="p-4">
     <h2 class="font-bold text-4xl underline text-center mb-4">movie</h2>
-    <div class="flex pt-2 pb-2 justify-center">
+    <div class="flex pt-2 pb-2 mb-3 justify-center">
       <label class="text-right pr-4" for="list-name">title</label>
       <input
         class=" text-background pl-1"

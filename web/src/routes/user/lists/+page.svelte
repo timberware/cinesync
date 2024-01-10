@@ -28,15 +28,15 @@
     {/each}
   {/if}
 </div>
-<div class="flex text-3xl mt-14 mb-2 justify-between">
-  <div class="pl-2">shared with you</div>
-</div>
-<div>
-  {#if lists?.length}
+{#if lists?.filter(list => list.creatorUsername !== user.username).length}
+  <div class="flex text-3xl mt-14 mb-2 justify-between">
+    <div class="pl-2">shared with you</div>
+  </div>
+  <div>
     {#each lists.filter(list => list.creatorUsername !== user.username) as list (list.id)}
       <List list="{list}" user="{user}" />
     {/each}
-  {/if}
-</div>
+  </div>
+{/if}
 
 <ListModal bind:showModal="{showModal}" />

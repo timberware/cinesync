@@ -3,7 +3,7 @@
   export let showModal: boolean;
 </script>
 
-<Modal bind:showModal="{showModal}" ctaLabel="create">
+<Modal bind:showModal="{showModal}">
   <form method="POST" action="lists?/createList">
     <div class="pt-4 pb-6">
       <h2 class="font-bold text-4xl underline text-center mb-4">list</h2>
@@ -18,6 +18,9 @@
           required
         />
       </div>
+    </div>
+    <div class="flex pb-5 justify-around">
+      <button type="submit">create</button>
     </div>
   </form>
 </Modal>
