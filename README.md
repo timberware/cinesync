@@ -41,15 +41,3 @@ Running the frontend:
 
 - `cd web`
 - `npm run dev`
-
-## How was CineSync built?
-
-CineSync was built using several wonderful pieces of technology:
-
-- The frontend is developed using the [NextJS](https://github.com/vercel/next.js/) framework.
-
-- The backend is developed using the [NestJS](https://github.com/nestjs/nest) framework.
-
-- The PostgreSQL database operates via the [Prisma](https://github.com/prisma/prisma#readme) framework ORM, simplifying the interaction between the application and the database.
-
-- CineSync also employs several other important miscellaneous pieces of tech such as: [TypeScript](https://github.com/microsoft/TypeScript), [Prettier](https://github.com/prettier/prettier#readme), [ESlint](https://www.npmjs.com/package/eslint), and [Husky](https://github.com/typicode/husky#readme).
