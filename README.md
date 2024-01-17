@@ -1,6 +1,5 @@
-![Node.js CI](https://github.com/chrispinkney/cinesync/actions/workflows/docker.yml/badge.svg)
-![Node.js CI](https://github.com/chrispinkney/cinesync/actions/workflows/format_lint.yml/badge.svg)
-![Vercel](https://vercelbadge.vercel.app/api/chrispinkney/cinesync)
+![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/docker.yml/badge.svg)
+![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/format_lint.yml/badge.svg)
 
 ## What is CineSync?
 
