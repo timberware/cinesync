@@ -11,7 +11,7 @@ The target audience for CineSync would primarily consist of movie enthusiasts an
 
 ### Initial Setup
 
-CineSync is currently running on Node v18.
+CineSync is intended to be run using [Nodejs](https://nodejs.org/en)'s latest stable version.
 
 - `git clone https://github.com/chrispinkney/cinesync.git`
 - `cd cinesync/api`
