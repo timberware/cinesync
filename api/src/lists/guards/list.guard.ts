@@ -10,7 +10,7 @@ export class ListAuthGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest();
 		const { user } = request;
 
-		const listId = request.query.listId || request.body.listId;
+		const listId = request.params.id || request.body.listId;
 
 		const list = await this.prisma.list.findUniqueOrThrow({
 			where: { id: listId },
@@ -19,17 +19,14 @@ export class ListAuthGuard implements CanActivate {
 			},
 		});
 
-		// allow access to list if the user is an admin
 		if (user.role === Role.ADMIN) {
 			return true;
 		}
 
-		// restrict access if no user is logged in
 		if (!user) {
 			return false;
 		}
 
-		// check if list belongs to the user or has been shared with the user
 		const isCreator = list.creatorId === user.id;
 		const isSharedWithUser =
 			list.user.find((sharedUser) => sharedUser.id === user.id) !== undefined;

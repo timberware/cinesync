@@ -25,7 +25,7 @@ describe('Authentication System (e2e)', () => {
 
 		// signup
 		await request(app.getHttpServer())
-			.post('/auth/signup')
+			.post('/users/signup')
 			.send({
 				username,
 				email,
@@ -35,7 +35,7 @@ describe('Authentication System (e2e)', () => {
 
 		// signin
 		const signin = await request(app.getHttpServer())
-			.post('/auth/signin')
+			.post('/users/login')
 			.send({
 				email,
 				password: 'asdf',
@@ -45,7 +45,7 @@ describe('Authentication System (e2e)', () => {
 		// delete
 		const token = `Bearer ${signin.body.accessToken}`;
 		await request(app.getHttpServer())
-			.delete('/auth/delete')
+			.delete('/users/delete')
 			.set('Authorization', token)
 			.expect(204);
 	});
@@ -56,7 +56,7 @@ describe('Authentication System (e2e)', () => {
 
 		// signup
 		await request(app.getHttpServer())
-			.post('/auth/signup')
+			.post('/users/signup')
 			.send({
 				username,
 				email,
@@ -66,7 +66,7 @@ describe('Authentication System (e2e)', () => {
 
 		// signin
 		const signin = await request(app.getHttpServer())
-			.post('/auth/signin')
+			.post('/users/login')
 			.send({
 				email,
 				password: 'asdf',
@@ -76,7 +76,7 @@ describe('Authentication System (e2e)', () => {
 		// whoami
 		const token = `Bearer ${signin.body.accessToken}`;
 		const whoami = await request(app.getHttpServer())
-			.get('/auth/whoami')
+			.get('/users/whoami')
 			.set('Authorization', token)
 			.expect(200);
 
@@ -86,7 +86,7 @@ describe('Authentication System (e2e)', () => {
 
 		// delete user after creation
 		await request(app.getHttpServer())
-			.delete('/auth/delete')
+			.delete('/users/delete')
 			.set('Authorization', token)
 			.expect(204);
 	});

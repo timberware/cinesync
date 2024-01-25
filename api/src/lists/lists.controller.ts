@@ -7,11 +7,11 @@ import {
 	Delete,
 	UseGuards,
 	UseInterceptors,
-	Query,
 	HttpCode,
 	HttpStatus,
 	Req,
 	BadRequestException,
+	Param,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ListsService } from './lists.service';
@@ -34,15 +34,15 @@ export class ListsController {
 
 	@UseInterceptors(RemoveListCreateFieldsInterceptor)
 	@Public()
-	@Get('/public/list')
-	getPublicList(@Query('listId') listId: string) {
+	@Get('/public/:id')
+	getPublicList(@Param('id') listId: string) {
 		return this.listsService.getPublicList(listId);
 	}
 
 	@UseInterceptors(RemoveListCreateFieldsInterceptor)
 	@UseGuards(ListAuthGuard)
-	@Get('/list')
-	getList(@Query('listId') listId: string) {
+	@Get('/:id')
+	getList(@Param('id') listId: string) {
 		return this.listsService.getList(listId);
 	}
 
@@ -75,8 +75,8 @@ export class ListsController {
 	}
 
 	@UseGuards(ListAuthGuard)
-	@Get('/sharees')
-	getSharees(@Query('listId') listId: string, @Req() req: Request) {
+	@Get('/sharees/:id')
+	getSharees(@Param('id') listId: string, @Req() req: Request) {
 		if (!req.user) throw new BadRequestException('req contains no user');
 		return this.listsService.getSharees(listId, req.user.id);
 	}

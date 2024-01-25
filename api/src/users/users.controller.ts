@@ -17,6 +17,7 @@ import {
 	ParseFilePipe,
 	MaxFileSizeValidator,
 	FileTypeValidator,
+	Param,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { Express } from 'express';
@@ -47,7 +48,7 @@ declare global {
 	}
 }
 
-@Controller('auth')
+@Controller('users')
 export class UsersController {
 	constructor(
 		private usersService: UsersService,
@@ -64,8 +65,8 @@ export class UsersController {
 	}
 
 	@UseInterceptors(RemoveFieldsInterceptor)
-	@Get('/')
-	fetchUserById(@Query('userId') userId: string) {
+	@Get('/:id')
+	fetchUserById(@Param('id') userId: string) {
 		return this.usersService.getUser(userId);
 	}
 
@@ -93,7 +94,7 @@ export class UsersController {
 	@UseInterceptors(RemoveFieldsInterceptor)
 	@UseGuards(LocalAuthGuard)
 	@Public()
-	@Post('/signin')
+	@Post('/login')
 	@HttpCode(HttpStatus.OK)
 	async signin(@Req() req: Request) {
 		if (!req.user) throw new BadRequestException('req contains no user');
@@ -138,7 +139,6 @@ export class UsersController {
 	async updateUser(@Req() req: Request, @Body() body: UpdateUserDto) {
 		if (!req.user) throw new BadRequestException('req contains no user');
 
-		// encrypt password before updating user
 		if (body?.password) {
 			body.password = await this.authService.encrypt(body.password);
 		}
@@ -151,18 +151,15 @@ export class UsersController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@Delete('/delete')
 	async deleteUser(@Req() req: Request) {
-		// delete all lists associated with user
 		if (!req.user) throw new BadRequestException('req contains no user');
 
 		const userLists = await this.listsService.getLists(req.user.id);
 		await Promise.all(
 			userLists.list.map((list) =>
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				this.listsService.deleteList(list.id, req.user!.id),
 			),
 		);
 
-		// delete user
 		await this.usersService.deleteUser(req.user.id);
 		await this.emailService.sendAccountDeletionEmail(req.user.email);
 	}
