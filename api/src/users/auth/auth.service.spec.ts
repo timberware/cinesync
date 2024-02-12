@@ -27,6 +27,7 @@ describe('AuthService', () => {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 					role: Role.USER,
+					avatarName: null,
 				};
 
 				users.push(user);

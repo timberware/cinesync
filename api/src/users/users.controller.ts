@@ -8,19 +8,18 @@ import {
 	UseGuards,
 	HttpCode,
 	HttpStatus,
-	Res,
 	Req,
 	BadRequestException,
 	UseInterceptors,
 	Patch,
+	Param,
 	UploadedFile,
 	ParseFilePipe,
 	MaxFileSizeValidator,
 	FileTypeValidator,
-	Param,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { EmailService } from '../email/email.service';
 import { UsersService } from './users.service';
 import { AuthService } from './auth/auth.service';
@@ -28,13 +27,12 @@ import { AdminGuard } from './guards/admin.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { ListsService } from '../lists/lists.service';
-import { Response, Request } from 'express';
+import { Request } from 'express';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RemoveFieldsInterceptor } from './interceptors/remove-fields.interceptor';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { FriendStatus } from './users.service';
-import { AvatarService } from './avatar/avatar.service';
 import { Public } from './decorators/public.decorator';
+import { ImageService } from '../image/image.service';
 
 declare global {
 	// eslint-disable-next-line @typescript-eslint/no-namespace
@@ -44,6 +42,7 @@ declare global {
 			username: string;
 			email: string;
 			role: Role;
+			avatarName: string;
 		}
 	}
 }
@@ -55,7 +54,7 @@ export class UsersController {
 		private authService: AuthService,
 		private emailService: EmailService,
 		private listsService: ListsService,
-		private avatarService: AvatarService,
+		private imageService: ImageService,
 	) {}
 
 	@UseInterceptors(RemoveFieldsInterceptor)
@@ -156,6 +155,7 @@ export class UsersController {
 		const userLists = await this.listsService.getLists(req.user.id);
 		await Promise.all(
 			userLists.list.map((list) =>
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				this.listsService.deleteList(list.id, req.user!.id),
 			),
 		);
@@ -165,29 +165,10 @@ export class UsersController {
 	}
 
 	@UseInterceptors(RemoveFieldsInterceptor)
-	@Get('/avatar')
-	async downloadUsersAvatar(
-		@Query('username') username: string,
-		@Req() req: Request,
-		@Res() res: Response,
-	) {
-		if (!req.user) throw new BadRequestException('req contains no user');
-
-		return await this.avatarService.getAvatarByUsername(username, res);
-	}
-
-	@UseInterceptors(RemoveFieldsInterceptor)
-	@Get('/avatar/download')
-	async downloadAvatar(@Req() req: Request, @Res() res: Response) {
-		if (!req.user) throw new BadRequestException('req contains no user');
-		return await this.avatarService.getAvatar(req.user.id, res);
-	}
-
-	@UseInterceptors(RemoveFieldsInterceptor)
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@Post('/avatar/upload')
+	@Post('/avatar')
 	@UseInterceptors(FileInterceptor('image'))
-	async uploadAvatar(
+	async createAvatar(
 		@UploadedFile(
 			new ParseFilePipe({
 				validators: [
@@ -200,15 +181,28 @@ export class UsersController {
 		@Req() req: Request,
 	) {
 		if (!req.user) throw new BadRequestException('req contains no user');
-		return this.avatarService.updateAvatar(req.user.id, file);
+
+		const extension = file.originalname
+			.split('.')
+			.slice(-1) as unknown as string;
+		const { username } = req.user;
+		const avatarName = `${username}.${extension}`;
+
+		if (req.user.avatarName) {
+			this.imageService.deleteImage(req.user.avatarName);
+		}
+
+		this.usersService.updateUser(req.user.id, { avatarName });
+
+		return this.imageService.createImage(avatarName, file?.buffer);
 	}
 
 	@UseInterceptors(RemoveFieldsInterceptor)
 	@UseGuards(AdminGuard)
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@Delete('/avatar/delete')
-	async deleteUserAvatar(@Req() req: Request) {
+	@Delete('/avatar')
+	async deleteAvatar(@Req() req: Request) {
 		if (!req.user) throw new BadRequestException('req contains no user');
-		return this.avatarService.deleteUserAvatar(req.user.id);
+		return this.imageService.deleteImage(req.user?.username);
 	}
 }

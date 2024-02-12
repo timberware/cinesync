@@ -12,4 +12,7 @@ export class UserDto {
 
 	@Expose()
 	accessToken: string;
+
+	@Expose()
+	avatarName: string;
 }

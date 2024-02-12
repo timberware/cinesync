@@ -9,10 +9,10 @@ import { JwtAuthGuard } from './users/guards/jwt-auth.guard';
 import { UsersModule } from './users/users.module';
 import { ListsModule } from './lists/lists.module';
 import { EmailModule } from './email/email.module';
-import { AvatarModule } from './users/avatar/avatar.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
-	imports: [ConfigModule, UsersModule, ListsModule, EmailModule, AvatarModule],
+	imports: [ConfigModule, UsersModule, ListsModule, EmailModule, ImageModule],
 	controllers: [AppController],
 	providers: [
 		{

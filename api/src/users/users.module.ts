@@ -14,10 +14,10 @@ import { JwtStrategy } from './auth/passport/jwt.strategy';
 import { CommentDao } from '../lists/daos/comment.dao';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
-import { AvatarService } from './avatar/avatar.service';
-import { AvatarModule } from './avatar/avatar.module';
-import { AvatarDao } from './daos/avatar.dao';
 import { ExportModule } from './export/export.module';
+import { ImageModule } from '../image/image.module';
+import { ImageService } from '../image/image.service';
+import { ImageDao } from '../image/daos/image.dao';
 
 @Module({
 	imports: [
@@ -26,20 +26,20 @@ import { ExportModule } from './export/export.module';
 		PassportModule,
 		ConfigModule,
 		AuthModule,
-		AvatarModule,
 		ExportModule,
+		ImageModule,
 	],
 	controllers: [UsersController],
 	providers: [
 		UsersService,
 		AuthService,
+		ImageService,
 		ListsService,
 		JwtService,
-		AvatarService,
-		AvatarDao,
 		UsersDao,
 		ListsDao,
 		CommentDao,
+		ImageDao,
 		LocalStrategy,
 		JwtStrategy,
 	],

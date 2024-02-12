@@ -27,7 +27,7 @@ model Movie {
   releaseDate String   @map("release_date")
   posterUrl   String   @map("poster_url")
   rating      Float
-  imdbId      String   @map("imdb_id") @unique
+  imdbId      String   @unique @map("imdb_id")
   list        List[]
   user        User[]
 }
@@ -40,6 +40,7 @@ model User {
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
   role           Role
+  avatarName     String?   @map("avatar_name")
   list           List[]
   friendsWith    Friends[] @relation("user_1")
   friendsRequest Friends[] @relation("user_2")
@@ -70,10 +71,10 @@ model Comment {
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
-model Avatar {
-  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId String @unique @map("user_id") @db.Uuid
-  avatar Bytes?
+model Image {
+  id    String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name  String @unique
+  image Bytes
 }
 
 enum Role {

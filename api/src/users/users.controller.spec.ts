@@ -10,9 +10,8 @@ import { EmailModule } from '../email/email.module';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ListsService } from '../lists/lists.service';
 import { ListsModule } from '../lists/lists.module';
-import { AvatarModule } from './avatar/avatar.module';
-import { AvatarService } from './avatar/avatar.service';
-import { Response } from 'express';
+import { ImageModule } from '../image/image.module';
+import { ImageService } from '../image/image.service';
 
 describe('UsersController', () => {
 	let controller: UsersController;
@@ -20,7 +19,7 @@ describe('UsersController', () => {
 	let fakeAuthService: Partial<AuthService>;
 	let fakeEmailService: Partial<EmailService>;
 	let fakeListsService: Partial<ListsService>;
-	let fakeAvatarService: Partial<AvatarService>;
+	let fakeImageService: Partial<ImageService>;
 
 	beforeEach(async () => {
 		fakeUsersService = {
@@ -89,7 +88,7 @@ describe('UsersController', () => {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 					role: Role.USER,
-					avatar: null,
+					avatarName: null,
 					list: [
 						{
 							id: '25',
@@ -125,25 +124,9 @@ describe('UsersController', () => {
 				});
 			},
 		};
-		fakeAvatarService = {
-			async getAvatarByUsername(
-				username: string,
-				res: Response<any, Record<string, any>>,
-			) {
-				return res.status(200).json({ username });
-			},
-			async getAvatar(userId: string, res: Response<any, Record<string, any>>) {
-				return res.status(200).json({ userId });
-			},
-			deleteUserAvatar: (userId: string) => {
-				return Promise.resolve({
-					id: userId,
-					userId: 'uuid',
-					avatar: null,
-				});
-			},
-			updateAvatar: () => {
-				return Promise.resolve();
+		fakeImageService = {
+			async getImage(name: string) {
+				return Buffer.from(name);
 			},
 		};
 
@@ -168,11 +151,11 @@ describe('UsersController', () => {
 					useValue: fakeListsService,
 				},
 				{
-					provide: AvatarService,
-					useValue: fakeAvatarService,
+					provide: ImageService,
+					useValue: fakeImageService,
 				},
 			],
-			imports: [EmailModule, ListsModule, AvatarModule],
+			imports: [EmailModule, ListsModule, ImageModule],
 		}).compile();
 
 		controller = module.get<UsersController>(UsersController);
