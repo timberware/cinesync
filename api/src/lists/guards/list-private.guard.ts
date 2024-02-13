@@ -17,7 +17,7 @@ export class ListPrivacyAuthGuard implements CanActivate {
 	async canActivate(context: ExecutionContext) {
 		const request = context.switchToHttp().getRequest();
 		const { user } = request;
-		const { listId } = request.body;
+		const listId = request.params.id || request.body.listId;
 		const { creatorId } = await this.listsService.getList(listId);
 		const creator = await this.usersService.getUser(creatorId);
 
