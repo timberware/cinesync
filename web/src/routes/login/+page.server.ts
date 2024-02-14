@@ -17,7 +17,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/auth/signin`,
+        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/users/login`,
         {
           method: 'POST',
           headers: {

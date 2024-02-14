@@ -10,6 +10,6 @@ export const actions = {
       path: '/'
     });
 
-    redirect(301, '/signin');
+    redirect(301, '/');
   }
 };

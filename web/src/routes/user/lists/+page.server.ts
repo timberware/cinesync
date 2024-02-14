@@ -7,14 +7,16 @@ import { API_HOST } from '$env/static/private';
 export const load = async ({ fetch, locals }) => {
   try {
     const [response, w] = await Promise.all([
-      fetch(`${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/`, {
+      fetch(`${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie || ''
         }
       }),
       fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/watched`,
+        `${
+          process.env.API_HOST || API_HOST || 'http://localhost:4000'
+        }/lists/movies/watched`,
         {
           method: 'GET',
           headers: {
@@ -34,9 +36,9 @@ export const load = async ({ fetch, locals }) => {
       const s = await Promise.all(
         list.map((l: ListType) =>
           fetch(
-            `${
-              process.env.API_HOST || API_HOST || 'http://localhost:4000'
-            }/lists/sharees?listId=${l.id}`,
+            `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/${
+              l.id
+            }/sharees`,
             {
               method: 'GET',
               headers: {
@@ -83,22 +85,24 @@ export const actions = {
     const data = await request.formData();
     const listId = data.get('listId');
 
+    console.log({ listId });
+
     try {
       const response = await fetch(
         `${
           process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/updatePrivacy`,
+        }/lists/${listId}/updatePrivacy`,
         {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({ listId })
+          }
         }
       );
 
       if (response.status !== 200) {
+        console.log('this was ok');
         return;
       }
     } catch (e) {
@@ -117,7 +121,7 @@ export const actions = {
       };
 
       const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/create`,
+        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists`,
         {
           method: 'POST',
           headers: {
@@ -143,14 +147,13 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/delete`,
+        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/${listId}`,
         {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
             Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({ listId })
+          }
         }
       );
 
@@ -176,7 +179,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/update`,
+        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists`,
         {
           method: 'PATCH',
           headers: {
@@ -218,14 +221,13 @@ export const actions = {
       const response = await fetch(
         `${
           process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/updateWatchedStatus`,
+        }/lists/movies/${movieId}/updateWatchedStatus`,
         {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({ movieId })
+          }
         }
       );
 
@@ -248,14 +250,13 @@ export const actions = {
       const response = await fetch(
         `${
           process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/deleteMovie`,
+        }/lists/${listId}/movies/${movieId}`,
         {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
             Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({ listId, movieId })
+          }
         }
       );
 
@@ -273,16 +274,21 @@ export const actions = {
     const listId = data.get('listId');
     const name = data.get('name');
 
+    console.log({ listId });
+    console.log({ name });
+
     try {
       const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/clone`,
+        `${
+          process.env.API_HOST || API_HOST || 'http://localhost:4000'
+        }/lists/${listId}/clone`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: locals.cookie || ''
           },
-          body: JSON.stringify({ listId, name })
+          body: JSON.stringify({ name })
         }
       );
 
@@ -300,18 +306,21 @@ export const actions = {
     const listId = data.get('listId');
     const username = data.get('username');
 
+    console.log({ username });
+    console.log({ listId });
+
     try {
       const response = await fetch(
         `${
           process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/toggleShareByUsername`,
+        }/lists/${listId}/toggleShareByUsername`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: locals.cookie || ''
           },
-          body: JSON.stringify({ listId, username })
+          body: JSON.stringify({ username })
         }
       );
 
