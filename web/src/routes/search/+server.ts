@@ -31,10 +31,10 @@ export const GET = async ({ url }) => {
   ]);
 
   if (response.status === 200 && r.status === 200) {
-    const results = await response.json();
+    const { results } = await response.json();
     const res = await r.json();
 
-    movies = results.results.slice(0, 5);
+    movies = results;
 
     movies.forEach(movie => {
       const genres: string[] = [];
