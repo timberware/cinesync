@@ -152,7 +152,7 @@ export class ListsController {
 
 	@UseInterceptors(RemoveListCreateFieldsInterceptor)
 	@UseGuards(ListAuthGuard)
-	@Patch('/')
+	@Patch('/:id')
 	updateList(@Body() body: UpdateListDto) {
 		return this.listsService.updateList(body);
 	}

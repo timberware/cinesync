@@ -179,7 +179,7 @@ export const actions = {
 
     try {
       const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists`,
+        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/${listId}`,
         {
           method: 'PATCH',
           headers: {
@@ -195,7 +195,7 @@ export const actions = {
                 genre: genre?.split('.'),
                 releaseDate,
                 posterUrl,
-                rating: parseInt(rating as string),
+                rating: Number(rating),
                 imdbId
               }
             ]
