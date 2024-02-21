@@ -8,8 +8,8 @@ export class CommentAuthorizationGuard implements CanActivate {
 	async canActivate(context: ExecutionContext) {
 		const request = context.switchToHttp().getRequest();
 		const user = request.user;
-		const listId = request.body.listId;
-		const commentId = request.body.commentId;
+		const listId = request.params.id || request.body.listId;
+		const commentId = request.param.commentId || request.body.commentId;
 
 		const list = await this.listsDao.getList(listId);
 
