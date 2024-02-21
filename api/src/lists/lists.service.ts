@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateListDto } from './dtos/create-list.dto';
 import { UpdateListDto } from './dtos/update-list.dto';
-import { CreateCommentDto } from './dtos/create-comment.dto';
-import { UpdateCommentDto } from './dtos/update-comment.dto';
 import { ListsDao } from './daos/list.dao';
 import { UsersDao } from '../users/daos/user.dao';
 import { CommentDao } from './daos/comment.dao';
@@ -123,29 +121,6 @@ export class ListsService {
 		return clonedList;
 	}
 
-	async createComment(createCommentDto: CreateCommentDto, userId: string) {
-		const comment = await this.commentDao.createComment(
-			createCommentDto.listId,
-			userId,
-			createCommentDto.text,
-		);
-
-		const list = await this.listsDao.getList(comment.listId);
-		const listOwner = await this.usersDao.getUser(list.creatorId);
-		const commenter = await this.usersDao.getUser(userId);
-
-		// don't fire email if the comment is made by the list creator
-		if (list.creatorId !== commenter.id) {
-			await this.emailService.sendListCommentEmail(
-				listOwner.email,
-				list,
-				commenter.username,
-			);
-		}
-
-		return comment;
-	}
-
 	async updateListPrivacy(listId: string) {
 		return await this.listsDao.updateListPrivacy(listId);
 	}
@@ -158,13 +133,6 @@ export class ListsService {
 		return await this.listsDao.updateWatchedStatus(movieId, userId);
 	}
 
-	async updateComment(updateCommentDto: UpdateCommentDto) {
-		return await this.commentDao.updateComment(
-			updateCommentDto.commentId,
-			updateCommentDto.text,
-		);
-	}
-
 	async deleteList(listId: string, userId: string) {
 		const user = await this.usersDao.getUser(userId);
 		return await this.listsDao.deleteList(listId, user);
@@ -172,10 +140,6 @@ export class ListsService {
 
 	async deleteListItem(listId: string, movieId: string) {
 		return await this.listsDao.deleteListItem(listId, movieId);
-	}
-
-	async deleteComment(commentId: string) {
-		return await this.commentDao.deleteComment(commentId);
 	}
 
 	async toggleShareList(listId: string, shareeEmail: string, userId: string) {

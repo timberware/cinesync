@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ListsService } from './lists.service';
+import { CommentsService } from './comments.service';
 import { ListAuthGuard } from './guards/list.guard';
 import { RemoveListFieldsInterceptor } from './interceptors/remove-list-fields.interceptor';
 import { RemoveListCreateFieldsInterceptor } from './interceptors/remove-list-create-fields.interceptor';
@@ -27,10 +28,17 @@ import { CloneListDto } from './dtos/clone-list.dto';
 import { Public } from '../users/decorators/public.decorator';
 import { ShareListAuthGuard } from './guards/share-list.guard';
 import { ListPrivacyAuthGuard } from './guards/list-private.guard';
+import { UsersService } from '../users/users.service';
+import { EmailService } from '../email/email.service';
 
 @Controller('lists')
 export class ListsController {
-	constructor(private listsService: ListsService) {}
+	constructor(
+		private listsService: ListsService,
+		private commentService: CommentsService,
+		private usersService: UsersService,
+		private emailService: EmailService,
+	) {}
 
 	@UseInterceptors(RemoveListCreateFieldsInterceptor)
 	@Public()
@@ -118,28 +126,54 @@ export class ListsController {
 
 	@UseInterceptors(RemoveListFieldsInterceptor)
 	@UseGuards(ListAuthGuard)
-	@Post('/comments')
+	@Post('/:id/comments')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	async createComment(
+		@Param('id') listId: string,
 		@Body() createCommentDto: CreateCommentDto,
 		@Req() req: Request,
 	) {
 		if (!req.user) throw new BadRequestException('req contains no user');
-		return this.listsService.createComment(createCommentDto, req.user.id);
+
+		const { id: userId } = req.user;
+		const comment = await this.commentService.createComment(
+			createCommentDto,
+			listId,
+			userId,
+		);
+
+		const list = await this.listsService.getList(listId);
+		const [listOwner, commenter] = await Promise.all([
+			this.usersService.getUser(list.creatorId),
+			this.usersService.getUser(userId),
+		]);
+
+		if (list.creatorId !== commenter.id) {
+			await this.emailService.sendListCommentEmail(
+				listOwner.email,
+				list,
+				commenter.username,
+			);
+		}
+
+		return comment;
 	}
 
 	@UseGuards(ListAuthGuard, CommentAuthorizationGuard)
-	@Patch('/comments/update')
+	@Patch('/:id/comments/:commentId')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	async updateComment(@Body() updateCommentDto: UpdateCommentDto) {
-		return this.listsService.updateComment(updateCommentDto);
+	updateComment(
+		@Param('commentId') commentId: string,
+		@Body() updateCommentDto: UpdateCommentDto,
+	) {
+		return this.commentService.updateComment(updateCommentDto, commentId);
 	}
 
 	@UseGuards(ListAuthGuard, CommentAuthorizationGuard)
-	@Delete('/comments/delete')
+	@Delete('/:id/comments/:commentId')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	deleteComment(@Body() { commentId }: { commentId: string }) {
-		return this.listsService.deleteComment(commentId);
+	deleteComment(@Param('commentId') commentId: string) {
+		return this.commentService.deleteComment(commentId);
 	}
 
 	@UseInterceptors(RemoveListFieldsInterceptor)
