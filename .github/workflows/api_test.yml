@@ -3,10 +3,10 @@ name: API Unit/e2e Tests
 on:
   pull_request:
     branches:
-      - main
+      - dev
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   files-changed:

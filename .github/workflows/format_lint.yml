@@ -3,10 +3,10 @@ name: Format and Lint project
 on:
   pull_request:
     branches:
-      - main
+      - dev
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   files-changed:
