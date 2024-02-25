@@ -14,221 +14,220 @@ import { ImageModule } from '../image/image.module';
 import { ImageService } from '../image/image.service';
 
 describe('UsersController', () => {
-	let controller: UsersController;
-	let fakeUsersService: Partial<UsersService>;
-	let fakeAuthService: Partial<AuthService>;
-	let fakeEmailService: Partial<EmailService>;
-	let fakeListsService: Partial<ListsService>;
-	let fakeImageService: Partial<ImageService>;
+  let controller: UsersController;
+  let fakeUsersService: Partial<UsersService>;
+  let fakeAuthService: Partial<AuthService>;
+  let fakeEmailService: Partial<EmailService>;
+  let fakeListsService: Partial<ListsService>;
+  let fakeImageService: Partial<ImageService>;
 
-	beforeEach(async () => {
-		fakeUsersService = {
-			getUser: (id: string) => {
-				return Promise.resolve({
-					id,
-					username: 'testuser',
-					email: 'test@test.test',
-					password: 'test',
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				} as User);
-			},
-			getUserByEmail: (email: string) => {
-				return Promise.resolve({
-					id: '-1',
-					username: 'testuser',
-					email,
-					password: 'test',
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				} as User);
-			},
-			deleteUser: (id: string) => {
-				if (id === '-1') {
-					const removedUser = {
-						id,
-						username: 'testuser',
-						email: 'test@test.test',
-						password: 'test',
-						createdAt: new Date(),
-						updatedAt: new Date(),
-					} as User;
-					return Promise.resolve(removedUser);
-				} else {
-					throw new NotFoundException();
-				}
-			},
-		};
-		fakeAuthService = {
-			login: () => {
-				return Promise.reject(new BadRequestException());
-			},
-			signup: (createUser: CreateUserDto) => {
-				return Promise.resolve({ id: '-1', ...createUser } as User);
-			},
-			validateUser: (username: string, email: string) => {
-				return Promise.resolve({ id: '-1', username, email } as User);
-			},
-		};
-		fakeEmailService = {
-			sendSignupEmail: () => {
-				return Promise.resolve();
-			},
-			sendAccountDeletionEmail: () => {
-				return Promise.resolve();
-			},
-		};
-		fakeListsService = {
-			getLists: (id: string) => {
-				return Promise.resolve({
-					id,
-					username: 'asdf',
-					email: 'asdf@asdf.asdf',
-					password: '123',
-					createdAt: new Date(),
-					updatedAt: new Date(),
-					role: Role.USER,
-					avatarName: null,
-					list: [
-						{
-							id: '25',
-							name: 'My Watchlist_chrischris',
-							isPrivate: true,
-							creatorId: '123',
-							createdAt: new Date(),
-							updatedAt: new Date(),
-							movie: [
-								{
-									id: '1',
-									title: 'Movie2',
-									description: 'Description for Movie 2',
-									genre: ['Horror', 'Family'],
-									releaseDate: '666',
-									posterUrl: '123',
-									rating: 4.5,
-									imdbId: '123',
-								},
-							],
-						},
-					],
-				});
-			},
-			deleteList: (listId: string, userId: string) => {
-				return Promise.resolve({
-					id: listId,
-					name: 'test list name',
-					isPrivate: true,
-					creatorId: userId,
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				});
-			},
-		};
-		fakeImageService = {
-			async getImage(name: string) {
-				return Buffer.from(name);
-			},
-		};
+  beforeEach(async () => {
+    fakeUsersService = {
+      getUser: (id: string) => {
+        return Promise.resolve({
+          id,
+          username: 'testuser',
+          email: 'test@test.test',
+          password: 'test',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as User);
+      },
+      getUserByEmail: (email: string) => {
+        return Promise.resolve({
+          id: '-1',
+          username: 'testuser',
+          email,
+          password: 'test',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as User);
+      },
+      deleteUser: (id: string) => {
+        if (id === '-1') {
+          const removedUser = {
+            id,
+            username: 'testuser',
+            email: 'test@test.test',
+            password: 'test',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          } as User;
+          return Promise.resolve(removedUser);
+        } else {
+          throw new NotFoundException();
+        }
+      },
+    };
+    fakeAuthService = {
+      login: () => {
+        return Promise.reject(new BadRequestException());
+      },
+      signup: (createUser: CreateUserDto) => {
+        return Promise.resolve({ id: '-1', ...createUser } as User);
+      },
+      validateUser: (username: string, email: string) => {
+        return Promise.resolve({ id: '-1', username, email } as User);
+      },
+    };
+    fakeEmailService = {
+      sendSignupEmail: () => {
+        return Promise.resolve();
+      },
+      sendAccountDeletionEmail: () => {
+        return Promise.resolve();
+      },
+    };
+    fakeListsService = {
+      getLists: (id: string) => {
+        return Promise.resolve({
+          id,
+          username: 'asdf',
+          email: 'asdf@asdf.asdf',
+          password: '123',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          role: Role.USER,
+          avatarName: null,
+          list: [
+            {
+              id: '25',
+              name: 'My Watchlist_chrischris',
+              isPrivate: true,
+              creatorId: '123',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              movie: [
+                {
+                  id: '1',
+                  title: 'Movie2',
+                  description: 'Description for Movie 2',
+                  genre: ['Horror', 'Family'],
+                  releaseDate: '666',
+                  posterUrl: '123',
+                  rating: 4.5,
+                  imdbId: '123',
+                },
+              ],
+            },
+          ],
+        });
+      },
+      deleteList: (listId: string, userId: string) => {
+        return Promise.resolve({
+          id: listId,
+          name: 'test list name',
+          isPrivate: true,
+          creatorId: userId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      },
+    };
+    fakeImageService = {
+      async getImage(name: string) {
+        return Buffer.from(name);
+      },
+    };
 
-		const module: TestingModule = await Test.createTestingModule({
-			controllers: [UsersController],
-			providers: [
-				// for all dependencies requiring UsersService, use fake one instead
-				{
-					provide: UsersService,
-					useValue: fakeUsersService,
-				},
-				{
-					provide: AuthService,
-					useValue: fakeAuthService,
-				},
-				{
-					provide: EmailService,
-					useValue: fakeEmailService,
-				},
-				{
-					provide: ListsService,
-					useValue: fakeListsService,
-				},
-				{
-					provide: ImageService,
-					useValue: fakeImageService,
-				},
-			],
-			imports: [EmailModule, ListsModule, ImageModule],
-		}).compile();
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [UsersController],
+      providers: [
+        {
+          provide: UsersService,
+          useValue: fakeUsersService,
+        },
+        {
+          provide: AuthService,
+          useValue: fakeAuthService,
+        },
+        {
+          provide: EmailService,
+          useValue: fakeEmailService,
+        },
+        {
+          provide: ListsService,
+          useValue: fakeListsService,
+        },
+        {
+          provide: ImageService,
+          useValue: fakeImageService,
+        },
+      ],
+      imports: [EmailModule, ListsModule, ImageModule],
+    }).compile();
 
-		controller = module.get<UsersController>(UsersController);
-	});
+    controller = module.get<UsersController>(UsersController);
+  });
 
-	it('should be defined', () => {
-		expect(controller).toBeDefined();
-	});
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
 
-	it.skip('fetchUserByEmail returns a user with the given email', async () => {
-		const user = await controller.fetchUserByEmail('test@test.test');
+  it.skip('fetchUserByEmail returns a user with the given email', async () => {
+    const user = await controller.fetchUserByEmail('test@test.test');
 
-		expect(user).toBeDefined();
-		expect(user?.id).toEqual('-1');
-		expect(user?.username).toEqual('testuser');
-		expect(user?.email).toEqual('test@test.test');
-	});
+    expect(user).toBeDefined();
+    expect(user?.id).toEqual('-1');
+    expect(user?.username).toEqual('testuser');
+    expect(user?.email).toEqual('test@test.test');
+  });
 
-	it.skip('fetchUserById returns a user with the given id', async () => {
-		const user = await controller.fetchUserById('-1');
+  it.skip('fetchUserById returns a user with the given id', async () => {
+    const user = await controller.fetchUserById('-1');
 
-		expect(user).toBeDefined();
-		expect(user?.id).toEqual('-1');
-	});
+    expect(user).toBeDefined();
+    expect(user?.id).toEqual('-1');
+  });
 
-	it.skip('fetchUserById throws an error if user with given id is not found', async () => {
-		fakeUsersService.getUser = () => Promise.reject(new NotFoundException());
+  it.skip('fetchUserById throws an error if user with given id is not found', async () => {
+    fakeUsersService.getUser = () => Promise.reject(new NotFoundException());
 
-		await expect(controller.fetchUserById('-1')).rejects.toThrow(
-			NotFoundException,
-		);
-	});
+    await expect(controller.fetchUserById('-1')).rejects.toThrow(
+      NotFoundException,
+    );
+  });
 
-	it('signin returns a jwt', async () => {
-		const req: any = {
-			user: {
-				id: '-1',
-				username: 'testuser',
-				email: 'test@test.test',
-				role: Role.USER,
-			},
-		};
-		const user = await controller.signin(req);
+  it('signin returns a jwt', async () => {
+    const req: any = {
+      user: {
+        id: '-1',
+        username: 'testuser',
+        email: 'test@test.test',
+        role: Role.USER,
+      },
+    };
+    const user = await controller.signin(req);
 
-		expect(user).toBeDefined();
-		expect(user.accessToken).toBeDefined();
-	});
+    expect(user).toBeDefined();
+    expect(user.accessToken).toBeDefined();
+  });
 
-	it.skip('signin throws an error if invalid credentials are provided', async () => {
-		fakeAuthService.login = () => {
-			return Promise.reject(new BadRequestException());
-		};
+  it.skip('signin throws an error if invalid credentials are provided', async () => {
+    fakeAuthService.login = () => {
+      return Promise.reject(new BadRequestException());
+    };
 
-		const req: any = {
-			user: {
-				id: '-1',
-				username: 'testuser',
-				email: 'test@test.test',
-				role: Role.USER,
-			},
-		};
+    const req: any = {
+      user: {
+        id: '-1',
+        username: 'testuser',
+        email: 'test@test.test',
+        role: Role.USER,
+      },
+    };
 
-		await expect(controller.signin(req)).rejects.toThrow(BadRequestException);
-	});
+    await expect(controller.signin(req)).rejects.toThrow(BadRequestException);
+  });
 
-	it.skip('signup creates a new user and returns it', async () => {
-		const user = await controller.signup({
-			username: 'newuser',
-			email: 'newuser@test.test',
-			password: 'newpassword',
-		});
+  it.skip('signup creates a new user and returns it', async () => {
+    const user = await controller.signup({
+      username: 'newuser',
+      email: 'newuser@test.test',
+      password: 'newpassword',
+    });
 
-		expect(user).toBeDefined();
-		expect(user.id).toEqual('-1');
-	});
+    expect(user).toBeDefined();
+    expect(user.id).toEqual('-1');
+  });
 });

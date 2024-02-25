@@ -6,11 +6,11 @@ import * as FormData from 'form-data';
 import { List, User } from '@prisma/client';
 
 type EmailData = {
-	from: string;
-	to: string;
-	cc?: string;
-	subject: string;
-	html: string;
+  from: string;
+  to: string;
+  cc?: string;
+  subject: string;
+  html: string;
 };
 
 let mailgunApiKey: string;
@@ -19,47 +19,47 @@ let isProduction: boolean;
 
 @Injectable()
 export class EmailService {
-	private mailgunClient: IMailgunClient;
+  private mailgunClient: IMailgunClient;
 
-	constructor(private readonly configService: ConfigService) {
-		mailgunApiKey = this.configService.get<string>('MAILGUN_KEY') as string;
-		mailgunDomain = this.configService.get<string>('MAILGUN_DOMAIN') as string;
-		isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+  constructor(private readonly configService: ConfigService) {
+    mailgunApiKey = this.configService.get<string>('MAILGUN_KEY') as string;
+    mailgunDomain = this.configService.get<string>('MAILGUN_DOMAIN') as string;
+    isProduction = this.configService.get<string>('NODE_ENV') === 'production';
 
-		if (!mailgunApiKey || !mailgunDomain) {
-			throw new Error('Mailgun API key or domain is not configured');
-		}
+    if (!mailgunApiKey || !mailgunDomain) {
+      throw new Error('Mailgun API key or domain is not configured');
+    }
 
-		const mailgun = new Mailgun(FormData);
-		this.mailgunClient = mailgun.client({
-			username: 'api',
-			key: mailgunApiKey,
-		});
-	}
+    const mailgun = new Mailgun(FormData);
+    this.mailgunClient = mailgun.client({
+      username: 'api',
+      key: mailgunApiKey,
+    });
+  }
 
-	private async sendEmail(messageData: EmailData) {
-		if (isProduction) {
-			try {
-				const fire = await this.mailgunClient.messages.create(
-					mailgunDomain,
-					messageData,
-				);
+  private async sendEmail(messageData: EmailData) {
+    if (isProduction) {
+      try {
+        const fire = await this.mailgunClient.messages.create(
+          mailgunDomain,
+          messageData,
+        );
 
-				return fire;
-			} catch (error) {
-				throw new InternalServerErrorException(
-					'Error attempting to send email',
-				);
-			}
-		}
-	}
+        return fire;
+      } catch (error) {
+        throw new InternalServerErrorException(
+          'Error attempting to send email',
+        );
+      }
+    }
+  }
 
-	async sendSignupEmail(recipient: string, username: string) {
-		const email = {
-			from: 'CineSync <mail@cinesync.me>',
-			to: recipient,
-			subject: 'Welcome to CineSync!',
-			html: `
+  async sendSignupEmail(recipient: string, username: string) {
+    const email = {
+      from: 'CineSync <mail@cinesync.me>',
+      to: recipient,
+      subject: 'Welcome to CineSync!',
+      html: `
 			<style>
 			@import url('https://fonts.cdnfonts.com/css/courier-prime');
 			p {
@@ -75,20 +75,20 @@ export class EmailService {
 			<p>With love,</p>
 			<p>The CineSync Team</p>
 			`,
-		};
+    };
 
-		await this.sendEmail(email);
-	}
+    await this.sendEmail(email);
+  }
 
-	async sendListSharingEmail(users: User[], list: List) {
-		const [owner, sharee] = users;
+  async sendListSharingEmail(users: User[], list: List) {
+    const [owner, sharee] = users;
 
-		const email = {
-			from: 'CineSync <mail@cinesync.me>',
-			to: sharee.email,
-			cc: owner.email,
-			subject: 'A user has shared a list with you on CineSync!',
-			html: `
+    const email = {
+      from: 'CineSync <mail@cinesync.me>',
+      to: sharee.email,
+      cc: owner.email,
+      subject: 'A user has shared a list with you on CineSync!',
+      html: `
 			<style>
 			@import url('https://fonts.cdnfonts.com/css/courier-prime');
 			p {
@@ -103,17 +103,17 @@ export class EmailService {
 			<p>With love,</p>
 			<p>The CineSync Team</p>
 			`,
-		};
+    };
 
-		await this.sendEmail(email);
-	}
+    await this.sendEmail(email);
+  }
 
-	async sendListCommentEmail(creator: string, list: List, commenter: string) {
-		const email = {
-			from: 'CineSync <mail@cinesync.me>',
-			to: creator,
-			subject: 'A user has commented on one of your lists on CineSync!',
-			html: `
+  async sendListCommentEmail(creator: string, list: List, commenter: string) {
+    const email = {
+      from: 'CineSync <mail@cinesync.me>',
+      to: creator,
+      subject: 'A user has commented on one of your lists on CineSync!',
+      html: `
 			<style>
 			@import url('https://fonts.cdnfonts.com/css/courier-prime');
 			p {
@@ -128,17 +128,17 @@ export class EmailService {
 			<p>With love,</p>
 			<p>The CineSync Team</p>
 			`,
-		};
+    };
 
-		await this.sendEmail(email);
-	}
+    await this.sendEmail(email);
+  }
 
-	async sendAccountDeletionEmail(recipient: string) {
-		const email = {
-			from: 'CineSync <mail@cinesync.me>',
-			to: recipient,
-			subject: 'Your account has been deleted on CineSync',
-			html: `
+  async sendAccountDeletionEmail(recipient: string) {
+    const email = {
+      from: 'CineSync <mail@cinesync.me>',
+      to: recipient,
+      subject: 'Your account has been deleted on CineSync',
+      html: `
 			<style>
 			@import url('https://fonts.cdnfonts.com/css/courier-prime');
 			p {
@@ -153,8 +153,8 @@ export class EmailService {
 			<p>With love,</p>
 			<p>The CineSync Team</p>
 			`,
-		};
+    };
 
-		await this.sendEmail(email);
-	}
+    await this.sendEmail(email);
+  }
 }

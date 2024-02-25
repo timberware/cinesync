@@ -6,7 +6,7 @@ import { UsersDao } from '../daos/user.dao';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Module({
-	controllers: [ExportController],
-	providers: [ExportService, UsersService, UsersDao, PrismaService],
+  controllers: [ExportController],
+  providers: [ExportService, UsersService, UsersDao, PrismaService],
 })
 export class ExportModule {}

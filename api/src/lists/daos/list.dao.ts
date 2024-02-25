@@ -7,308 +7,306 @@ import { Role, User } from '@prisma/client';
 
 @Injectable()
 export class ListsDao {
-	constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-	async getPublicList(listId: string) {
-		const list = await this.getList(listId);
+  async getPublicList(listId: string) {
+    const list = await this.getList(listId);
 
-		if (!list.isPrivate) {
-			return list;
-		}
+    if (!list.isPrivate) {
+      return list;
+    }
 
-		throw new BadRequestException('List is private');
-	}
+    throw new BadRequestException('List is private');
+  }
 
-	async getList(listId: string) {
-		const list = await this.prisma.list.findUniqueOrThrow({
-			where: { id: listId },
-			select: {
-				id: true,
-				name: true,
-				isPrivate: true,
-				creatorId: true,
-				createdAt: true,
-				updatedAt: true,
-				movie: true,
-				user: true,
-				comments: {
-					select: {
-						id: true,
-						text: true,
-						authorId: true,
-						createdAt: true,
-						updatedAt: true,
-					},
-					orderBy: {
-						createdAt: 'asc',
-					},
-				},
-			},
-		});
+  async getList(listId: string) {
+    const list = await this.prisma.list.findUniqueOrThrow({
+      where: { id: listId },
+      select: {
+        id: true,
+        name: true,
+        isPrivate: true,
+        creatorId: true,
+        createdAt: true,
+        updatedAt: true,
+        movie: true,
+        user: true,
+        comments: {
+          select: {
+            id: true,
+            text: true,
+            authorId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
+      },
+    });
 
-		list.user = list.user.filter((user) => user.id === list.creatorId);
+    list.user = list.user.filter((user) => user.id === list.creatorId);
 
-		return list;
-	}
+    return list;
+  }
 
-	async getLists(userId: string) {
-		const l = await this.prisma.list.findMany({
-			where: {
-				user: {
-					some: {
-						id: userId,
-					},
-				},
-			},
-			orderBy: {
-				createdAt: 'desc',
-			},
-			select: {
-				id: true,
-				name: true,
-				isPrivate: true,
-				creatorId: true,
-				createdAt: true,
-				updatedAt: true,
-				movie: true,
-			},
-		});
+  async getLists(userId: string) {
+    const l = await this.prisma.list.findMany({
+      where: {
+        user: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        name: true,
+        isPrivate: true,
+        creatorId: true,
+        createdAt: true,
+        updatedAt: true,
+        movie: true,
+      },
+    });
 
-		return { list: l };
-	}
+    return { list: l };
+  }
 
-	async getSharees(listId: string) {
-		const list = await this.prisma.list.findUniqueOrThrow({
-			where: { id: listId },
-			include: {
-				user: {
-					orderBy: {
-						username: 'asc',
-					},
-					select: {
-						id: true,
-						username: true,
-						email: true,
-					},
-				},
-			},
-		});
+  async getSharees(listId: string) {
+    const list = await this.prisma.list.findUniqueOrThrow({
+      where: { id: listId },
+      include: {
+        user: {
+          orderBy: {
+            username: 'asc',
+          },
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
+    });
 
-		return list;
-	}
+    return list;
+  }
 
-	async getWatchedMovies(userId: string) {
-		return await this.prisma.user.findUniqueOrThrow({
-			where: {
-				id: userId,
-			},
-			select: {
-				movie: {
-					select: {
-						id: true,
-					},
-				},
-			},
-		});
-	}
+  async getWatchedMovies(userId: string) {
+    return await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+      select: {
+        movie: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+  }
 
-	async createList(createList: CreateListDto, userId: string) {
-		let newMovies;
-		const list = await this.prisma.list.create({
-			data: {
-				id: uuidv4(),
-				name: createList.name,
-				isPrivate: true,
-				creatorId: userId,
-				user: {
-					connect: { id: userId },
-				},
-			},
-			include: {
-				movie: true,
-			},
-		});
+  async createList(createList: CreateListDto, userId: string) {
+    let newMovies;
+    const list = await this.prisma.list.create({
+      data: {
+        id: uuidv4(),
+        name: createList.name,
+        isPrivate: true,
+        creatorId: userId,
+        user: {
+          connect: { id: userId },
+        },
+      },
+      include: {
+        movie: true,
+      },
+    });
 
-		if (createList?.movie?.length) {
-			// iterate over new movies, get new ids
-			newMovies = await Promise.all(
-				createList.movie.map((movie) =>
-					this.prisma.movie.upsert({
-						where: { imdbId: movie.imdbId },
-						create: {
-							id: uuidv4(),
-							title: movie.title,
-							description: movie.description,
-							genre: movie.genre,
-							releaseDate: movie.releaseDate,
-							posterUrl: movie.posterUrl,
-							rating: movie.rating,
-							imdbId: movie.imdbId,
-						},
-						update: {},
-					}),
-				),
-			);
+    if (createList?.movie?.length) {
+      newMovies = await Promise.all(
+        createList.movie.map((movie) =>
+          this.prisma.movie.upsert({
+            where: { imdbId: movie.imdbId },
+            create: {
+              id: uuidv4(),
+              title: movie.title,
+              description: movie.description,
+              genre: movie.genre,
+              releaseDate: movie.releaseDate,
+              posterUrl: movie.posterUrl,
+              rating: movie.rating,
+              imdbId: movie.imdbId,
+            },
+            update: {},
+          }),
+        ),
+      );
 
-			// associate ids to movie table
-			await Promise.all(
-				newMovies.map((movie) =>
-					this.prisma.movie.update({
-						where: { id: movie.id },
-						data: {
-							list: {
-								connect: {
-									id: list.id,
-								},
-							},
-						},
-					}),
-				),
-			);
-		}
+      await Promise.all(
+        newMovies.map((movie) =>
+          this.prisma.movie.update({
+            where: { id: movie.id },
+            data: {
+              list: {
+                connect: {
+                  id: list.id,
+                },
+              },
+            },
+          }),
+        ),
+      );
+    }
 
-		const createdList = await this.prisma.list.findUniqueOrThrow({
-			where: { id: list.id },
-			include: {
-				movie: true,
-			},
-		});
+    const createdList = await this.prisma.list.findUniqueOrThrow({
+      where: { id: list.id },
+      include: {
+        movie: true,
+      },
+    });
 
-		return createdList;
-	}
+    return createdList;
+  }
 
-	async updateListPrivacy(listId: string) {
-		const list = await this.prisma.list.findUniqueOrThrow({
-			where: { id: listId },
-			include: { user: true, movie: true },
-		});
+  async updateListPrivacy(listId: string) {
+    const list = await this.prisma.list.findUniqueOrThrow({
+      where: { id: listId },
+      include: { user: true, movie: true },
+    });
 
-		return await this.prisma.list.update({
-			where: { id: listId },
-			data: {
-				isPrivate: !list.isPrivate,
-			},
-		});
-	}
+    return await this.prisma.list.update({
+      where: { id: listId },
+      data: {
+        isPrivate: !list.isPrivate,
+      },
+    });
+  }
 
-	async updateList(updateListDto: UpdateListDto) {
-		let newMovies = [];
+  async updateList(updateListDto: UpdateListDto) {
+    let newMovies = [];
 
-		if (updateListDto?.movie?.length) {
-			newMovies = await Promise.all(
-				updateListDto.movie.map((movie) =>
-					this.prisma.movie.upsert({
-						where: { imdbId: movie.imdbId },
-						create: {
-							id: uuidv4(),
-							title: movie.title,
-							description: movie.description,
-							genre: movie.genre,
-							releaseDate: movie.releaseDate,
-							posterUrl: movie.posterUrl,
-							rating: movie.rating,
-							imdbId: movie.imdbId,
-						},
-						update: {},
-					}),
-				),
-			);
+    if (updateListDto?.movie?.length) {
+      newMovies = await Promise.all(
+        updateListDto.movie.map((movie) =>
+          this.prisma.movie.upsert({
+            where: { imdbId: movie.imdbId },
+            create: {
+              id: uuidv4(),
+              title: movie.title,
+              description: movie.description,
+              genre: movie.genre,
+              releaseDate: movie.releaseDate,
+              posterUrl: movie.posterUrl,
+              rating: movie.rating,
+              imdbId: movie.imdbId,
+            },
+            update: {},
+          }),
+        ),
+      );
 
-			await Promise.all(
-				newMovies.map((movie) =>
-					this.prisma.movie.update({
-						where: { id: movie.id },
-						data: {
-							list: {
-								connect: {
-									id: updateListDto.listId,
-								},
-							},
-						},
-					}),
-				),
-			);
-		}
+      await Promise.all(
+        newMovies.map((movie) =>
+          this.prisma.movie.update({
+            where: { id: movie.id },
+            data: {
+              list: {
+                connect: {
+                  id: updateListDto.listId,
+                },
+              },
+            },
+          }),
+        ),
+      );
+    }
 
-		return await this.prisma.list.update({
-			where: { id: updateListDto.listId },
-			data: {
-				name: updateListDto.name,
-			},
-			include: { movie: true },
-		});
-	}
+    return await this.prisma.list.update({
+      where: { id: updateListDto.listId },
+      data: {
+        name: updateListDto.name,
+      },
+      include: { movie: true },
+    });
+  }
 
-	async updateWatchedStatus(movieId: string, userId: string) {
-		const user = await this.getWatchedMovies(userId);
+  async updateWatchedStatus(movieId: string, userId: string) {
+    const user = await this.getWatchedMovies(userId);
 
-		const hasWatched = user.movie.find(
-			(watchedMovie) => watchedMovie.id === movieId,
-		);
+    const hasWatched = user.movie.find(
+      (watchedMovie) => watchedMovie.id === movieId,
+    );
 
-		return await this.prisma.user.update({
-			where: { id: userId },
-			data: {
-				movie: {
-					...(hasWatched
-						? {
-								disconnect: { id: movieId },
-						  }
-						: {
-								connect: { id: movieId },
-						  }),
-				},
-			},
-		});
-	}
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        movie: {
+          ...(hasWatched
+            ? {
+                disconnect: { id: movieId },
+              }
+            : {
+                connect: { id: movieId },
+              }),
+        },
+      },
+    });
+  }
 
-	async deleteList(listId: string, user: User) {
-		const list = await this.prisma.list.findUniqueOrThrow({
-			where: { id: listId },
-			select: { creatorId: true },
-		});
+  async deleteList(listId: string, user: User) {
+    const list = await this.prisma.list.findUniqueOrThrow({
+      where: { id: listId },
+      select: { creatorId: true },
+    });
 
-		if (list.creatorId === user.id || user.role === Role.ADMIN) {
-			await this.prisma.user.update({
-				where: { id: list.creatorId },
-				data: {
-					list: {
-						disconnect: { id: listId },
-					},
-				},
-			});
+    if (list.creatorId === user.id || user.role === Role.ADMIN) {
+      await this.prisma.user.update({
+        where: { id: list.creatorId },
+        data: {
+          list: {
+            disconnect: { id: listId },
+          },
+        },
+      });
 
-			return await this.prisma.list.delete({
-				where: { id: listId },
-			});
-		}
-	}
+      return await this.prisma.list.delete({
+        where: { id: listId },
+      });
+    }
+  }
 
-	async deleteListItem(listId: string, movieId: string) {
-		await this.prisma.list.update({
-			where: { id: listId },
-			data: {
-				movie: {
-					disconnect: { id: movieId },
-				},
-			},
-		});
-	}
+  async deleteListItem(listId: string, movieId: string) {
+    await this.prisma.list.update({
+      where: { id: listId },
+      data: {
+        movie: {
+          disconnect: { id: movieId },
+        },
+      },
+    });
+  }
 
-	async toggleShareList(listId: string, email: string, isShared: boolean) {
-		return await this.prisma.list.update({
-			where: { id: listId },
-			data: {
-				user: {
-					...(isShared
-						? {
-								disconnect: { email },
-						  }
-						: {
-								connect: { email },
-						  }),
-				},
-			},
-		});
-	}
+  async toggleShareList(listId: string, email: string, isShared: boolean) {
+    return await this.prisma.list.update({
+      where: { id: listId },
+      data: {
+        user: {
+          ...(isShared
+            ? {
+                disconnect: { email },
+              }
+            : {
+                connect: { email },
+              }),
+        },
+      },
+    });
+  }
 }

@@ -4,90 +4,83 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from './../src/app.module';
 
 describe('Authentication System (e2e)', () => {
-	let app: INestApplication;
+  let app: INestApplication;
 
-	beforeAll(async () => {
-		const moduleFixture = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
+  beforeAll(async () => {
+    const moduleFixture = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-		app = moduleFixture.createNestApplication();
-		await app.init();
-	});
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
 
-	afterAll(async () => {
-		await app.close();
-	});
+  afterAll(async () => {
+    await app.close();
+  });
 
-	it('handles a signup, signin, and delete requests', async () => {
-		const username = 'asdf';
-		const email = 'asdf@asdf.asdf';
+  it('handles a signup, signin, and delete requests', async () => {
+    const username = 'asdf';
+    const email = 'asdf@asdf.asdf';
 
-		// signup
-		await request(app.getHttpServer())
-			.post('/users/signup')
-			.send({
-				username,
-				email,
-				password: 'asdf',
-			})
-			.expect(201);
+    await request(app.getHttpServer())
+      .post('/users/signup')
+      .send({
+        username,
+        email,
+        password: 'asdf',
+      })
+      .expect(201);
 
-		// signin
-		const signin = await request(app.getHttpServer())
-			.post('/users/login')
-			.send({
-				email,
-				password: 'asdf',
-			})
-			.expect(200);
+    const signin = await request(app.getHttpServer())
+      .post('/users/login')
+      .send({
+        email,
+        password: 'asdf',
+      })
+      .expect(200);
 
-		// delete
-		const token = `Bearer ${signin.body.accessToken}`;
-		await request(app.getHttpServer())
-			.delete('/users/delete')
-			.set('Authorization', token)
-			.expect(204);
-	});
+    const token = `Bearer ${signin.body.accessToken}`;
+    await request(app.getHttpServer())
+      .delete('/users/delete')
+      .set('Authorization', token)
+      .expect(204);
+  });
 
-	it('signup as a new user then get the currently logged in user', async () => {
-		const username = 'asdf';
-		const email = 'asdf@asdf.com';
+  it('signup as a new user then get the currently logged in user', async () => {
+    const username = 'asdf';
+    const email = 'asdf@asdf.com';
 
-		// signup
-		await request(app.getHttpServer())
-			.post('/users/signup')
-			.send({
-				username,
-				email,
-				password: 'asdf',
-			})
-			.expect(201);
+    await request(app.getHttpServer())
+      .post('/users/signup')
+      .send({
+        username,
+        email,
+        password: 'asdf',
+      })
+      .expect(201);
 
-		// signin
-		const signin = await request(app.getHttpServer())
-			.post('/users/login')
-			.send({
-				email,
-				password: 'asdf',
-			})
-			.expect(200);
+    const signin = await request(app.getHttpServer())
+      .post('/users/login')
+      .send({
+        email,
+        password: 'asdf',
+      })
+      .expect(200);
 
-		// whoami
-		const token = `Bearer ${signin.body.accessToken}`;
-		const whoami = await request(app.getHttpServer())
-			.get('/users/whoami')
-			.set('Authorization', token)
-			.expect(200);
+    const token = `Bearer ${signin.body.accessToken}`;
+    const whoami = await request(app.getHttpServer())
+      .get('/users/whoami')
+      .set('Authorization', token)
+      .expect(200);
 
-		expect(whoami.body.id).toBeDefined();
-		expect(whoami.body.username).toEqual(username);
-		expect(whoami.body.email).toEqual(email);
+    expect(whoami.body.id).toBeDefined();
+    expect(whoami.body.username).toEqual(username);
+    expect(whoami.body.email).toEqual(email);
 
-		// delete user after creation
-		await request(app.getHttpServer())
-			.delete('/users/delete')
-			.set('Authorization', token)
-			.expect(204);
-	});
+    await request(app.getHttpServer())
+      .delete('/users/delete')
+      .set('Authorization', token)
+      .expect(204);
+  });
 });

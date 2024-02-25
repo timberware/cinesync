@@ -6,14 +6,14 @@ import { PrismaClientExceptionFilter } from './prisma/filter/prisma-client-excep
 const port = 4000;
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, {
-		logger: logLevels(process.env.NODE_ENV === 'production'),
-	});
-	app.enableCors({ origin: true, credentials: true });
+  const app = await NestFactory.create(AppModule, {
+    logger: logLevels(process.env.NODE_ENV === 'production'),
+  });
+  app.enableCors({ origin: true, credentials: true });
 
-	const { httpAdapter } = app.get(HttpAdapterHost);
-	app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-	await app.listen(port);
+  await app.listen(port);
 }
 bootstrap();

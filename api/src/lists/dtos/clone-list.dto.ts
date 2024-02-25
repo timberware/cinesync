@@ -1,9 +1,9 @@
 import { IsString } from 'class-validator';
 
 export class CloneListDto {
-	@IsString()
-	name: string;
+  @IsString()
+  name: string;
 
-	@IsString()
-	listId: string;
+  @IsString()
+  listId: string;
 }

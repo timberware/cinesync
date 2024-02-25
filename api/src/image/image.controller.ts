@@ -6,14 +6,14 @@ import { Public } from '../users/decorators/public.decorator';
 
 @Controller('images')
 export class ImageController {
-	constructor(private imageService: ImageService) {}
+  constructor(private imageService: ImageService) {}
 
-	@Public()
-	@UseInterceptors(RemoveFieldsInterceptor)
-	@Get('/:name')
-	async getImage(@Param('name') name: string, @Res() res: Response) {
-		const image = await this.imageService.getImage(name);
+  @Public()
+  @UseInterceptors(RemoveFieldsInterceptor)
+  @Get('/:name')
+  async getImage(@Param('name') name: string, @Res() res: Response) {
+    const image = await this.imageService.getImage(name);
 
-		res.end(image);
-	}
+    res.end(image);
+  }
 }

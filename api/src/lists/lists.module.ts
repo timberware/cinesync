@@ -11,15 +11,15 @@ import { UsersDao } from '../users/daos/user.dao';
 import { CommentsService } from './comments.service';
 
 @Module({
-	imports: [PrismaModule, EmailModule, UsersModule],
-	controllers: [ListsController],
-	providers: [
-		ListsService,
-		ListsDao,
-		UsersService,
-		UsersDao,
-		CommentsService,
-		CommentDao,
-	],
+  imports: [PrismaModule, EmailModule, UsersModule],
+  controllers: [ListsController],
+  providers: [
+    ListsService,
+    ListsDao,
+    UsersService,
+    UsersDao,
+    CommentsService,
+    CommentDao,
+  ],
 })
 export class ListsModule {}
