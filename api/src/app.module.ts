@@ -12,22 +12,22 @@ import { EmailModule } from './email/email.module';
 import { ImageModule } from './image/image.module';
 
 @Module({
-	imports: [ConfigModule, UsersModule, ListsModule, EmailModule, ImageModule],
-	controllers: [AppController],
-	providers: [
-		{
-			provide: APP_GUARD,
-			useClass: JwtAuthGuard,
-		},
-		AppService,
-		{
-			provide: APP_PIPE,
-			useValue: new ValidationPipe({
-				whitelist: true,
-			}),
-		},
-		PrismaService,
-		JwtService,
-	],
+  imports: [ConfigModule, UsersModule, ListsModule, EmailModule, ImageModule],
+  controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    AppService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+      }),
+    },
+    PrismaService,
+    JwtService,
+  ],
 })
 export class AppModule {}

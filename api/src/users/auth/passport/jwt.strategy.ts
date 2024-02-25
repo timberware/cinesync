@@ -5,23 +5,22 @@ import { UsersService } from '../../users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-	constructor(private usersService: UsersService) {
-		super({
-			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-			ignoreExpiration: false,
-			secretOrKey: process.env.JWT_SECRET,
-		});
-	}
+  constructor(private usersService: UsersService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: process.env.JWT_SECRET,
+    });
+  }
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async validate(payload: any) {
-		// set req user object, used in ever route
-		const user = this.usersService.getUser(payload.sub);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async validate(payload: any) {
+    const user = this.usersService.getUser(payload.sub);
 
-		if (!user) {
-			throw new UnauthorizedException();
-		}
+    if (!user) {
+      throw new UnauthorizedException();
+    }
 
-		return user;
-	}
+    return user;
+  }
 }

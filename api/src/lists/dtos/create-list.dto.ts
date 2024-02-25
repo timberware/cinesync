@@ -2,10 +2,10 @@ import { IsArray, IsOptional, IsString } from 'class-validator';
 import { MovieDto } from './movie.dto';
 
 export class CreateListDto {
-	@IsString()
-	name: string;
+  @IsString()
+  name: string;
 
-	@IsOptional()
-	@IsArray()
-	movie: MovieDto[];
+  @IsOptional()
+  @IsArray()
+  movie: MovieDto[];
 }

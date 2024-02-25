@@ -1,6 +1,6 @@
 import { IsBoolean } from 'class-validator';
 
 export class UpdateListPrivacyDto {
-	@IsBoolean()
-	isPrivate: boolean;
+  @IsBoolean()
+  isPrivate: boolean;
 }

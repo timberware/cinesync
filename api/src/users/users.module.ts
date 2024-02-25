@@ -20,28 +20,28 @@ import { ImageService } from '../image/image.service';
 import { ImageDao } from '../image/daos/image.dao';
 
 @Module({
-	imports: [
-		PrismaModule,
-		EmailModule,
-		PassportModule,
-		ConfigModule,
-		AuthModule,
-		ExportModule,
-		ImageModule,
-	],
-	controllers: [UsersController],
-	providers: [
-		UsersService,
-		AuthService,
-		ImageService,
-		ListsService,
-		JwtService,
-		UsersDao,
-		ListsDao,
-		CommentDao,
-		ImageDao,
-		LocalStrategy,
-		JwtStrategy,
-	],
+  imports: [
+    PrismaModule,
+    EmailModule,
+    PassportModule,
+    ConfigModule,
+    AuthModule,
+    ExportModule,
+    ImageModule,
+  ],
+  controllers: [UsersController],
+  providers: [
+    UsersService,
+    AuthService,
+    ImageService,
+    ListsService,
+    JwtService,
+    UsersDao,
+    ListsDao,
+    CommentDao,
+    ImageDao,
+    LocalStrategy,
+    JwtStrategy,
+  ],
 })
 export class UsersModule {}
