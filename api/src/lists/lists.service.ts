@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreateListDto } from './dtos/create-list.dto';
 import { UpdateListDto } from './dtos/update-list.dto';
 import { ListsDao } from './daos/list.dao';
-import { UsersDao } from '../users/daos/user.dao';
 import { CommentDao } from './daos/comment.dao';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
@@ -22,7 +21,6 @@ export class ListsService {
 	constructor(
 		private listsDao: ListsDao,
 		private commentDao: CommentDao,
-		private usersDao: UsersDao,
 		private usersService: UsersService,
 		private emailService: EmailService,
 	) {}
@@ -34,7 +32,6 @@ export class ListsService {
 	async getList(listId: string) {
 		const list = await this.listsDao.getList(listId);
 
-		// if a list has comments add username to each comment
 		if (list?.comments.length > 0) {
 			const updatedComment = await Promise.all(
 				list.comments.map(async (comment) => {
@@ -134,7 +131,7 @@ export class ListsService {
 	}
 
 	async deleteList(listId: string, userId: string) {
-		const user = await this.usersDao.getUser(userId);
+		const user = await this.usersService.getUser(userId);
 		return await this.listsDao.deleteList(listId, user);
 	}
 
@@ -144,12 +141,15 @@ export class ListsService {
 
 	async toggleShareList(listId: string, shareeEmail: string, userId: string) {
 		const list = await this.listsDao.getList(listId);
-		const user = await this.usersDao.getUser(userId);
-		const sharee = await this.usersDao.getUserByEmail(shareeEmail);
+		const user = await this.usersService.getUser(userId);
+		const sharee = await this.usersService.getUserByEmail(shareeEmail);
+
+		const l = await this.getLists(sharee.id);
+		const isShared = !!l.list.find((shareeList) => shareeList.id === listId);
 
 		await this.emailService.sendListSharingEmail([user, sharee], list);
 
-		return await this.listsDao.toggleShareList(listId, shareeEmail);
+		return await this.listsDao.toggleShareList(listId, shareeEmail, isShared);
 	}
 
 	async toggleShareByUsername(
@@ -158,11 +158,14 @@ export class ListsService {
 		userId: string,
 	) {
 		const list = await this.listsDao.getList(listId);
-		const user = await this.usersDao.getUser(userId);
-		const sharee = await this.usersDao.getUserByUsername(username);
+		const user = await this.usersService.getUser(userId);
+		const sharee = await this.usersService.getUserByUsername(username);
+
+		const l = await this.getLists(sharee.id);
+		const isShared = !!l.list.find((shareeList) => shareeList.id === listId);
 
 		await this.emailService.sendListSharingEmail([user, sharee], list);
 
-		return await this.listsDao.toggleShareList(listId, sharee.email);
+		return await this.listsDao.toggleShareList(listId, sharee.email, isShared);
 	}
 }
