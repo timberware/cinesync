@@ -52,25 +52,29 @@ export class ListsDao {
 	}
 
 	async getLists(userId: string) {
-		return this.prisma.user.findUniqueOrThrow({
-			where: { id: userId },
-			include: {
-				list: {
-					orderBy: {
-						createdAt: 'desc',
-					},
-					select: {
-						id: true,
-						name: true,
-						isPrivate: true,
-						creatorId: true,
-						createdAt: true,
-						updatedAt: true,
-						movie: true,
+		const l = await this.prisma.list.findMany({
+			where: {
+				user: {
+					some: {
+						id: userId,
 					},
 				},
 			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+			select: {
+				id: true,
+				name: true,
+				isPrivate: true,
+				creatorId: true,
+				createdAt: true,
+				updatedAt: true,
+				movie: true,
+			},
 		});
+
+		return { list: l };
 	}
 
 	async getSharees(listId: string) {
@@ -264,7 +268,6 @@ export class ListsDao {
 			select: { creatorId: true },
 		});
 
-		// if the list isnt owned by the user (i.e., shared) do not delete it- unless admin
 		if (list.creatorId === user.id || user.role === Role.ADMIN) {
 			await this.prisma.user.update({
 				where: { id: list.creatorId },
@@ -292,36 +295,12 @@ export class ListsDao {
 		});
 	}
 
-	async toggleShareList(listId: string, email: string) {
-		const user = await this.prisma.user.findUniqueOrThrow({
-			where: { email },
-			include: {
-				list: {
-					where: {
-						id: listId,
-					},
-					include: {
-						movie: true,
-					},
-				},
-			},
-		});
-
-		const isConnected = user.list.some((list) => list.id === listId);
-
-		// if a list is being shared with a user
-		if (!isConnected) {
-			await this.prisma.list.findUniqueOrThrow({
-				where: { id: listId },
-				include: { movie: true },
-			});
-		}
-
+	async toggleShareList(listId: string, email: string, isShared: boolean) {
 		return await this.prisma.list.update({
 			where: { id: listId },
 			data: {
 				user: {
-					...(isConnected
+					...(isShared
 						? {
 								disconnect: { email },
 						  }
