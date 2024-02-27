@@ -10,9 +10,17 @@ import { UsersModule } from './users/users.module';
 import { ListsModule } from './lists/lists.module';
 import { EmailModule } from './email/email.module';
 import { ImageModule } from './image/image.module';
+import { MoviesModule } from './movies/movies.module';
 
 @Module({
-  imports: [ConfigModule, UsersModule, ListsModule, EmailModule, ImageModule],
+  imports: [
+    ConfigModule,
+    UsersModule,
+    ListsModule,
+    EmailModule,
+    ImageModule,
+    MoviesModule,
+  ],
   controllers: [AppController],
   providers: [
     {

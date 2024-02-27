@@ -192,14 +192,6 @@ export class ListsController {
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
-  @Patch('/movies/:id/updateWatchedStatus')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  updateWatchedStatus(@Param('id') movieId: string, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
-    return this.listsService.updateWatchedStatus(movieId, req.user.id);
-  }
-
-  @UseInterceptors(RemoveListFieldsInterceptor)
   @UseGuards(ListAuthGuard)
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -3,33 +3,7 @@ import { ValidateNested } from 'class-validator';
 import { UserDto } from '../../users/dtos/user.dto';
 import { CommentDto } from './comments.dto';
 
-class Movie {
-  @Expose()
-  id: number;
-
-  @Expose()
-  title: string;
-
-  @Expose()
-  description?: string;
-
-  @Expose()
-  genre: string[];
-
-  @Expose()
-  releaseDate: string;
-
-  @Expose()
-  posterUrl: string;
-
-  @Expose()
-  rating: string;
-
-  @Expose()
-  imdbId: string;
-}
-
-class List {
+export class List {
   @Expose()
   id: number;
 
@@ -47,11 +21,6 @@ class List {
 
   @Expose()
   updatedAt: Date;
-
-  @Expose()
-  @Type(() => Movie)
-  @ValidateNested()
-  movie: Movie[];
 
   @Expose()
   @Type(() => UserDto)

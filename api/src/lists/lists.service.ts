@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateListDto } from './dtos/create-list.dto';
 import { UpdateListDto } from './dtos/update-list.dto';
-import { ListsDao } from './daos/list.dao';
+import { ListDao } from './daos/list.dao';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
 import { CloneListDto } from './dtos/clone-list.dto';
+import { MoviesService } from '../movies/movies.service';
 
 interface Comment {
   id: string;
@@ -18,9 +19,10 @@ interface Comment {
 @Injectable()
 export class ListsService {
   constructor(
-    private listsDao: ListsDao,
+    private listsDao: ListDao,
     private usersService: UsersService,
     private emailService: EmailService,
+    private moviesService: MoviesService,
   ) {}
 
   async getPublicList(listId: string) {
@@ -90,8 +92,12 @@ export class ListsService {
     return userListDetails;
   }
 
-  async createList(createList: CreateListDto, userId: string) {
-    return await this.listsDao.createList(createList, userId);
+  async createList(body: CreateListDto, userId: string) {
+    const list = await this.listsDao.createList(body.name, userId);
+
+    await this.moviesService.createMovies(body.movie, list.id);
+
+    return await this.listsDao.getList(list.id);
   }
 
   async cloneList(cloneList: CloneListDto, userId: string) {
@@ -110,7 +116,13 @@ export class ListsService {
       })),
     };
 
-    const clonedList = await this.listsDao.createList(clonedListData, userId);
+    const clonedList = await this.createList(
+      {
+        name: clonedListData.name,
+        movie: clonedListData.movie,
+      },
+      userId,
+    );
 
     return clonedList;
   }
@@ -120,11 +132,12 @@ export class ListsService {
   }
 
   async updateList(updateListDto: UpdateListDto) {
-    return await this.listsDao.updateList(updateListDto);
-  }
+    await this.moviesService.createMovies(
+      updateListDto.movie,
+      updateListDto.listId,
+    );
 
-  async updateWatchedStatus(movieId: string, userId: string) {
-    return await this.listsDao.updateWatchedStatus(movieId, userId);
+    return await this.listsDao.updateList(updateListDto);
   }
 
   async deleteList(listId: string, userId: string) {
