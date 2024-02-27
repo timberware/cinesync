@@ -5,17 +5,18 @@ import { UsersService } from '../users/users.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { EmailModule } from '../email/email.module';
 import { UsersModule } from '../users/users.module';
-import { ListsDao } from './daos/list.dao';
+import { ListDao } from './daos/list.dao';
 import { CommentDao } from './daos/comment.dao';
 import { UsersDao } from '../users/daos/user.dao';
 import { CommentsService } from './comments.service';
+import { MoviesModule } from '../movies/movies.module';
 
 @Module({
-  imports: [PrismaModule, EmailModule, UsersModule],
+  imports: [PrismaModule, EmailModule, UsersModule, MoviesModule],
   controllers: [ListsController],
   providers: [
     ListsService,
-    ListsDao,
+    ListDao,
     UsersService,
     UsersDao,
     CommentsService,
