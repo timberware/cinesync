@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateListDto } from './dtos/create-list.dto';
-import { UpdateListDto } from './dtos/update-list.dto';
-import { ListDao } from './daos/list.dao';
+import { CreateListDto } from './dto/create-list.dto';
+import { UpdateListDto } from './dto/update-list.dto';
+import { ListDao } from './dao/list.dao';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
-import { CloneListDto } from './dtos/clone-list.dto';
-import { MoviesService } from '../movies/movies.service';
+import { CloneListDto } from './dto/clone-list.dto';
+import { MoviesService } from '../movie/movie.service';
 
 interface Comment {
   id: string;

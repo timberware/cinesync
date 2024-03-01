@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
-import { MovieDto } from '../../lists/dtos/movie.dto';
+import { MovieDto } from '../dto/movie.dto';
 
 @Injectable()
 export class MoviesDao {

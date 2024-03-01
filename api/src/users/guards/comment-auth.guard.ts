@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { ListDao } from '../../lists/daos/list.dao';
+import { ListDao } from '../../list/dao/list.dao';
 
 @Injectable()
 export class CommentAuthorizationGuard implements CanActivate {

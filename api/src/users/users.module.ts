@@ -7,18 +7,18 @@ import { UsersService } from './users.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { EmailModule } from '../email/email.module';
 import { UsersDao } from './daos/user.dao';
-import { ListsService } from '../lists/lists.service';
-import { ListDao } from '../lists/daos/list.dao';
+import { ListsService } from '../list/list.service';
+import { ListDao } from '../list/dao/list.dao';
 import { LocalStrategy } from './auth/passport/local.strategy';
 import { JwtStrategy } from './auth/passport/jwt.strategy';
-import { CommentDao } from '../lists/daos/comment.dao';
+import { CommentDao } from '../list/dao/comment.dao';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { ExportModule } from './export/export.module';
 import { ImageModule } from '../image/image.module';
 import { ImageService } from '../image/image.service';
 import { ImageDao } from '../image/daos/image.dao';
-import { MoviesModule } from '../movies/movies.module';
+import { MoviesModule } from '../movie/movie.module';
 
 @Module({
   imports: [

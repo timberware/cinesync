@@ -14,20 +14,20 @@ import {
   Param,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ListsService } from './lists.service';
-import { CommentsService } from './comments.service';
-import { ListAuthGuard } from './guards/list.guard';
-import { RemoveListFieldsInterceptor } from './interceptors/remove-list-fields.interceptor';
-import { RemoveListCreateFieldsInterceptor } from './interceptors/remove-list-create-fields.interceptor';
-import { CreateListDto } from './dtos/create-list.dto';
-import { UpdateListDto } from './dtos/update-list.dto';
-import { CreateCommentDto } from './dtos/create-comment.dto';
-import { UpdateCommentDto } from './dtos/update-comment.dto';
+import { ListsService } from './list.service';
+import { CommentsService } from './comment.service';
+import { ListAuthGuard } from './guard/list.guard';
+import { RemoveListFieldsInterceptor } from './interceptor/remove-list-fields.interceptor';
+import { RemoveListCreateFieldsInterceptor } from './interceptor/remove-list-create-fields.interceptor';
+import { CreateListDto } from './dto/create-list.dto';
+import { UpdateListDto } from './dto/update-list.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentAuthorizationGuard } from '../users/guards/comment-auth.guard';
-import { CloneListDto } from './dtos/clone-list.dto';
+import { CloneListDto } from './dto/clone-list.dto';
 import { Public } from '../users/decorators/public.decorator';
-import { ShareListAuthGuard } from './guards/share-list.guard';
-import { ListPrivacyAuthGuard } from './guards/list-private.guard';
+import { ShareListAuthGuard } from './guard/share-list.guard';
+import { ListPrivacyAuthGuard } from './guard/list-private.guard';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
 

@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   Injectable,
 } from '@nestjs/common';
-import { ListsService } from '../lists.service';
+import { ListsService } from '../list.service';
 import { UsersService } from '../../users/users.service';
 
 @Injectable()
