@@ -5,8 +5,8 @@ import { Role, User } from '@prisma/client';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { AuthService } from './auth/auth.service';
-import { EmailService } from '../email/email.service';
-import { EmailModule } from '../email/email.module';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationModule } from '../notification/notification.module';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ListsService } from '../list/list.service';
 import { ListsModule } from '../list/list.module';
@@ -17,7 +17,7 @@ describe('UsersController', () => {
   let controller: UsersController;
   let fakeUsersService: Partial<UsersService>;
   let fakeAuthService: Partial<AuthService>;
-  let fakeEmailService: Partial<EmailService>;
+  let fakeNotificationService: Partial<NotificationService>;
   let fakeListsService: Partial<ListsService>;
   let fakeImageService: Partial<ImageService>;
 
@@ -70,12 +70,9 @@ describe('UsersController', () => {
         return Promise.resolve({ id: '-1', username, email } as User);
       },
     };
-    fakeEmailService = {
-      sendSignupEmail: () => {
-        return Promise.resolve();
-      },
-      sendAccountDeletionEmail: () => {
-        return Promise.resolve();
+    fakeNotificationService = {
+      send: () => {
+        return Promise.resolve(undefined);
       },
     };
     fakeListsService = {
@@ -142,8 +139,8 @@ describe('UsersController', () => {
           useValue: fakeAuthService,
         },
         {
-          provide: EmailService,
-          useValue: fakeEmailService,
+          provide: NotificationService,
+          useValue: fakeNotificationService,
         },
         {
           provide: ListsService,
@@ -154,7 +151,7 @@ describe('UsersController', () => {
           useValue: fakeImageService,
         },
       ],
-      imports: [EmailModule, ListsModule, ImageModule],
+      imports: [NotificationModule, ListsModule, ImageModule],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);

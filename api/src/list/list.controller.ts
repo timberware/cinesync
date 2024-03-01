@@ -29,7 +29,8 @@ import { Public } from '../users/decorators/public.decorator';
 import { ShareListAuthGuard } from './guard/share-list.guard';
 import { ListPrivacyAuthGuard } from './guard/list-private.guard';
 import { UsersService } from '../users/users.service';
-import { EmailService } from '../email/email.service';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationTypes } from '../notification/templates';
 
 @Controller('lists')
 export class ListsController {
@@ -37,7 +38,7 @@ export class ListsController {
     private listsService: ListsService,
     private commentService: CommentsService,
     private usersService: UsersService,
-    private emailService: EmailService,
+    private notificationService: NotificationService,
   ) {}
 
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
@@ -149,10 +150,15 @@ export class ListsController {
     ]);
 
     if (list.creatorId !== commenter.id) {
-      await this.emailService.sendListCommentEmail(
-        listOwner.email,
-        list,
-        commenter.username,
+      await this.notificationService.send(
+        {
+          userEmail: listOwner.email,
+          username: listOwner.username,
+          listName: list.name,
+          listId: list.id,
+          commenter: commenter.username,
+        },
+        NotificationTypes.COMMENT,
       );
     }
 

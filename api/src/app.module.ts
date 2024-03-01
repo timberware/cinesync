@@ -8,7 +8,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { JwtAuthGuard } from './users/guards/jwt-auth.guard';
 import { UsersModule } from './users/users.module';
 import { ListsModule } from './list/list.module';
-import { EmailModule } from './email/email.module';
+import { NotificationModule } from './notification/notification.module';
 import { ImageModule } from './image/image.module';
 import { MoviesModule } from './movie/movie.module';
 
@@ -17,7 +17,7 @@ import { MoviesModule } from './movie/movie.module';
     ConfigModule,
     UsersModule,
     ListsModule,
-    EmailModule,
+    NotificationModule,
     ImageModule,
     MoviesModule,
   ],
