@@ -20,7 +20,7 @@ import {
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { EmailService } from '../email/email.service';
+import { NotificationService } from '../notification/notification.service';
 import { UsersService } from './users.service';
 import { AuthService } from './auth/auth.service';
 import { AdminGuard } from './guards/admin.guard';
@@ -33,6 +33,7 @@ import { RemoveFieldsInterceptor } from './interceptors/remove-fields.intercepto
 import { FriendStatus } from './users.service';
 import { Public } from './decorators/public.decorator';
 import { ImageService } from '../image/image.service';
+import { NotificationTypes } from '../notification/templates';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -52,7 +53,7 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-    private emailService: EmailService,
+    private notificationService: NotificationService,
     private listsService: ListsService,
     private imageService: ImageService,
   ) {}
@@ -86,7 +87,10 @@ export class UsersController {
   @Post('/signup')
   async signup(@Body() body: CreateUserDto) {
     const user = await this.authService.signup(body);
-    await this.emailService.sendSignupEmail(body.email, body.username);
+    await this.notificationService.send(
+      { userEmail: body.email, username: body.username },
+      NotificationTypes.SIGN_UP,
+    );
     return user;
   }
 
@@ -161,7 +165,10 @@ export class UsersController {
     );
 
     await this.usersService.deleteUser(req.user.id);
-    await this.emailService.sendAccountDeletionEmail(req.user.email);
+    await this.notificationService.send(
+      { userEmail: req.user.email },
+      NotificationTypes.ACCOUNT_DELETED,
+    );
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)

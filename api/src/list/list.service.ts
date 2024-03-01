@@ -3,9 +3,10 @@ import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 import { ListDao } from './dao/list.dao';
 import { UsersService } from '../users/users.service';
-import { EmailService } from '../email/email.service';
 import { CloneListDto } from './dto/clone-list.dto';
 import { MoviesService } from '../movie/movie.service';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationTypes } from '../notification/templates';
 
 interface Comment {
   id: string;
@@ -21,7 +22,7 @@ export class ListsService {
   constructor(
     private listsDao: ListDao,
     private usersService: UsersService,
-    private emailService: EmailService,
+    private notificationService: NotificationService,
     private moviesService: MoviesService,
   ) {}
 
@@ -157,8 +158,17 @@ export class ListsService {
     const l = await this.getLists(sharee.id);
     const isShared = !!l.list.find((shareeList) => shareeList.id === listId);
 
-    await this.emailService.sendListSharingEmail([user, sharee], list);
-
+    await this.notificationService.send(
+      {
+        shareeEmail: sharee.email,
+        shareename: sharee.username,
+        userEmail: user.email,
+        username: user.username,
+        listId: list.id,
+        listName: list.name,
+      },
+      NotificationTypes.LIST_SHARING,
+    );
     return await this.listsDao.toggleShareList(listId, shareeEmail, isShared);
   }
 
@@ -174,7 +184,17 @@ export class ListsService {
     const l = await this.getLists(sharee.id);
     const isShared = !!l.list.find((shareeList) => shareeList.id === listId);
 
-    await this.emailService.sendListSharingEmail([user, sharee], list);
+    await this.notificationService.send(
+      {
+        shareeEmail: sharee.email,
+        shareename: sharee.username,
+        userEmail: user.email,
+        username: user.username,
+        listId: list.id,
+        listName: list.name,
+      },
+      NotificationTypes.LIST_SHARING,
+    );
 
     return await this.listsDao.toggleShareList(listId, sharee.email, isShared);
   }

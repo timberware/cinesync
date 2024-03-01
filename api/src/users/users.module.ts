@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { PrismaModule } from '../prisma/prisma.module';
-import { EmailModule } from '../email/email.module';
+import { NotificationModule } from '../notification/notification.module';
 import { UsersDao } from './daos/user.dao';
 import { ListsService } from '../list/list.service';
 import { ListDao } from '../list/dao/list.dao';
@@ -23,7 +23,7 @@ import { MoviesModule } from '../movie/movie.module';
 @Module({
   imports: [
     PrismaModule,
-    EmailModule,
+    NotificationModule,
     PassportModule,
     ConfigModule,
     AuthModule,
