@@ -8,8 +8,8 @@ import { AuthService } from './auth/auth.service';
 import { EmailService } from '../email/email.service';
 import { EmailModule } from '../email/email.module';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { ListsService } from '../lists/lists.service';
-import { ListsModule } from '../lists/lists.module';
+import { ListsService } from '../list/list.service';
+import { ListsModule } from '../list/list.module';
 import { ImageModule } from '../image/image.module';
 import { ImageService } from '../image/image.service';
 

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { MoviesController } from './movies.controller';
+import { MoviesController } from './movie.controller';
 import { PrismaModule } from '../prisma/prisma.module';
-import { MoviesService } from './movies.service';
-import { MoviesDao } from './dao/movies.dao';
+import { MoviesService } from './movie.service';
+import { MoviesDao } from './dao/movie.dao';
 
 @Module({
   imports: [PrismaModule],

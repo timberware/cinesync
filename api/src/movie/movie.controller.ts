@@ -13,9 +13,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ListAuthGuard } from '../lists/guards/list.guard';
-import { RemoveListFieldsInterceptor } from '../lists/interceptors/remove-list-fields.interceptor';
-import { MoviesService } from './movies.service';
+import { ListAuthGuard } from '../list/guard/list.guard';
+import { RemoveListFieldsInterceptor } from '../list/interceptor/remove-list-fields.interceptor';
+import { MoviesService } from './movie.service';
 
 @Controller('movies')
 export class MoviesController {
@@ -37,7 +37,7 @@ export class MoviesController {
 
   @UseInterceptors(RemoveListFieldsInterceptor)
   @UseGuards(ListAuthGuard)
-  @Delete('/:id/lists/:listId')
+  @Delete('/:id/list/:listId')
   @HttpCode(HttpStatus.NO_CONTENT)
   removeMovieFromList(
     @Param('listId') listId: string,

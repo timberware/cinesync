@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 import { UserDto } from '../../users/dtos/user.dto';
-import { CommentDto } from './comments.dto';
+import { CommentDto } from './comment.dto';
 
 export class List {
   @Expose()

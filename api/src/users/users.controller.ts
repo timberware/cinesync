@@ -26,7 +26,7 @@ import { AuthService } from './auth/auth.service';
 import { AdminGuard } from './guards/admin.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { ListsService } from '../lists/lists.service';
+import { ListsService } from '../list/list.service';
 import { Request } from 'express';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RemoveFieldsInterceptor } from './interceptors/remove-fields.interceptor';

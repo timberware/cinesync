@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { MoviesDao } from './dao/movies.dao';
-import { MovieDto } from '../lists/dtos/movie.dto';
+import { MoviesDao } from './dao/movie.dao';
+import { MovieDto } from './dto/movie.dto';
 
 @Injectable()
 export class MoviesService {

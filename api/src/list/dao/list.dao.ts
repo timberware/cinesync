@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpdateListDto } from '../dtos/update-list.dto';
+import { UpdateListDto } from '../dto/update-list.dto';
 import { Role, User } from '@prisma/client';
 
 @Injectable()

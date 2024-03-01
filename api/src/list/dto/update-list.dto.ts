@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, IsOptional, IsArray, ValidateNested } from 'class-validator';
-import { MovieDto } from './movie.dto';
+import { MovieDto } from '../../movie/dto/movie.dto';
 
 export class UpdateListDto {
   @IsString()
