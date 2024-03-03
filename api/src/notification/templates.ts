@@ -1,12 +1,4 @@
-export type Recipients = {
-  listId?: string;
-  listName?: string;
-  userEmail?: string;
-  username?: string;
-  shareeEmail?: string;
-  shareename?: string;
-  commenter?: string;
-};
+import { RecipientsDto, EmailDto } from './dto/email.dto';
 
 export const NotificationTypes = {
   SIGN_UP: 'SIGN_IP',
@@ -19,9 +11,9 @@ export type NotificationType =
 
 export const FONT_SETUP = `<style>@import url('https://fonts.cdnfonts.com/css/courier-prime');p {font-family: 'Courier Prime', sans-serif;}</style>`;
 
-export const singup = (recipients: Recipients) => ({
+export const singup = (recipients: RecipientsDto): EmailDto => ({
   from: 'CineSync <mail@cinesync.me>',
-  to: recipients.userEmail,
+  to: recipients.userEmail || '',
   subject: 'Welcome to CineSync!',
   html: `
 		${FONT_SETUP}
@@ -36,10 +28,10 @@ export const singup = (recipients: Recipients) => ({
 		`,
 });
 
-export const listShare = (recipients: Recipients) => ({
+export const listShare = (recipients: RecipientsDto): EmailDto => ({
   from: 'CineSync <mail@cinesync.me>',
-  to: recipients.shareeEmail,
-  cc: recipients.userEmail,
+  to: recipients.shareeEmail || '',
+  cc: recipients.userEmail || '',
   subject: 'A user has shared a list with you on CineSync!',
   html: `
 	${FONT_SETUP}
@@ -53,9 +45,9 @@ export const listShare = (recipients: Recipients) => ({
 		`,
 });
 
-export const newComment = (recipients: Recipients) => ({
+export const newComment = (recipients: RecipientsDto): EmailDto => ({
   from: 'CineSync <mail@cinesync.me>',
-  to: recipients.userEmail,
+  to: recipients.userEmail || '',
   subject: 'A user has commented on one of your lists on CineSync!',
   html: `
 	${FONT_SETUP}
@@ -69,9 +61,9 @@ export const newComment = (recipients: Recipients) => ({
 		`,
 });
 
-export const accountDeleted = (recipients: Recipients) => ({
+export const accountDeleted = (recipients: RecipientsDto): EmailDto => ({
   from: 'CineSync <mail@cinesync.me>',
-  to: recipients.userEmail,
+  to: recipients.userEmail || '',
   subject: 'Your account has been deleted on CineSync',
   html: `
 	${FONT_SETUP}

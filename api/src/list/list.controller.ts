@@ -13,23 +13,20 @@ import {
   BadRequestException,
   Param,
 } from '@nestjs/common';
+import { CreateListDto, UpdateListDto } from './dto';
+import { CommentAuthorizationGuard } from '../comment/guard/comment-auth.guard';
 import { Request } from 'express';
 import { ListService } from './list.service';
-import { CommentsService } from './comment.service';
+import { CommentsService } from '../comment/comment.service';
 import { ListAuthGuard } from './guard/list.guard';
 import { RemoveListFieldsInterceptor } from './interceptor/remove-list-fields.interceptor';
 import { RemoveListCreateFieldsInterceptor } from './interceptor/remove-list-create-fields.interceptor';
-import { CreateListDto } from './dto/create-list.dto';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
-import { CommentAuthorizationGuard } from '../users/guards/comment-auth.guard';
 import { Public } from '../users/decorators/public.decorator';
 import { ShareListAuthGuard } from './guard/share-list.guard';
 import { ListPrivacyAuthGuard } from './guard/list-private.guard';
 import { UsersService } from '../users/users.service';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
-import { UpdateListDto } from './dto/update-list.dto';
 
 @Controller('lists')
 export class ListController {
@@ -111,7 +108,7 @@ export class ListController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async createComment(
     @Param('id') listId: string,
-    @Body() createCommentDto: CreateCommentDto,
+    @Body() createCommentDto: string,
     @Req() req: Request,
   ) {
     if (!req.user) throw new BadRequestException('req contains no user');
@@ -150,7 +147,7 @@ export class ListController {
   @HttpCode(HttpStatus.NO_CONTENT)
   updateComment(
     @Param('commentId') commentId: string,
-    @Body() updateCommentDto: UpdateCommentDto,
+    @Body() updateCommentDto: string,
   ) {
     return this.commentService.updateComment(updateCommentDto, commentId);
   }

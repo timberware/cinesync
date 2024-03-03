@@ -30,18 +30,6 @@ export class ListDao {
         updatedAt: true,
         movie: true,
         user: true,
-        comments: {
-          select: {
-            id: true,
-            text: true,
-            authorId: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-          orderBy: {
-            createdAt: 'asc',
-          },
-        },
       },
     });
 

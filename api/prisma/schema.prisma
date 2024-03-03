@@ -66,8 +66,8 @@ model Friends {
 model Comment {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   text      String
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId  String   @map("author_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @map("author_id") @db.Uuid
   list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId    String   @map("list_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")

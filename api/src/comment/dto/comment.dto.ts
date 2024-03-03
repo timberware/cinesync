@@ -22,3 +22,17 @@ export class CommentDto {
   @IsDate()
   updatedAt: Date;
 }
+
+export class CommentQueryDto {
+  @Expose()
+  @IsString()
+  commentId?: string;
+
+  @Expose()
+  @IsString()
+  listId?: string;
+
+  @Expose()
+  @IsString()
+  userId?: string;
+}
