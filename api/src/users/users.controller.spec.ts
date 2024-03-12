@@ -8,8 +8,8 @@ import { AuthService } from './auth/auth.service';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationModule } from '../notification/notification.module';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { ListsService } from '../list/list.service';
-import { ListsModule } from '../list/list.module';
+import { ListService } from '../list/list.service';
+import { ListModule } from '../list/list.module';
 import { ImageModule } from '../image/image.module';
 import { ImageService } from '../image/image.service';
 
@@ -18,7 +18,7 @@ describe('UsersController', () => {
   let fakeUsersService: Partial<UsersService>;
   let fakeAuthService: Partial<AuthService>;
   let fakeNotificationService: Partial<NotificationService>;
-  let fakeListsService: Partial<ListsService>;
+  let fakeListService: Partial<ListService>;
   let fakeImageService: Partial<ImageService>;
 
   beforeEach(async () => {
@@ -75,7 +75,7 @@ describe('UsersController', () => {
         return Promise.resolve(undefined);
       },
     };
-    fakeListsService = {
+    fakeListService = {
       getLists: (id: string) => {
         return Promise.resolve({
           id,
@@ -143,15 +143,15 @@ describe('UsersController', () => {
           useValue: fakeNotificationService,
         },
         {
-          provide: ListsService,
-          useValue: fakeListsService,
+          provide: ListService,
+          useValue: fakeListService,
         },
         {
           provide: ImageService,
           useValue: fakeImageService,
         },
       ],
-      imports: [NotificationModule, ListsModule, ImageModule],
+      imports: [NotificationModule, ListModule, ImageModule],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);

@@ -4,13 +4,13 @@ import {
   ExecutionContext,
   Injectable,
 } from '@nestjs/common';
-import { ListsService } from '../list.service';
+import { ListService } from '../list.service';
 import { UsersService } from '../../users/users.service';
 
 @Injectable()
 export class ShareListAuthGuard implements CanActivate {
   constructor(
-    private listsService: ListsService,
+    private listService: ListService,
     private usersService: UsersService,
   ) {}
 
@@ -19,7 +19,7 @@ export class ShareListAuthGuard implements CanActivate {
     const { user } = request;
     const sharee = request.body.username || request.body.email;
     const listId = request.params.id || request.body.listId;
-    const { creatorId } = await this.listsService.getList(listId);
+    const { creatorId } = await this.listService.getList(listId);
     const creator = await this.usersService.getUser(creatorId);
 
     if (user.username === sharee || user.email === sharee) {

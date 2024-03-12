@@ -15,16 +15,18 @@ import {
 import { Request } from 'express';
 import { ListAuthGuard } from '../list/guard/list.guard';
 import { RemoveListFieldsInterceptor } from '../list/interceptor/remove-list-fields.interceptor';
-import { MoviesService } from './movie.service';
+import { MovieService } from './movie.service';
 
 @Controller('movies')
-export class MoviesController {
-  constructor(private moviesService: MoviesService) {}
+export class MovieController {
+  constructor(private movieService: MovieService) {}
 
   @Get('/')
-  async getMovies(@Query('movieId') movieId: string, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
-    return this.moviesService.getMovies(movieId, req.user.id);
+  async getMovies(
+    @Query('userId') userId?: string,
+    @Query('listId') listId?: string,
+  ) {
+    return this.movieService.getMovies(userId, listId);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
@@ -32,7 +34,7 @@ export class MoviesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   updateWatchedStatus(@Param('id') movieId: string, @Req() req: Request) {
     if (!req.user) throw new BadRequestException('req contains no user');
-    return this.moviesService.updateWatchedStatus(movieId, req.user.id);
+    return this.movieService.updateWatchedStatus(movieId, req.user.id);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
@@ -45,6 +47,6 @@ export class MoviesController {
     @Req() req: Request,
   ) {
     if (!req.user) throw new BadRequestException('req contains no user');
-    return this.moviesService.removeMovieFromList(listId, movieId);
+    return this.movieService.removeMovieFromList(listId, movieId);
   }
 }

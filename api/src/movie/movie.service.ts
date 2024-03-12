@@ -3,11 +3,11 @@ import { MoviesDao } from './dao/movie.dao';
 import { MovieDto } from './dto/movie.dto';
 
 @Injectable()
-export class MoviesService {
+export class MovieService {
   constructor(private moviesDao: MoviesDao) {}
 
-  async getMovies(movieId?: string, userId?: string) {
-    return this.moviesDao.getMovies(movieId, userId);
+  async getMovies(userId?: string, listId?: string) {
+    return await this.moviesDao.getMovies(userId, listId);
   }
 
   async createMovies(movies: MovieDto[], listId: string) {
@@ -15,7 +15,7 @@ export class MoviesService {
   }
 
   async updateWatchedStatus(movieId: string, userId: string) {
-    const watchedMovies = await this.getMovies(movieId, userId);
+    const watchedMovies = await this.getMovies(userId);
 
     const hasWatched = !!watchedMovies.find(
       (watchedMovie) => watchedMovie.id === movieId,

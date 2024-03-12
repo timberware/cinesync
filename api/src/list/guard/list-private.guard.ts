@@ -4,13 +4,13 @@ import {
   ExecutionContext,
   Injectable,
 } from '@nestjs/common';
-import { ListsService } from '../list.service';
+import { ListService } from '../list.service';
 import { UsersService } from '../../users/users.service';
 
 @Injectable()
 export class ListPrivacyAuthGuard implements CanActivate {
   constructor(
-    private listsService: ListsService,
+    private listService: ListService,
     private usersService: UsersService,
   ) {}
 
@@ -18,7 +18,7 @@ export class ListPrivacyAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { user } = request;
     const listId = request.params.id || request.body.listId;
-    const { creatorId } = await this.listsService.getList(listId);
+    const { creatorId } = await this.listService.getList(listId);
     const creator = await this.usersService.getUser(creatorId);
 
     if (user.username !== creator.username || user.email !== creator.email) {

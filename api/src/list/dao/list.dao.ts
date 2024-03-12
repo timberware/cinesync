@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpdateListDto } from '../dto/update-list.dto';
 import { Role, User } from '@prisma/client';
+import { UpdateListDto } from '../dto/update-list.dto';
 
 @Injectable()
 export class ListDao {
@@ -76,11 +76,16 @@ export class ListDao {
     return { list: l };
   }
 
-  async getSharees(listId: string) {
-    const list = await this.prisma.list.findUniqueOrThrow({
+  async getSharees(listId: string, currentUser: string) {
+    const { user } = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },
       include: {
         user: {
+          where: {
+            NOT: {
+              id: currentUser,
+            },
+          },
           orderBy: {
             username: 'asc',
           },
@@ -88,27 +93,13 @@ export class ListDao {
             id: true,
             username: true,
             email: true,
+            avatarName: true,
           },
         },
       },
     });
 
-    return list;
-  }
-
-  async getWatchedMovies(userId: string) {
-    return await this.prisma.user.findUniqueOrThrow({
-      where: {
-        id: userId,
-      },
-      select: {
-        movie: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
+    return user;
   }
 
   async createList(listName: string, userId: string) {
@@ -139,13 +130,10 @@ export class ListDao {
     });
   }
 
-  async updateList(updateListDto: UpdateListDto) {
+  async updateList(listId: string, listUpdate: UpdateListDto) {
     return await this.prisma.list.update({
-      where: { id: updateListDto.listId },
-      data: {
-        name: updateListDto.name,
-      },
-      include: { movie: true },
+      where: { id: listId },
+      data: listUpdate,
     });
   }
 
@@ -169,17 +157,6 @@ export class ListDao {
         where: { id: listId },
       });
     }
-  }
-
-  async deleteListItem(listId: string, movieId: string) {
-    await this.prisma.list.update({
-      where: { id: listId },
-      data: {
-        movie: {
-          disconnect: { id: movieId },
-        },
-      },
-    });
   }
 
   async toggleShareList(listId: string, email: string, isShared: boolean) {
