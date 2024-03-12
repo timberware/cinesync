@@ -27,7 +27,10 @@ model Movie {
   releaseDate String   @map("release_date")
   posterUrl   String   @map("poster_url")
   rating      Float
-  imdbId      String   @unique @map("imdb_id")
+  tmdbId      Int      @unique @map("tmdb_id")
+  eTag        String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
   list        List[]
   user        User[]
 }

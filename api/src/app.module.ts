@@ -12,6 +12,7 @@ import { NotificationModule } from './notification/notification.module';
 import { ImageModule } from './image/image.module';
 import { MovieModule } from './movie/movie.module';
 import { MovielistModule } from './movielist/movielist.module';
+import { SyncModule } from './sync/sync.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MovielistModule } from './movielist/movielist.module';
     ImageModule,
     MovieModule,
     MovielistModule,
+    SyncModule,
   ],
   controllers: [AppController],
   providers: [
