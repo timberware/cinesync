@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MoviesController } from './movie.controller';
+import { MovieController } from './movie.controller';
 import { PrismaModule } from '../prisma/prisma.module';
-import { MoviesService } from './movie.service';
+import { MovieService } from './movie.service';
 import { MoviesDao } from './dao/movie.dao';
 
 @Module({
   imports: [PrismaModule],
-  providers: [MoviesService, MoviesDao],
-  controllers: [MoviesController],
-  exports: [MoviesService],
+  providers: [MovieService, MoviesDao],
+  controllers: [MovieController],
+  exports: [MovieService],
 })
-export class MoviesModule {}
+export class MovieModule {}

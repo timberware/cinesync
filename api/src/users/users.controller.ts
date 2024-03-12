@@ -26,7 +26,6 @@ import { AuthService } from './auth/auth.service';
 import { AdminGuard } from './guards/admin.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { ListsService } from '../list/list.service';
 import { Request } from 'express';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RemoveFieldsInterceptor } from './interceptors/remove-fields.interceptor';
@@ -54,7 +53,6 @@ export class UsersController {
     private usersService: UsersService,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private listsService: ListsService,
     private imageService: ImageService,
   ) {}
 
@@ -155,14 +153,6 @@ export class UsersController {
   @Delete('/delete')
   async deleteUser(@Req() req: Request) {
     if (!req.user) throw new BadRequestException('req contains no user');
-
-    const userLists = await this.listsService.getLists(req.user.id);
-    await Promise.all(
-      userLists.list.map((list) =>
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.listsService.deleteList(list.id, req.user!.id),
-      ),
-    );
 
     await this.usersService.deleteUser(req.user.id);
     await this.notificationService.send(

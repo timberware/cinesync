@@ -49,10 +49,13 @@ export class MoviesDao {
     return newMovies;
   }
 
-  getMovies(movieId?: string, userId?: string) {
+  getMovies(userId?: string, listId?: string) {
     return this.prisma.movie.findMany({
       where: {
-        AND: [{ user: { some: { id: userId } } }, { id: movieId }],
+        AND: [
+          { list: { some: { id: listId } } },
+          { user: { some: { id: userId } } },
+        ],
       },
     });
   }
@@ -79,7 +82,7 @@ export class MoviesDao {
   }
 
   async removeMovieFromList(listId: string, movieId: string) {
-    await this.prisma.movie.update({
+    return await this.prisma.movie.update({
       where: { id: movieId },
       data: {
         list: {

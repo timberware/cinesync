@@ -7,19 +7,21 @@ import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
 import { JwtAuthGuard } from './users/guards/jwt-auth.guard';
 import { UsersModule } from './users/users.module';
-import { ListsModule } from './list/list.module';
+import { ListModule } from './list/list.module';
 import { NotificationModule } from './notification/notification.module';
 import { ImageModule } from './image/image.module';
-import { MoviesModule } from './movie/movie.module';
+import { MovieModule } from './movie/movie.module';
+import { MovielistModule } from './movielist/movielist.module';
 
 @Module({
   imports: [
     ConfigModule,
     UsersModule,
-    ListsModule,
+    ListModule,
     NotificationModule,
     ImageModule,
-    MoviesModule,
+    MovieModule,
+    MovielistModule,
   ],
   controllers: [AppController],
   providers: [

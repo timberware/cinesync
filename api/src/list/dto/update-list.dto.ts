@@ -1,17 +1,11 @@
-import { Type } from 'class-transformer';
-import { IsString, IsOptional, IsArray, ValidateNested } from 'class-validator';
-import { MovieDto } from '../../movie/dto/movie.dto';
+import { IsString, IsOptional, IsBoolean } from 'class-validator';
 
 export class UpdateListDto {
-  @IsString()
-  listId: string;
-
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => MovieDto)
-  movie: MovieDto[];
+  @IsOptional()
+  @IsBoolean()
+  isPrivate?: boolean;
 }
