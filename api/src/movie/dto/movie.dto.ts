@@ -27,5 +27,9 @@ export class MovieDto {
 
   @IsString()
   @IsOptional()
-  imdbId: string;
+  tmdbId: number;
+
+  @IsString()
+  @IsOptional()
+  eTag?: string | null;
 }

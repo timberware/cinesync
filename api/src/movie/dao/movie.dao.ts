@@ -4,7 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { MovieDto } from '../dto/movie.dto';
 
 @Injectable()
-export class MoviesDao {
+export class MovieDao {
   constructor(private readonly prisma: PrismaService) {}
 
   async createMovies(movies: MovieDto[], listId: string) {
@@ -14,7 +14,7 @@ export class MoviesDao {
       newMovies = await Promise.all(
         movies.map((movie) =>
           this.prisma.movie.upsert({
-            where: { imdbId: movie.imdbId },
+            where: { tmdbId: movie.tmdbId },
             create: {
               id: uuidv4(),
               title: movie.title,
@@ -23,7 +23,8 @@ export class MoviesDao {
               releaseDate: movie.releaseDate,
               posterUrl: movie.posterUrl,
               rating: movie.rating,
-              imdbId: movie.imdbId,
+              tmdbId: movie.tmdbId,
+              eTag: movie.eTag,
             },
             update: {},
           }),
@@ -52,10 +53,8 @@ export class MoviesDao {
   getMovies(userId?: string, listId?: string) {
     return this.prisma.movie.findMany({
       where: {
-        AND: [
-          { list: { some: { id: listId } } },
-          { user: { some: { id: userId } } },
-        ],
+        user: userId ? { some: { id: userId } } : undefined,
+        list: listId ? { some: { id: listId } } : undefined,
       },
     });
   }
@@ -78,6 +77,13 @@ export class MoviesDao {
               }),
         },
       },
+    });
+  }
+
+  async updateMovie(movieData: MovieDto) {
+    return await this.prisma.movie.update({
+      where: { tmdbId: movieData.tmdbId },
+      data: movieData,
     });
   }
 
