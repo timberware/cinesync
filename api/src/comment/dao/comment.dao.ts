@@ -21,6 +21,9 @@ export class CommentDao {
           },
         ],
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 

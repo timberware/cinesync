@@ -79,10 +79,10 @@ export class ListService {
 
     await this.notificationService.send(
       {
-        shareeEmail: sharee.email,
-        shareename: sharee.username,
-        userEmail: user.email,
-        username: user.username,
+        toEmail: sharee.email,
+        toUsername: sharee.username,
+        ccEmail: user.email,
+        ccUsername: user.username,
         listId: list.id,
         listName: list.name,
       },
@@ -105,10 +105,10 @@ export class ListService {
 
     await this.notificationService.send(
       {
-        shareeEmail: sharee.email,
-        shareename: sharee.username,
-        userEmail: user.email,
-        username: user.username,
+        toEmail: sharee.email,
+        toUsername: sharee.username,
+        ccEmail: user.email,
+        ccUsername: user.username,
         listId: list.id,
         listName: list.name,
       },

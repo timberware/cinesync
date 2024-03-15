@@ -108,14 +108,14 @@ export class ListController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async createComment(
     @Param('id') listId: string,
-    @Body() createCommentDto: string,
+    @Body() { text }: { text: string },
     @Req() req: Request,
   ) {
     if (!req.user) throw new BadRequestException('req contains no user');
 
     const { id: userId } = req.user;
-    const comment = await this.commentService.createComment(
-      createCommentDto,
+    const createdComment = await this.commentService.createComment(
+      text,
       listId,
       userId,
     );
@@ -129,8 +129,8 @@ export class ListController {
     if (list.creatorId !== commenter.id) {
       await this.notificationService.send(
         {
-          userEmail: listOwner.email,
-          username: listOwner.username,
+          toEmail: listOwner.email,
+          toUsername: listOwner.username,
           listName: list.name,
           listId: list.id,
           commenter: commenter.username,
@@ -139,7 +139,7 @@ export class ListController {
       );
     }
 
-    return comment;
+    return createdComment;
   }
 
   @UseGuards(ListAuthGuard, CommentAuthorizationGuard)

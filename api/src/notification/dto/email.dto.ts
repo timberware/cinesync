@@ -37,23 +37,21 @@ export class RecipientsDto {
 
   @Expose()
   @IsString()
-  @IsOptional()
-  userEmail?: string;
+  toEmail: string;
+
+  @Expose()
+  @IsString()
+  toUsername: string;
 
   @Expose()
   @IsString()
   @IsOptional()
-  username?: string;
+  ccEmail?: string;
 
   @Expose()
   @IsString()
   @IsOptional()
-  shareeEmail?: string;
-
-  @Expose()
-  @IsString()
-  @IsOptional()
-  shareename?: string;
+  ccUsername?: string;
 
   @Expose()
   @IsString()

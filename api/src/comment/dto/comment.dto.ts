@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class CommentDto {
   @Expose()
@@ -26,13 +26,16 @@ export class CommentDto {
 export class CommentQueryDto {
   @Expose()
   @IsString()
+  @IsOptional()
   commentId?: string;
 
   @Expose()
   @IsString()
+  @IsOptional()
   listId?: string;
 
   @Expose()
   @IsString()
+  @IsOptional()
   userId?: string;
 }

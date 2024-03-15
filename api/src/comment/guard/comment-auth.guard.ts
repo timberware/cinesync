@@ -7,8 +7,8 @@ export class CommentAuthorizationGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
-    const commentId = request.param.commentId || request.body.commentId;
+    const { user } = request;
+    const { commentId } = request.params;
 
     const [comments] = await Promise.all([
       this.commentService.getComments({
