@@ -1,18 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateListDto } from './dto/update-list.dto';
 import { ListDao } from './dao/list.dao';
 import { UsersService } from '../users/users.service';
+import { UpdateListDto } from './dto';
+import { CommentDto } from '../comment/dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
-
-interface Comment {
-  id: string;
-  text: string;
-  authorId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  username: string;
-}
+import { CommentsService } from '../comment/comment.service';
 
 @Injectable()
 export class ListService {
@@ -20,6 +13,7 @@ export class ListService {
     private listDao: ListDao,
     private usersService: UsersService,
     private notificationService: NotificationService,
+    private commentService: CommentsService,
   ) {}
 
   async getPublicList(listId: string) {
@@ -27,28 +21,29 @@ export class ListService {
   }
 
   async getList(listId: string) {
-    const list = await this.listDao.getList(listId);
+    const [list, comments] = await Promise.all([
+      this.listDao.getList(listId),
+      this.commentService.getComments({ listId }),
+    ]);
 
-    if (list?.comments.length > 0) {
-      const updatedComment = await Promise.all(
-        list.comments.map(async (comment) => {
-          const username = await this.usersService.getUsernameById(
-            comment.authorId,
-          );
+    const commentsWithUsername: CommentDto[] = [];
 
-          const commentWithUsername: Comment = {
-            ...comment,
-            username,
-          };
-
-          return commentWithUsername;
-        }),
+    if (comments.length) {
+      const users = await Promise.all(
+        comments.map((comment) =>
+          this.usersService.getUsernameById(comment.userId),
+        ),
       );
 
-      list.comments = updatedComment;
+      comments.forEach((comment, i) =>
+        commentsWithUsername.push({
+          ...comment,
+          username: users[i],
+        }),
+      );
     }
 
-    return list;
+    return { ...list, comments: commentsWithUsername };
   }
 
   async getLists(userId: string) {
@@ -84,10 +79,10 @@ export class ListService {
 
     await this.notificationService.send(
       {
-        shareeEmail: sharee.email,
-        shareename: sharee.username,
-        userEmail: user.email,
-        username: user.username,
+        toEmail: sharee.email,
+        toUsername: sharee.username,
+        ccEmail: user.email,
+        ccUsername: user.username,
         listId: list.id,
         listName: list.name,
       },
@@ -110,10 +105,10 @@ export class ListService {
 
     await this.notificationService.send(
       {
-        shareeEmail: sharee.email,
-        shareename: sharee.username,
-        userEmail: user.email,
-        username: user.username,
+        toEmail: sharee.email,
+        toUsername: sharee.username,
+        ccEmail: user.email,
+        ccUsername: user.username,
         listId: list.id,
         listName: list.name,
       },

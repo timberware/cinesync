@@ -86,7 +86,7 @@ export class UsersController {
   async signup(@Body() body: CreateUserDto) {
     const user = await this.authService.signup(body);
     await this.notificationService.send(
-      { userEmail: body.email, username: body.username },
+      { toEmail: body.email, toUsername: body.username },
       NotificationTypes.SIGN_UP,
     );
     return user;
@@ -156,7 +156,7 @@ export class UsersController {
 
     await this.usersService.deleteUser(req.user.id);
     await this.notificationService.send(
-      { userEmail: req.user.email },
+      { toEmail: req.user.email, toUsername: '' },
       NotificationTypes.ACCOUNT_DELETED,
     );
   }
