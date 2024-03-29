@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { FriendStatus } from '../users.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { FriendStatus } from '../user.service';
 import { Role } from '@prisma/client';
 
 @Injectable()
-export class UsersDao {
+export class UserDao {
   constructor(private readonly prisma: PrismaService) {}
 
   async getUser(userId: string) {

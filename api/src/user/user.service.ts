@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UsersDao } from './daos/user.dao';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserDao } from './dao/user.dao';
 
 export type FriendStatus = 'ACCEPT' | 'REJECT' | 'SENT' | 'PENDING';
 
 @Injectable()
-export class UsersService {
-  constructor(private usersDao: UsersDao) {}
+export class UserService {
+  constructor(private usersDao: UserDao) {}
 
   async getUser(userId: string) {
     return await this.usersDao.getUser(userId);

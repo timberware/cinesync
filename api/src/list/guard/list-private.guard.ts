@@ -5,13 +5,13 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { ListService } from '../list.service';
-import { UsersService } from '../../users/users.service';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class ListPrivacyAuthGuard implements CanActivate {
   constructor(
     private listService: ListService,
-    private usersService: UsersService,
+    private usersService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext) {

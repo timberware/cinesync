@@ -2,27 +2,27 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Role, User } from '@prisma/client';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 import { AuthService } from './auth/auth.service';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationModule } from '../notification/notification.module';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { ListService } from '../list/list.service';
 import { ListModule } from '../list/list.module';
 import { ImageModule } from '../image/image.module';
 import { ImageService } from '../image/image.service';
 
-describe('UsersController', () => {
-  let controller: UsersController;
-  let fakeUsersService: Partial<UsersService>;
+describe('UserController', () => {
+  let controller: UserController;
+  let fakeUserService: Partial<UserService>;
   let fakeAuthService: Partial<AuthService>;
   let fakeNotificationService: Partial<NotificationService>;
   let fakeListService: Partial<ListService>;
   let fakeImageService: Partial<ImageService>;
 
   beforeEach(async () => {
-    fakeUsersService = {
+    fakeUserService = {
       getUser: (id: string) => {
         return Promise.resolve({
           id,
@@ -131,11 +131,11 @@ describe('UsersController', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersController],
+      controllers: [UserController],
       providers: [
         {
-          provide: UsersService,
-          useValue: fakeUsersService,
+          provide: UserService,
+          useValue: fakeUserService,
         },
         {
           provide: AuthService,
@@ -157,7 +157,7 @@ describe('UsersController', () => {
       imports: [NotificationModule, ListModule, ImageModule],
     }).compile();
 
-    controller = module.get<UsersController>(UsersController);
+    controller = module.get<UserController>(UserController);
   });
 
   it('should be defined', () => {
@@ -181,7 +181,7 @@ describe('UsersController', () => {
   });
 
   it.skip('fetchUserById throws an error if user with given id is not found', async () => {
-    fakeUsersService.getUser = () => Promise.reject(new NotFoundException());
+    fakeUserService.getUser = () => Promise.reject(new NotFoundException());
 
     await expect(controller.fetchUserById('-1')).rejects.toThrow(
       NotFoundException,

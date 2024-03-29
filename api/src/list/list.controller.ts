@@ -21,10 +21,10 @@ import { CommentsService } from '../comment/comment.service';
 import { ListAuthGuard } from './guard/list.guard';
 import { RemoveListFieldsInterceptor } from './interceptor/remove-list-fields.interceptor';
 import { RemoveListCreateFieldsInterceptor } from './interceptor/remove-list-create-fields.interceptor';
-import { Public } from '../users/decorators/public.decorator';
+import { Public } from '../user/decorator/public.decorator';
 import { ShareListAuthGuard } from './guard/share-list.guard';
 import { ListPrivacyAuthGuard } from './guard/list-private.guard';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
 
@@ -33,7 +33,7 @@ export class ListController {
   constructor(
     private listService: ListService,
     private commentService: CommentsService,
-    private usersService: UsersService,
+    private usersService: UserService,
     private notificationService: NotificationService,
   ) {}
 

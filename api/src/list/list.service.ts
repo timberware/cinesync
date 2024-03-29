@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ListDao } from './dao/list.dao';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { UpdateListDto } from './dto';
 import { CommentDto } from '../comment/dto';
 import { NotificationService } from '../notification/notification.service';
@@ -11,7 +11,7 @@ import { CommentsService } from '../comment/comment.service';
 export class ListService {
   constructor(
     private listDao: ListDao,
-    private usersService: UsersService,
+    private usersService: UserService,
     private notificationService: NotificationService,
     private commentService: CommentsService,
   ) {}

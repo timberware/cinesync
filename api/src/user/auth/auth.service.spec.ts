@@ -5,19 +5,19 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users.service';
-import { CreateUserDto } from '../dtos/create-user.dto';
+import { UserService } from '../user.service';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let fakeUsersService: Partial<UsersService>;
+  let fakeUserService: Partial<UserService>;
 
   beforeEach(async () => {
     const users: User[] = [];
-    fakeUsersService = {
+    fakeUserService = {
       getUserByEmail: (email: string) => {
-        const filteredUsers = users.filter((user) => user.email === email);
-        return Promise.resolve(filteredUsers[0]);
+        const filteredUser = users.filter((user) => user.email === email);
+        return Promise.resolve(filteredUser[0]);
       },
       createUser: (createUserDto: CreateUserDto) => {
         const user: User = {
@@ -38,8 +38,8 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         {
-          provide: UsersService,
-          useValue: fakeUsersService,
+          provide: UserService,
+          useValue: fakeUserService,
         },
       ],
       imports: [JwtModule, ConfigModule],

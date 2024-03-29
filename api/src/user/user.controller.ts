@@ -21,16 +21,16 @@ import {
 import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { NotificationService } from '../notification/notification.service';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { AuthService } from './auth/auth.service';
-import { AdminGuard } from './guards/admin.guard';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { AdminGuard } from './guard/admin.guard';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { Request } from 'express';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { RemoveFieldsInterceptor } from './interceptors/remove-fields.interceptor';
-import { FriendStatus } from './users.service';
-import { Public } from './decorators/public.decorator';
+import { LocalAuthGuard } from './guard/local-auth.guard';
+import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor';
+import { FriendStatus } from './user.service';
+import { Public } from './decorator/public.decorator';
 import { ImageService } from '../image/image.service';
 import { NotificationTypes } from '../notification/templates';
 
@@ -47,10 +47,10 @@ declare global {
   }
 }
 
-@Controller('users')
-export class UsersController {
+@Controller('user')
+export class UserController {
   constructor(
-    private usersService: UsersService,
+    private usersService: UserService,
     private authService: AuthService,
     private notificationService: NotificationService,
     private imageService: ImageService,

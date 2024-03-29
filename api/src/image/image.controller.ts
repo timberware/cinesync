@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Res, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
-import { RemoveFieldsInterceptor } from '../users/interceptors/remove-fields.interceptor';
+import { RemoveFieldsInterceptor } from '../user/interceptor/remove-fields.interceptor';
 import { ImageService } from './image.service';
-import { Public } from '../users/decorators/public.decorator';
+import { Public } from '../user/decorator/public.decorator';
 
 @Controller('images')
 export class ImageController {

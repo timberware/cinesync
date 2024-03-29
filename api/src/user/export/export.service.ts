@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users.service';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class ExportService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UserService) {}
 
   async exportUserData(userId: string) {
     const data = await this.usersService.getUserData(userId);

@@ -5,8 +5,8 @@ import { JwtService } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
-import { JwtAuthGuard } from './users/guards/jwt-auth.guard';
-import { UsersModule } from './users/users.module';
+import { JwtAuthGuard } from './user/guard/jwt-auth.guard';
+import { UserModule } from './user/user.module';
 import { ListModule } from './list/list.module';
 import { NotificationModule } from './notification/notification.module';
 import { ImageModule } from './image/image.module';
@@ -17,7 +17,7 @@ import { SyncModule } from './sync/sync.module';
 @Module({
   imports: [
     ConfigModule,
-    UsersModule,
+    UserModule,
     ListModule,
     NotificationModule,
     ImageModule,
