@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { ExportService } from './export.service';
-import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 
 @Controller('export')
 export class ExportController {

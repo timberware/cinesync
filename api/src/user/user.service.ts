@@ -58,10 +58,6 @@ export class UserService {
     );
   }
 
-  async createUser(createUser: CreateUserDto) {
-    return await this.usersDao.createUser(createUser);
-  }
-
   async sendFriendRequest(userId: string, newFriend: string) {
     const { id } = await this.usersDao.getUserByUsername(newFriend);
 
@@ -84,9 +80,5 @@ export class UserService {
 
   async updateUser(userId: string, attrs: Partial<CreateUserDto>) {
     return await this.usersDao.updateUser(userId, attrs);
-  }
-
-  async deleteUser(userId: string) {
-    return await this.usersDao.deleteUser(userId);
   }
 }

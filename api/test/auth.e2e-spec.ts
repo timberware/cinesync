@@ -24,7 +24,7 @@ describe('Authentication System (e2e)', () => {
     const email = 'asdf@asdf.asdf';
 
     await request(app.getHttpServer())
-      .post('/users/signup')
+      .post('/auth/signup')
       .send({
         username,
         email,
@@ -33,7 +33,7 @@ describe('Authentication System (e2e)', () => {
       .expect(201);
 
     const signin = await request(app.getHttpServer())
-      .post('/users/login')
+      .post('/auth/login')
       .send({
         email,
         password: 'asdf',
@@ -42,17 +42,17 @@ describe('Authentication System (e2e)', () => {
 
     const token = `Bearer ${signin.body.accessToken}`;
     await request(app.getHttpServer())
-      .delete('/users/delete')
+      .delete('/auth/delete')
       .set('Authorization', token)
       .expect(204);
   });
 
   it('signup as a new user then get the currently logged in user', async () => {
-    const username = 'asdf';
-    const email = 'asdf@asdf.com';
+    const username = 'asdf2';
+    const email = 'asdf2@asdf.com';
 
     await request(app.getHttpServer())
-      .post('/users/signup')
+      .post('/auth/signup')
       .send({
         username,
         email,
@@ -61,7 +61,7 @@ describe('Authentication System (e2e)', () => {
       .expect(201);
 
     const signin = await request(app.getHttpServer())
-      .post('/users/login')
+      .post('/auth/login')
       .send({
         email,
         password: 'asdf',
@@ -70,7 +70,7 @@ describe('Authentication System (e2e)', () => {
 
     const token = `Bearer ${signin.body.accessToken}`;
     const whoami = await request(app.getHttpServer())
-      .get('/users/whoami')
+      .get('/auth/whoami')
       .set('Authorization', token)
       .expect(200);
 
@@ -79,7 +79,7 @@ describe('Authentication System (e2e)', () => {
     expect(whoami.body.email).toEqual(email);
 
     await request(app.getHttpServer())
-      .delete('/users/delete')
+      .delete('/auth/delete')
       .set('Authorization', token)
       .expect(204);
   });

@@ -18,21 +18,16 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { NotificationService } from '../notification/notification.service';
 import { UserService } from './user.service';
-import { AuthService } from './auth/auth.service';
-import { AdminGuard } from './guard/admin.guard';
-import { CreateUserDto } from './dto/create-user.dto';
+import { AdminGuard } from '../auth/guard/admin.guard';
+import { AuthService } from '../auth/auth.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Request } from 'express';
-import { LocalAuthGuard } from './guard/local-auth.guard';
 import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor';
 import { FriendStatus } from './user.service';
-import { Public } from './decorator/public.decorator';
 import { ImageService } from '../image/image.service';
-import { NotificationTypes } from '../notification/templates';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -52,15 +47,8 @@ export class UserController {
   constructor(
     private usersService: UserService,
     private authService: AuthService,
-    private notificationService: NotificationService,
     private imageService: ImageService,
   ) {}
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @Get('/whoami')
-  whoAmI(@Req() req: Request) {
-    return req.user;
-  }
 
   @UseInterceptors(RemoveFieldsInterceptor)
   @Get('/:id')
@@ -78,29 +66,6 @@ export class UserController {
   @Get('/email')
   fetchUserByEmail(@Query('email') email: string) {
     return this.usersService.getUserByEmail(email);
-  }
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @Public()
-  @Post('/signup')
-  async signup(@Body() body: CreateUserDto) {
-    const user = await this.authService.signup(body);
-    await this.notificationService.send(
-      { toEmail: body.email, toUsername: body.username },
-      NotificationTypes.SIGN_UP,
-    );
-    return user;
-  }
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @UseGuards(LocalAuthGuard)
-  @Public()
-  @Post('/login')
-  @HttpCode(HttpStatus.OK)
-  async signin(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
-    const user = await this.authService.login(req.user);
-    return user;
   }
 
   @Get('/friends')
@@ -141,24 +106,10 @@ export class UserController {
     if (!req.user) throw new BadRequestException('req contains no user');
 
     if (body?.password) {
-      body.password = await this.authService.encrypt(body.password);
+      body.password = await this.authService.hash(body.password);
     }
 
     return this.usersService.updateUser(req.user.id, body);
-  }
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @UseGuards(AdminGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete('/delete')
-  async deleteUser(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
-
-    await this.usersService.deleteUser(req.user.id);
-    await this.notificationService.send(
-      { toEmail: req.user.email, toUsername: '' },
-      NotificationTypes.ACCOUNT_DELETED,
-    );
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
