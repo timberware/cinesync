@@ -1,4 +1,4 @@
-name: Format and Lint project
+name: Format/Lint
 
 on:
   pull_request:

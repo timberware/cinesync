@@ -1,5 +1,8 @@
-![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/docker.yml/badge.svg)
-![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/format_lint.yml/badge.svg)
+### Dev
+![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/api_test.yml/badge.svg?branch=dev&event=push)
+![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/docker.yml/badge.svg?branch=dev&event=push)
+![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/format_lint.yml/badge.svg?branch=dev&event=push)
+
 
 ## What is CineSync?
 
