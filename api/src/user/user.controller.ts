@@ -9,7 +9,6 @@ import {
   HttpCode,
   HttpStatus,
   Req,
-  BadRequestException,
   UseInterceptors,
   Patch,
   Param,
@@ -17,6 +16,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Role } from '@prisma/client';
@@ -70,7 +70,7 @@ export class UserController {
 
   @Get('/friends')
   async getFriends(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.usersService.getFriends(req.user.id);
   }
 
@@ -81,7 +81,7 @@ export class UserController {
     @Req() req: Request,
     @Body() { username }: { username: string },
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return await this.usersService.sendFriendRequest(req.user.id, username);
   }
 
@@ -92,7 +92,7 @@ export class UserController {
     @Req() req: Request,
     @Body() { username, status }: { username: string; status: FriendStatus },
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return await this.usersService.updateFriendship(
       req.user.id,
       username,
@@ -103,7 +103,7 @@ export class UserController {
   @UseInterceptors(RemoveFieldsInterceptor)
   @Patch('/update')
   async updateUser(@Req() req: Request, @Body() body: UpdateUserDto) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
 
     if (body?.password) {
       body.password = await this.authService.hash(body.password);
@@ -128,7 +128,7 @@ export class UserController {
     file: Express.Multer.File,
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
 
     const extension = file.originalname
       .split('.')
@@ -150,7 +150,7 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/avatar')
   async deleteAvatar(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.imageService.deleteImage(req.user?.username);
   }
 }

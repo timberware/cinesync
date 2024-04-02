@@ -1,6 +1,5 @@
 import {
   Controller,
-  BadRequestException,
   Body,
   Post,
   Req,
@@ -8,6 +7,7 @@ import {
   UseGuards,
   Param,
   Patch,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { RemoveListCreateFieldsInterceptor } from '../list/interceptor/remove-list-create-fields.interceptor';
 import { Request } from 'express';
@@ -23,7 +23,7 @@ export class MovielistController {
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @Post('/')
   createList(@Body() body: CreateMovieListDto, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.movieListService.createListWithMovies(body, req.user.id);
   }
 
@@ -35,7 +35,7 @@ export class MovielistController {
     @Body() { name }: { name: string },
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.movieListService.cloneList(listId, req.user.id, name);
   }
 

@@ -8,8 +8,8 @@ import {
   HttpCode,
   HttpStatus,
   Req,
-  BadRequestException,
   UseInterceptors,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
@@ -52,7 +52,7 @@ export class AuthController {
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async signin(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('req contains no user');
     const user = await this.authService.login(req.user);
     return user;
   }
@@ -62,7 +62,7 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/delete')
   async deleteUser(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
 
     await this.authService.deleteUser(req.user.id);
     await this.notificationService.send(
