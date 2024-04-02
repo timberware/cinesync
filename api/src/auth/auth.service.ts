@@ -1,29 +1,24 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthDao } from './dao/auth.dao';
 
 @Injectable()
 export class AuthService {
-  private SALT_ROUNDS: number;
   constructor(
     private dao: AuthDao,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {
-    this.SALT_ROUNDS = parseInt(
-      this.configService.get<string>('SALT_ROUNDS') || '10',
-    );
-  }
+  ) {}
 
   hash(pwd: string) {
-    return bcrypt.hash(pwd, this.SALT_ROUNDS);
+    return argon2.hash(pwd);
   }
 
   compare(pwd: string, hash: string) {
-    return bcrypt.compare(pwd, hash);
+    return argon2.verify(hash, pwd);
   }
 
   async signup(createUser: CreateUserDto) {
