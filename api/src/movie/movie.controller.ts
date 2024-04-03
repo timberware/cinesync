@@ -16,17 +16,15 @@ import { Request } from 'express';
 import { ListAuthGuard } from '../list/guard/list.guard';
 import { RemoveListFieldsInterceptor } from '../list/interceptor/remove-list-fields.interceptor';
 import { MovieService } from './movie.service';
+import { QueryDto } from './dto/query.dto';
 
 @Controller('movies')
 export class MovieController {
   constructor(private movieService: MovieService) {}
 
   @Get('/')
-  async getMovies(
-    @Query('userId') userId?: string,
-    @Query('listId') listId?: string,
-  ) {
-    return this.movieService.getMovies(userId, listId);
+  async getMovies(@Query() query: QueryDto) {
+    return this.movieService.getMovies(query);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)

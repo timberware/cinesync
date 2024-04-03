@@ -3,13 +3,14 @@ import { MovieDao } from './dao/movie.dao';
 import { MovieDto } from './dto/movie.dto';
 import { TMDBMovieDto } from '../sync/dto/tmdbMovie.dto';
 import { TMDBDao } from './dao/tmdb.dao';
+import { QueryDto } from './dto/query.dto';
 
 @Injectable()
 export class MovieService {
   constructor(private moviesDao: MovieDao, private tmdbDao: TMDBDao) {}
 
-  async getMovies(userId?: string, listId?: string) {
-    return await this.moviesDao.getMovies(userId, listId);
+  async getMovies(query: QueryDto) {
+    return await this.moviesDao.getMovies(query);
   }
 
   async createMovies(movies: MovieDto[], listId: string) {
@@ -31,7 +32,7 @@ export class MovieService {
   }
 
   async updateWatchedStatus(movieId: string, userId: string) {
-    const watchedMovies = await this.getMovies(userId);
+    const watchedMovies = await this.getMovies({ userId });
 
     const hasWatched = !!watchedMovies.find(
       (watchedMovie) => watchedMovie.id === movieId,

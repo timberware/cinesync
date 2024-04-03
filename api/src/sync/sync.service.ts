@@ -16,7 +16,7 @@ export class SyncService {
 
     const batchSize = 50;
 
-    const movies = await this.movieService.getMovies();
+    const movies = await this.movieService.getMovies({});
 
     const chunks = this.chunk(movies, batchSize);
 
