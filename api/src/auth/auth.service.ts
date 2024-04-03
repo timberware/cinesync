@@ -1,28 +1,32 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as argon2 from 'argon2';
-import { UserService } from '../user.service';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { AuthDao } from './dao/auth.dao';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
+    private authDao: AuthDao,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
-  async encrypt(password: string) {
-    return await argon2.hash(password);
+  hash(pwd: string) {
+    return argon2.hash(pwd);
+  }
+
+  compare(pwd: string, hash: string) {
+    return argon2.verify(hash, pwd);
   }
 
   async signup(createUser: CreateUserDto) {
     const { username, email, password } = createUser;
 
-    const hashedPassword = await this.encrypt(password);
+    const hashedPassword = await this.hash(password);
 
-    const user = await this.usersService.createUser({
+    const user = await this.authDao.createUser({
       username,
       email,
       password: hashedPassword,
@@ -31,20 +35,27 @@ export class AuthService {
     return user;
   }
 
+  getUser(email: string) {
+    return this.authDao.getUser(email);
+  }
+
+  deleteUser(userId: string) {
+    return this.authDao.deleteUser(userId);
+  }
+
   async validateUser(email: string, password: string) {
-    try {
-      const user = await this.usersService.getUserByEmail(email);
+    const user = await this.authDao.getUser(email);
 
-      const passwordsMatch = await argon2.verify(user.password, password);
+    if (!user)
+      throw new UnauthorizedException('Email or Password are incorrect');
 
-      if (!passwordsMatch) {
-        throw new BadRequestException('Email or Password are incorrect');
-      }
+    const passwordsMatch = await this.compare(password, user.password);
 
-      return user;
-    } catch (error) {
-      throw new BadRequestException('Email or Password are incorrect');
+    if (!passwordsMatch) {
+      throw new UnauthorizedException('Email or Password are incorrect');
     }
+
+    return user;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

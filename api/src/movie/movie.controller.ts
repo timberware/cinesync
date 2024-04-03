@@ -8,9 +8,9 @@ import {
   HttpCode,
   HttpStatus,
   Req,
-  BadRequestException,
   Param,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ListAuthGuard } from '../list/guard/list.guard';
@@ -33,7 +33,7 @@ export class MovieController {
   @Patch('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   updateWatchedStatus(@Param('id') movieId: string, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.movieService.updateWatchedStatus(movieId, req.user.id);
   }
 
@@ -46,7 +46,7 @@ export class MovieController {
     @Param('id') movieId: string,
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.movieService.removeMovieFromList(listId, movieId);
   }
 }

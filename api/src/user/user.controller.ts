@@ -9,7 +9,6 @@ import {
   HttpCode,
   HttpStatus,
   Req,
-  BadRequestException,
   UseInterceptors,
   Patch,
   Param,
@@ -17,22 +16,18 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { NotificationService } from '../notification/notification.service';
 import { UserService } from './user.service';
-import { AuthService } from './auth/auth.service';
-import { AdminGuard } from './guard/admin.guard';
-import { CreateUserDto } from './dto/create-user.dto';
+import { AdminGuard } from '../auth/guard/admin.guard';
+import { AuthService } from '../auth/auth.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Request } from 'express';
-import { LocalAuthGuard } from './guard/local-auth.guard';
 import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor';
 import { FriendStatus } from './user.service';
-import { Public } from './decorator/public.decorator';
 import { ImageService } from '../image/image.service';
-import { NotificationTypes } from '../notification/templates';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -52,15 +47,8 @@ export class UserController {
   constructor(
     private usersService: UserService,
     private authService: AuthService,
-    private notificationService: NotificationService,
     private imageService: ImageService,
   ) {}
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @Get('/whoami')
-  whoAmI(@Req() req: Request) {
-    return req.user;
-  }
 
   @UseInterceptors(RemoveFieldsInterceptor)
   @Get('/:id')
@@ -80,32 +68,9 @@ export class UserController {
     return this.usersService.getUserByEmail(email);
   }
 
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @Public()
-  @Post('/signup')
-  async signup(@Body() body: CreateUserDto) {
-    const user = await this.authService.signup(body);
-    await this.notificationService.send(
-      { toEmail: body.email, toUsername: body.username },
-      NotificationTypes.SIGN_UP,
-    );
-    return user;
-  }
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @UseGuards(LocalAuthGuard)
-  @Public()
-  @Post('/login')
-  @HttpCode(HttpStatus.OK)
-  async signin(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
-    const user = await this.authService.login(req.user);
-    return user;
-  }
-
   @Get('/friends')
   async getFriends(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.usersService.getFriends(req.user.id);
   }
 
@@ -116,7 +81,7 @@ export class UserController {
     @Req() req: Request,
     @Body() { username }: { username: string },
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return await this.usersService.sendFriendRequest(req.user.id, username);
   }
 
@@ -127,7 +92,7 @@ export class UserController {
     @Req() req: Request,
     @Body() { username, status }: { username: string; status: FriendStatus },
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return await this.usersService.updateFriendship(
       req.user.id,
       username,
@@ -138,27 +103,13 @@ export class UserController {
   @UseInterceptors(RemoveFieldsInterceptor)
   @Patch('/update')
   async updateUser(@Req() req: Request, @Body() body: UpdateUserDto) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
 
     if (body?.password) {
-      body.password = await this.authService.encrypt(body.password);
+      body.password = await this.authService.hash(body.password);
     }
 
     return this.usersService.updateUser(req.user.id, body);
-  }
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @UseGuards(AdminGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete('/delete')
-  async deleteUser(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
-
-    await this.usersService.deleteUser(req.user.id);
-    await this.notificationService.send(
-      { toEmail: req.user.email, toUsername: '' },
-      NotificationTypes.ACCOUNT_DELETED,
-    );
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
@@ -177,7 +128,7 @@ export class UserController {
     file: Express.Multer.File,
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
 
     const extension = file.originalname
       .split('.')
@@ -199,7 +150,7 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/avatar')
   async deleteAvatar(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.imageService.deleteImage(req.user?.username);
   }
 }

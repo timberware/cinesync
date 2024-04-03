@@ -1,25 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Role, User } from '@prisma/client';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { AuthService } from './auth/auth.service';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationModule } from '../notification/notification.module';
-import { CreateUserDto } from './dto/create-user.dto';
 import { ListService } from '../list/list.service';
 import { ListModule } from '../list/list.module';
 import { ImageModule } from '../image/image.module';
 import { ImageService } from '../image/image.service';
+import { AuthService } from '../auth/auth.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { AuthModule } from '../auth/auth.module';
 
 describe('UserController', () => {
   let controller: UserController;
   let fakeUserService: Partial<UserService>;
-  let fakeAuthService: Partial<AuthService>;
   let fakeNotificationService: Partial<NotificationService>;
   let fakeListService: Partial<ListService>;
   let fakeImageService: Partial<ImageService>;
+  let fakeAuthService: Partial<AuthService>;
 
   beforeEach(async () => {
     fakeUserService = {
@@ -43,25 +44,10 @@ describe('UserController', () => {
           updatedAt: new Date(),
         } as User);
       },
-      deleteUser: (id: string) => {
-        if (id === '-1') {
-          const removedUser = {
-            id,
-            username: 'testuser',
-            email: 'test@test.test',
-            password: 'test',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          } as User;
-          return Promise.resolve(removedUser);
-        } else {
-          throw new NotFoundException();
-        }
-      },
     };
     fakeAuthService = {
       login: () => {
-        return Promise.reject(new BadRequestException());
+        return Promise.reject(new UnauthorizedException());
       },
       signup: (createUser: CreateUserDto) => {
         return Promise.resolve({ id: '-1', ...createUser } as User);
@@ -154,7 +140,7 @@ describe('UserController', () => {
           useValue: fakeImageService,
         },
       ],
-      imports: [NotificationModule, ListModule, ImageModule],
+      imports: [NotificationModule, ListModule, ImageModule, AuthModule],
     }).compile();
 
     controller = module.get<UserController>(UserController);
@@ -186,48 +172,5 @@ describe('UserController', () => {
     await expect(controller.fetchUserById('-1')).rejects.toThrow(
       NotFoundException,
     );
-  });
-
-  it('signin returns a jwt', async () => {
-    const req: any = {
-      user: {
-        id: '-1',
-        username: 'testuser',
-        email: 'test@test.test',
-        role: Role.USER,
-      },
-    };
-    const user = await controller.signin(req);
-
-    expect(user).toBeDefined();
-    expect(user.accessToken).toBeDefined();
-  });
-
-  it.skip('signin throws an error if invalid credentials are provided', async () => {
-    fakeAuthService.login = () => {
-      return Promise.reject(new BadRequestException());
-    };
-
-    const req: any = {
-      user: {
-        id: '-1',
-        username: 'testuser',
-        email: 'test@test.test',
-        role: Role.USER,
-      },
-    };
-
-    await expect(controller.signin(req)).rejects.toThrow(BadRequestException);
-  });
-
-  it.skip('signup creates a new user and returns it', async () => {
-    const user = await controller.signup({
-      username: 'newuser',
-      email: 'newuser@test.test',
-      password: 'newpassword',
-    });
-
-    expect(user).toBeDefined();
-    expect(user.id).toEqual('-1');
   });
 });

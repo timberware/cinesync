@@ -10,8 +10,8 @@ import {
   HttpCode,
   HttpStatus,
   Req,
-  BadRequestException,
   Param,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateListDto, UpdateListDto } from './dto';
 import { CommentAuthorizationGuard } from '../comment/guard/comment-auth.guard';
@@ -21,7 +21,7 @@ import { CommentsService } from '../comment/comment.service';
 import { ListAuthGuard } from './guard/list.guard';
 import { RemoveListFieldsInterceptor } from './interceptor/remove-list-fields.interceptor';
 import { RemoveListCreateFieldsInterceptor } from './interceptor/remove-list-create-fields.interceptor';
-import { Public } from '../user/decorator/public.decorator';
+import { Public } from '../auth/decorator/public.decorator';
 import { ShareListAuthGuard } from './guard/share-list.guard';
 import { ListPrivacyAuthGuard } from './guard/list-private.guard';
 import { UserService } from '../user/user.service';
@@ -54,21 +54,21 @@ export class ListController {
   @UseInterceptors(RemoveListFieldsInterceptor)
   @Get('/')
   getLists(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.listService.getLists(req.user.id);
   }
 
   @UseGuards(ListAuthGuard)
   @Get('/:id/sharees')
   getSharees(@Param('id') listId: string, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.listService.getSharees(listId, req.user.id);
   }
 
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @Post('/')
   createList(@Body() { name }: CreateListDto, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.listService.createList(name, req.user.id);
   }
 
@@ -81,7 +81,7 @@ export class ListController {
     @Body() { username }: { username: string },
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.listService.toggleShareByUsername(
       listId,
       username,
@@ -98,7 +98,7 @@ export class ListController {
     @Body() { email: shareeEmail }: { email: string },
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.listService.toggleShareList(listId, shareeEmail, req.user.id);
   }
 
@@ -111,7 +111,7 @@ export class ListController {
     @Body() { text }: { text: string },
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
 
     const { id: userId } = req.user;
     const createdComment = await this.commentService.createComment(
@@ -175,7 +175,7 @@ export class ListController {
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteList(@Param('id') listId: string, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
     return this.listService.deleteList(listId, req.user.id);
   }
 }

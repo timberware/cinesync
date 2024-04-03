@@ -4,11 +4,11 @@ import {
   Req,
   UseGuards,
   Get,
-  BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { ExportService } from './export.service';
-import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 
 @Controller('export')
 export class ExportController {
@@ -17,7 +17,7 @@ export class ExportController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async exportData(@Req() req: Request, @Res() res: Response) {
-    if (!req.user) throw new BadRequestException('req contains no user');
+    if (!req.user) throw new UnauthorizedException('user not found');
 
     const userData = await this.exportService.exportUserData(req.user.id);
 

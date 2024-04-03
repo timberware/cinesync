@@ -1,38 +1,17 @@
 import { Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { PrismaModule } from '../prisma/prisma.module';
-import { NotificationModule } from '../notification/notification.module';
 import { UserDao } from './dao/user.dao';
-import { LocalStrategy } from './auth/passport/local.strategy';
-import { JwtStrategy } from './auth/passport/jwt.strategy';
-import { AuthService } from './auth/auth.service';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { ExportModule } from './export/export.module';
 import { ImageModule } from '../image/image.module';
 
 @Module({
-  imports: [
-    PrismaModule,
-    PassportModule,
-    ConfigModule,
-    AuthModule,
-    ExportModule,
-    ImageModule,
-    NotificationModule,
-  ],
+  imports: [PrismaModule, ConfigModule, AuthModule, ExportModule, ImageModule],
   controllers: [UserController],
-  providers: [
-    UserService,
-    UserDao,
-    AuthService,
-    JwtService,
-    LocalStrategy,
-    JwtStrategy,
-  ],
+  providers: [UserService, UserDao],
   exports: [UserService],
 })
 export class UserModule {}
