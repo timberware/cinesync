@@ -33,7 +33,7 @@ export class ListController {
   constructor(
     private listService: ListService,
     private commentService: CommentsService,
-    private usersService: UserService,
+    private userService: UserService,
     private notificationService: NotificationService,
   ) {}
 
@@ -122,8 +122,8 @@ export class ListController {
 
     const list = await this.listService.getList(listId);
     const [listOwner, commenter] = await Promise.all([
-      this.usersService.getUser(list.creatorId),
-      this.usersService.getUser(userId),
+      this.userService.getUser(list.creatorId),
+      this.userService.getUser(userId),
     ]);
 
     if (list.creatorId !== commenter.id) {

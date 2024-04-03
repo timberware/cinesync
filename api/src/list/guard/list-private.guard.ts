@@ -11,7 +11,7 @@ import { UserService } from '../../user/user.service';
 export class ListPrivacyAuthGuard implements CanActivate {
   constructor(
     private listService: ListService,
-    private usersService: UserService,
+    private userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -19,7 +19,7 @@ export class ListPrivacyAuthGuard implements CanActivate {
     const { user } = request;
     const listId = request.params.id || request.body.listId;
     const { creatorId } = await this.listService.getList(listId);
-    const creator = await this.usersService.getUser(creatorId);
+    const creator = await this.userService.getUser(creatorId);
 
     if (user.username !== creator.username || user.email !== creator.email) {
       throw new BadRequestException(

@@ -11,7 +11,7 @@ import { UserService } from '../../user/user.service';
 export class ShareListAuthGuard implements CanActivate {
   constructor(
     private listService: ListService,
-    private usersService: UserService,
+    private userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -20,7 +20,7 @@ export class ShareListAuthGuard implements CanActivate {
     const sharee = request.body.username || request.body.email;
     const listId = request.params.id || request.body.listId;
     const { creatorId } = await this.listService.getList(listId);
-    const creator = await this.usersService.getUser(creatorId);
+    const creator = await this.userService.getUser(creatorId);
 
     if (user.username === sharee || user.email === sharee) {
       throw new BadRequestException('Cannot unshare user from their own list');
