@@ -8,7 +8,7 @@ import { AuthDao } from './dao/auth.dao';
 @Injectable()
 export class AuthService {
   constructor(
-    private dao: AuthDao,
+    private authDao: AuthDao,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
@@ -26,7 +26,7 @@ export class AuthService {
 
     const hashedPassword = await this.hash(password);
 
-    const user = await this.dao.createUser({
+    const user = await this.authDao.createUser({
       username,
       email,
       password: hashedPassword,
@@ -36,15 +36,15 @@ export class AuthService {
   }
 
   getUser(email: string) {
-    return this.dao.getUser(email);
+    return this.authDao.getUser(email);
   }
 
   deleteUser(userId: string) {
-    return this.dao.deleteUser(userId);
+    return this.authDao.deleteUser(userId);
   }
 
   async validateUser(email: string, password: string) {
-    const user = await this.dao.getUser(email);
+    const user = await this.authDao.getUser(email);
 
     if (!user)
       throw new UnauthorizedException('Email or Password are incorrect');
