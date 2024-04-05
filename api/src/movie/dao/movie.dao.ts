@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MovieDto } from '../dto/movie.dto';
+import { QueryDto } from '../dto/query.dto';
 
 @Injectable()
 export class MovieDao {
@@ -50,11 +51,23 @@ export class MovieDao {
     return newMovies;
   }
 
-  getMovies(userId?: string, listId?: string) {
+  getMovies(query: QueryDto) {
     return this.prisma.movie.findMany({
       where: {
-        user: userId ? { some: { id: userId } } : undefined,
-        list: listId ? { some: { id: listId } } : undefined,
+        ...(query?.userId && {
+          user: {
+            some: {
+              id: query?.userId,
+            },
+          },
+        }),
+        ...(query?.listId && {
+          list: {
+            some: {
+              id: query?.listId,
+            },
+          },
+        }),
       },
     });
   }
