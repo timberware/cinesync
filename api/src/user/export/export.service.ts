@@ -3,10 +3,10 @@ import { UserService } from '../user.service';
 
 @Injectable()
 export class ExportService {
-  constructor(private readonly usersService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   async exportUserData(userId: string) {
-    const data = await this.usersService.getUserData(userId);
+    const data = await this.userService.getUserData(userId);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, password, role, list, movie, ...userData } = data;

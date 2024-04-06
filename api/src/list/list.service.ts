@@ -6,12 +6,13 @@ import { CommentDto } from '../comment/dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
 import { CommentsService } from '../comment/comment.service';
+import { QueryDto } from '../user/dto/query.dto';
 
 @Injectable()
 export class ListService {
   constructor(
     private listDao: ListDao,
-    private usersService: UserService,
+    private userService: UserService,
     private notificationService: NotificationService,
     private commentService: CommentsService,
   ) {}
@@ -31,14 +32,16 @@ export class ListService {
     if (comments.length) {
       const users = await Promise.all(
         comments.map((comment) =>
-          this.usersService.getUsernameById(comment.userId),
+          this.userService.getUsers({
+            id: comment.userId,
+          } as QueryDto),
         ),
       );
 
       comments.forEach((comment, i) =>
         commentsWithUsername.push({
           ...comment,
-          username: users[i],
+          username: users[i][0].username,
         }),
       );
     }
@@ -65,14 +68,16 @@ export class ListService {
   }
 
   async deleteList(listId: string, userId: string) {
-    const user = await this.usersService.getUser(userId);
+    const user = await this.userService.getUser(userId);
     return await this.listDao.deleteList(listId, user);
   }
 
   async toggleShareList(listId: string, shareeEmail: string, userId: string) {
     const list = await this.listDao.getList(listId);
-    const user = await this.usersService.getUser(userId);
-    const sharee = await this.usersService.getUserByEmail(shareeEmail);
+    const user = await this.userService.getUser(userId);
+    const [sharee] = await this.userService.getUsers({
+      email: shareeEmail,
+    } as QueryDto);
 
     const l = await this.getLists(sharee.id);
     const isShared = !!l.list.find((shareeList) => shareeList.id === listId);
@@ -97,8 +102,10 @@ export class ListService {
     userId: string,
   ) {
     const list = await this.listDao.getList(listId);
-    const user = await this.usersService.getUser(userId);
-    const sharee = await this.usersService.getUserByUsername(username);
+    const user = await this.userService.getUser(userId);
+    const [sharee] = await this.userService.getUsers({
+      username,
+    } as QueryDto);
 
     const l = await this.getLists(sharee.id);
     const isShared = !!l.list.find((shareeList) => shareeList.id === listId);

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { QueryDto } from '../dto/query.dto';
 import { FriendStatus } from '../user.service';
 import { Role } from '@prisma/client';
 
@@ -9,21 +10,25 @@ import { Role } from '@prisma/client';
 export class UserDao {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getUsers(query: QueryDto) {
+    return await this.prisma.user.findMany({
+      where: {
+        AND: [
+          {
+            id: query.id,
+            username: query.username,
+            email: query.email,
+          },
+        ],
+      },
+      take: query.per_page || 10,
+      skip: (query.page_number || 0) * (query.per_page || 0),
+    });
+  }
+
   async getUser(userId: string) {
     return await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
-    });
-  }
-
-  async getUserByUsername(username: string) {
-    return await this.prisma.user.findUniqueOrThrow({
-      where: { username },
-    });
-  }
-
-  async getUserByEmail(userEmail: string) {
-    return await this.prisma.user.findUniqueOrThrow({
-      where: { email: userEmail },
     });
   }
 
@@ -37,14 +42,6 @@ export class UserDao {
     });
 
     return { user1: friends[0].friendsWith, user2: friends[0].friendsRequest };
-  }
-
-  async getUsernameById(userId: string) {
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-    });
-
-    return user.username;
   }
 
   async getUserData(userId: string) {

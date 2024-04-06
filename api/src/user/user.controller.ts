@@ -25,6 +25,7 @@ import { UserService } from './user.service';
 import { AdminGuard } from '../auth/guard/admin.guard';
 import { AuthService } from '../auth/auth.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { QueryDto } from './dto/query.dto';
 import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor';
 import { FriendStatus } from './user.service';
 import { ImageService } from '../image/image.service';
@@ -42,36 +43,30 @@ declare global {
   }
 }
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(
-    private usersService: UserService,
+    private userService: UserService,
     private authService: AuthService,
     private imageService: ImageService,
   ) {}
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @Get('/')
+  getUsers(@Query() query: QueryDto) {
+    return this.userService.getUsers(query);
+  }
+
+  @UseInterceptors(RemoveFieldsInterceptor)
   @Get('/:id')
-  fetchUserById(@Param('id') userId: string) {
-    return this.usersService.getUser(userId);
-  }
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @Get('/username')
-  fetchUserByUsername(@Query('username') username: string) {
-    return this.usersService.getUserByUsername(username);
-  }
-
-  @UseInterceptors(RemoveFieldsInterceptor)
-  @Get('/email')
-  fetchUserByEmail(@Query('email') email: string) {
-    return this.usersService.getUserByEmail(email);
+  getUserById(@Param('id') userId: string) {
+    return this.userService.getUser(userId);
   }
 
   @Get('/friends')
   async getFriends(@Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    return this.usersService.getFriends(req.user.id);
+    return this.userService.getFriends(req.user.id);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
@@ -82,7 +77,7 @@ export class UserController {
     @Body() { username }: { username: string },
   ) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    return await this.usersService.sendFriendRequest(req.user.id, username);
+    return await this.userService.sendFriendRequest(req.user.id, username);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
@@ -93,7 +88,7 @@ export class UserController {
     @Body() { username, status }: { username: string; status: FriendStatus },
   ) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    return await this.usersService.updateFriendship(
+    return await this.userService.updateFriendship(
       req.user.id,
       username,
       status,
@@ -109,7 +104,7 @@ export class UserController {
       body.password = await this.authService.hash(body.password);
     }
 
-    return this.usersService.updateUser(req.user.id, body);
+    return this.userService.updateUser(req.user.id, body);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
@@ -140,7 +135,7 @@ export class UserController {
       this.imageService.deleteImage(req.user.avatarName);
     }
 
-    this.usersService.updateUser(req.user.id, { avatarName });
+    this.userService.updateUser(req.user.id, { avatarName });
 
     return this.imageService.createImage(avatarName, file?.buffer);
   }

@@ -13,6 +13,7 @@ import { ImageService } from '../image/image.service';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthModule } from '../auth/auth.module';
+import { QueryDto } from './dto/query.dto';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -34,15 +35,17 @@ describe('UserController', () => {
           updatedAt: new Date(),
         } as User);
       },
-      getUserByEmail: (email: string) => {
-        return Promise.resolve({
-          id: '-1',
-          username: 'testuser',
-          email,
-          password: 'test',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        } as User);
+      getUsers: (query: QueryDto) => {
+        return Promise.resolve([
+          {
+            id: query.id,
+            username: 'testuser',
+            email: query.email,
+            password: 'test',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          } as User,
+        ]);
       },
     };
     fakeAuthService = {
@@ -150,8 +153,10 @@ describe('UserController', () => {
     expect(controller).toBeDefined();
   });
 
-  it.skip('fetchUserByEmail returns a user with the given email', async () => {
-    const user = await controller.fetchUserByEmail('test@test.test');
+  it.skip('getUsers returns a user with the given email', async () => {
+    const [user] = await controller.getUsers({
+      email: 'test@test.test',
+    } as QueryDto);
 
     expect(user).toBeDefined();
     expect(user?.id).toEqual('-1');
@@ -159,17 +164,17 @@ describe('UserController', () => {
     expect(user?.email).toEqual('test@test.test');
   });
 
-  it.skip('fetchUserById returns a user with the given id', async () => {
-    const user = await controller.fetchUserById('-1');
+  it.skip('getUsers returns a user with the given id', async () => {
+    const [user] = await controller.getUsers({ id: '-1' } as QueryDto);
 
     expect(user).toBeDefined();
     expect(user?.id).toEqual('-1');
   });
 
-  it.skip('fetchUserById throws an error if user with given id is not found', async () => {
-    fakeUserService.getUser = () => Promise.reject(new NotFoundException());
+  it.skip('getUsers throws an error if user with given id is not found', async () => {
+    fakeUserService.getUsers = () => Promise.reject(new NotFoundException());
 
-    await expect(controller.fetchUserById('-1')).rejects.toThrow(
+    await expect(controller.getUsers({ id: '-1' } as QueryDto)).rejects.toThrow(
       NotFoundException,
     );
   });
