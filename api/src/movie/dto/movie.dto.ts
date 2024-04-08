@@ -25,7 +25,7 @@ export class MovieDto {
   @IsOptional()
   rating: number;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
   tmdbId: number;
 

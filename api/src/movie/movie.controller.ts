@@ -37,7 +37,7 @@ export class MovieController {
 
   @UseInterceptors(RemoveListFieldsInterceptor)
   @UseGuards(ListAuthGuard)
-  @Delete('/:id/list/:listId')
+  @Delete('/:id/lists/:listId')
   @HttpCode(HttpStatus.NO_CONTENT)
   removeMovieFromList(
     @Param('listId') listId: string,
