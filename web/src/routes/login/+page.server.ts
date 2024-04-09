@@ -2,6 +2,8 @@ import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
 
+const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
+
 /** @type {import('./$types').Actions} */
 export const actions = {
   login: async ({ request, fetch, cookies, locals }: RequestEvent) => {
@@ -16,19 +18,16 @@ export const actions = {
     const password = data.get('password');
 
     try {
-      const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/users/login`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            email,
-            password
-          })
-        }
-      );
+      const response = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
 
       if (response.status !== 200) {
         return await response.json();

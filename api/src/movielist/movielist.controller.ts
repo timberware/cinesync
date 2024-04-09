@@ -16,7 +16,7 @@ import { MovielistService } from './movielist.service';
 import { ListAuthGuard } from '../list/guard/list.guard';
 import { UpdateMovieListDto } from '../movie/dto/update-movie-list.dto';
 
-@Controller('movielist')
+@Controller('movielists')
 export class MovielistController {
   constructor(private movieListService: MovielistService) {}
 

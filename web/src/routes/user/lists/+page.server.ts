@@ -1,79 +1,102 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
-import type { ListType, Sharee } from '../../../ambient';
+import type { ListType, User, MovieType } from '../../../ambient';
 import { API_HOST } from '$env/static/private';
+
+const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals }) => {
+  const { user } = locals;
+
+  if (!user) {
+    return {};
+  }
+
   try {
-    const [response, w] = await Promise.all([
-      fetch(`${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists`, {
+    const [listResponse, watchedResponse] = await Promise.all([
+      fetch(`${API}/lists`, {
         method: 'GET',
         headers: {
-          Authorization: locals.cookie || ''
+          Authorization: locals.cookie as string
         }
       }),
-      fetch(
-        `${
-          process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/movies/watched`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: locals.cookie || ''
-          }
+      fetch(`${API}/movies?userId=${user.id as string}`, {
+        method: 'GET',
+        headers: {
+          Authorization: locals.cookie as string
         }
-      )
+      })
     ]);
 
-    if (response.status === 200 && w.status === 200) {
-      const { list }: { list: ListType[] } = await response.json();
+    if (listResponse.status !== 200 || watchedResponse.status !== 200) {
+      return { user: user };
+    }
 
-      if (!list || !list?.length) {
-        return { user: locals.user };
-      }
+    const { list }: { list: ListType[] } = await listResponse.json();
+    const watched = await watchedResponse.json();
 
-      const s = await Promise.all(
-        list.map((l: ListType) =>
-          fetch(
-            `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/${
-              l.id
-            }/sharees`,
-            {
+    if (!list || !list.length) {
+      return { user };
+    }
+
+    const shareesResponse = await Promise.all(
+      list.map((l: ListType) =>
+        fetch(`${API}/lists/${l.id}/sharees`, {
+          method: 'GET',
+          headers: {
+            Authorization: locals.cookie as string
+          }
+        })
+      )
+    );
+    let sharees = await Promise.all(shareesResponse.map(sharee => sharee.json()));
+
+    const shareesWatchedResponse = await Promise.all(
+      sharees.map((shareeList: User[]) =>
+        Promise.all(
+          shareeList.map(sharee =>
+            fetch(`${API}/movies?userId=${sharee.id as string}`, {
               method: 'GET',
               headers: {
-                Authorization: locals.cookie || ''
+                Authorization: locals.cookie as string
               }
-            }
+            })
           )
         )
-      );
+      )
+    );
 
-      const sharees = await Promise.all(s.map(sharee => sharee.json()));
-      const watched = await w.json();
+    const shareesWatched = await Promise.all(
+      shareesWatchedResponse.map(sharee => Promise.all(sharee.map(sh => sh.json())))
+    );
 
-      sharees.forEach((s, index) => {
-        let creator = undefined;
-        list[index].sharees = s.map((sh: Sharee) => {
-          if (sh.creator) {
-            creator = sh.username;
-          }
-          return sh;
-        });
+    sharees.forEach((sh: User[], index) => {
+      list[index].sharees = sh;
 
-        list[index].creatorUsername = creator || locals.user?.username;
-
-        watched.forEach((m: string) => {
-          const i = list[index].movie.findIndex(mv => mv.id === m);
-          if (i !== -1) {
-            list[index].movie[i].watched = true;
-          }
-        });
+      shareesWatched[index].forEach((s: User, i) => {
+        list[index].sharees[i].watched = s.map(m => m.id);
       });
 
-      return { lists: list, user: locals.user };
-    }
-    return { user: locals.user };
+      if (list[index].creatorId !== user?.id) {
+        const creatorIndex = list[index].sharees.findIndex(
+          s => s.id === list[index].creatorId
+        );
+
+        list[index].creatorUsername = sh[creatorIndex].username;
+      } else {
+        list[index].creatorUsername = user?.username;
+      }
+
+      watched.forEach((m: MovieType) => {
+        const i = list[index].movie.findIndex(mv => mv.id === m.id);
+        if (i !== -1) {
+          list[index].movie[i].watched = true;
+        }
+      });
+    });
+
+    return { lists: list, user: user };
   } catch (e) {
     console.error(e);
   }
@@ -84,25 +107,21 @@ export const actions = {
   togglePrivacy: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
-
-    console.log({ listId });
+    const isPrivate = data.get('isPrivate');
 
     try {
-      const response = await fetch(
-        `${
-          process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/${listId}/updatePrivacy`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          }
-        }
-      );
+      const response = await fetch(`${API}/lists/${listId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify({
+          isPrivate: !(isPrivate === 'true')
+        })
+      });
 
       if (response.status !== 200) {
-        console.log('this was ok');
         return;
       }
     } catch (e) {
@@ -120,17 +139,14 @@ export const actions = {
         name: listName
       };
 
-      const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({ ...list })
-        }
-      );
+      const response = await fetch(`${API}/lists`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify(list)
+      });
 
       if (response.status !== 200) {
         return;
@@ -146,16 +162,13 @@ export const actions = {
     const listId = data.get('listId');
 
     try {
-      const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/${listId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          }
+      const response = await fetch(`${API}/lists/${listId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
         }
-      );
+      });
 
       if (response.status !== 200) {
         return;
@@ -175,33 +188,29 @@ export const actions = {
     const releaseDate = data.get('release_date') as string;
     const posterUrl = data.get('poster_path') as string;
     const rating = data.get('vote_average');
-    const imdbId = data.get('id') as string;
+    const tmdbId = data.get('id') as string;
 
     try {
-      const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/lists/${listId}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({
-            listId,
-            movie: [
-              {
-                title,
-                description,
-                genre: genre?.split('.'),
-                releaseDate,
-                posterUrl,
-                rating: Number(rating),
-                imdbId
-              }
-            ]
-          })
-        }
-      );
+      const response = await fetch(`${API}/movielists/${listId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify({
+          movie: [
+            {
+              title,
+              description,
+              genre: genre?.split('.'),
+              releaseDate,
+              posterUrl,
+              rating: Number(rating),
+              tmdbId: +tmdbId
+            }
+          ]
+        })
+      });
 
       if (response.status !== 200) {
         console.error('There was an error modifying the list', response.statusText);
@@ -218,18 +227,13 @@ export const actions = {
     const movieId = data.get('movieId');
 
     try {
-      const response = await fetch(
-        `${
-          process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/movies/${movieId}/updateWatchedStatus`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          }
+      const response = await fetch(`${API}/movies/${movieId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
         }
-      );
+      });
 
       if (response.status !== 204) {
         console.error('Error: ', response.statusText);
@@ -247,18 +251,13 @@ export const actions = {
     const movieId = data.get('movieId');
 
     try {
-      const response = await fetch(
-        `${
-          process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/${listId}/movies/${movieId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          }
+      const response = await fetch(`${API}/movies/${movieId}/lists/${listId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
         }
-      );
+      });
 
       if (response.status !== 204) {
         return;
@@ -274,23 +273,15 @@ export const actions = {
     const listId = data.get('listId');
     const name = data.get('name');
 
-    console.log({ listId });
-    console.log({ name });
-
     try {
-      const response = await fetch(
-        `${
-          process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/${listId}/clone`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({ name })
-        }
-      );
+      const response = await fetch(`${API}/movielists/${listId}/clone`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify({ name })
+      });
 
       if (response.status !== 201) {
         return;
@@ -306,23 +297,15 @@ export const actions = {
     const listId = data.get('listId');
     const username = data.get('username');
 
-    console.log({ username });
-    console.log({ listId });
-
     try {
-      const response = await fetch(
-        `${
-          process.env.API_HOST || API_HOST || 'http://localhost:4000'
-        }/lists/${listId}/toggleShareByUsername`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: locals.cookie || ''
-          },
-          body: JSON.stringify({ username })
-        }
-      );
+      const response = await fetch(`${API}/lists/${listId}/toggleShareByUsername`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify({ username })
+      });
 
       if (response.status !== 204) {
         return;

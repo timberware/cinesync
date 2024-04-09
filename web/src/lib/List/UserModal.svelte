@@ -1,11 +1,11 @@
 <script lang="ts">
   import Image from '$lib/Image.svelte';
   import Modal from '$lib/Modal.svelte';
-  import type { MovieType, Sharee } from '../../ambient';
+  import type { MovieType, User } from '../../ambient';
   import { getPosterUrl } from '../../utils';
   export let showModal: boolean;
   export let sharee: string;
-  export let sharees: Sharee[] | undefined;
+  export let sharees: User[] | undefined;
   export let movies: MovieType[];
   let watchedBySharee: MovieType[] = [];
 

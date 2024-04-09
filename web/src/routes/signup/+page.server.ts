@@ -1,6 +1,8 @@
 import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
 
+const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
+
 /** @type {import('./$types').Actions} */
 export const actions = {
   signup: async ({ request, fetch }: RequestEvent) => {
@@ -10,20 +12,17 @@ export const actions = {
     const password = data.get('password');
 
     try {
-      const response = await fetch(
-        `${process.env.API_HOST || API_HOST || 'http://localhost:4000'}/users/signup`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password
-          })
-        }
-      );
+      const response = await fetch(`${API}/users/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password
+        })
+      });
 
       const r = await response.json();
       return r;

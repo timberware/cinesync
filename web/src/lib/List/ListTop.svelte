@@ -27,7 +27,7 @@
 <div class="flex justify-between mx-1">
   <div class="flex gap-x-4">
     {#if list.creatorUsername === user.username}
-      <Avatar username="{list.creatorUsername || ''}" />
+      <Avatar username="{list.creatorUsername}" />
     {/if}
     <div class="text-lg font-black">{list.name}</div>
     <IconButton
@@ -37,11 +37,14 @@
       tooltip="add movie"
       on:click="{() => (showMovieModal = true)}"
     />
-    {#if list?.sharees?.findIndex(sharee => sharee.username === list.creatorUsername) === -1}
+    {#if list?.creatorId === user.id}
       <Delete listId="{list.id}" />
       <SubmitButton
         formAction="lists?/togglePrivacy"
-        inputs="{[{ name: 'listId', value: list.id }]}"
+        inputs="{[
+          { name: 'listId', value: list.id },
+          { name: 'isPrivate', value: list.isPrivate ? 'true' : 'false' }
+        ]}"
         icon="{list.isPrivate ? faLock : faLockOpen}"
         tooltip="{list.isPrivate ? 'private list' : 'public list'}"
       />

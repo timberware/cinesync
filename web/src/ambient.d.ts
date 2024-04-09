@@ -1,7 +1,8 @@
 export type User = {
+  id: string;
   username: string;
   email: string;
-  id: string;
+  watched?: string[];
 };
 
 export type MovieType = {
@@ -19,12 +20,12 @@ export type ListType = {
   id: string;
   name: string;
   isPrivate: boolean;
-  creatorId: number;
+  creatorId: string;
   creatorUsername: string | undefined;
   createdAt: string;
   updatedAt: string;
   movie: MovieType[];
-  sharees?: Sharee[];
+  sharees?: User[];
 };
 
 export type Lists = {
@@ -40,11 +41,4 @@ export type TMDBMovieResult = {
   genre_ids: number[];
   genres: string[];
   vote_average: number;
-};
-
-export type Sharee = {
-  username: string;
-  email: string;
-  creator: boolean;
-  watched: String[];
 };
