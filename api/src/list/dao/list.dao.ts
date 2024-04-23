@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Role, User } from '@prisma/client';
 import { UpdateListDto } from '../dto/update-list.dto';
+import { QueryDto } from '../dto/query.dto';
 
 @Injectable()
 export class ListDao {
@@ -28,36 +29,25 @@ export class ListDao {
         creatorId: true,
         createdAt: true,
         updatedAt: true,
-        movie: true,
-        user: true,
       },
     });
-
-    list.user = list.user.filter((user) => user.id === list.creatorId);
 
     return list;
   }
 
-  async getLists(userId: string) {
+  async getLists(query: QueryDto) {
     const l = await this.prisma.list.findMany({
       where: {
         user: {
           some: {
-            id: userId,
+            id: query.id,
           },
         },
       },
+      take: query.per_page || 10,
+      skip: (query.page_number || 0) * (query.per_page || 10),
       orderBy: {
         createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        name: true,
-        isPrivate: true,
-        creatorId: true,
-        createdAt: true,
-        updatedAt: true,
-        movie: true,
       },
     });
 

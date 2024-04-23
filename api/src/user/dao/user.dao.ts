@@ -22,7 +22,7 @@ export class UserDao {
         ],
       },
       take: query.per_page || 10,
-      skip: (query.page_number || 0) * (query.per_page || 0),
+      skip: (query.page_number || 0) * (query.per_page || 10),
     });
   }
 

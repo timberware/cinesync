@@ -12,6 +12,7 @@ import {
   Req,
   Param,
   UnauthorizedException,
+  Query,
 } from '@nestjs/common';
 import { CreateListDto, UpdateListDto } from './dto';
 import { CommentAuthorizationGuard } from '../comment/guard/comment-auth.guard';
@@ -27,6 +28,7 @@ import { ListPrivacyAuthGuard } from './guard/list-private.guard';
 import { UserService } from '../user/user.service';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
+import { QueryDto } from './dto/query.dto';
 
 @Controller('lists')
 export class ListController {
@@ -44,7 +46,6 @@ export class ListController {
     return this.listService.getPublicList(listId);
   }
 
-  @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @UseGuards(ListAuthGuard)
   @Get('/:id')
   getList(@Param('id') listId: string) {
@@ -53,9 +54,8 @@ export class ListController {
 
   @UseInterceptors(RemoveListFieldsInterceptor)
   @Get('/')
-  getLists(@Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.listService.getLists(req.user.id);
+  getLists(@Query() query: QueryDto) {
+    return this.listService.getLists(query);
   }
 
   @UseGuards(ListAuthGuard)
