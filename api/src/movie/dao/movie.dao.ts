@@ -69,6 +69,8 @@ export class MovieDao {
           },
         }),
       },
+      take: query?.per_page || 10,
+      skip: (query?.page_number || 0) * (query?.per_page || 10),
     });
   }
 

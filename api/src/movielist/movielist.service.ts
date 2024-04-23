@@ -19,11 +19,12 @@ export class MovielistService {
 
   async cloneList(listId: string, userId: string, name?: string) {
     const originalList = await this.listService.getList(listId);
+    const originalMovies = await this.movieService.getMovies({ listId });
 
     const clonedList = await this.createListWithMovies(
       {
         name: name || originalList.name,
-        movie: originalList.movie,
+        movie: originalMovies,
       },
       userId,
     );

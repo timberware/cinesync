@@ -65,7 +65,7 @@ describe('UserController', () => {
       },
     };
     fakeListService = {
-      getLists: (id: string) => {
+      getLists: ({ id }) => {
         return Promise.resolve({
           id,
           username: 'asdf',

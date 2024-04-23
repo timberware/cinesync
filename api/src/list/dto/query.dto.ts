@@ -1,22 +1,18 @@
+import { IsInt, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsString, IsOptional, IsInt } from 'class-validator';
 
 export class QueryDto {
   @IsString()
   @IsOptional()
-  userId?: string;
-
-  @IsString()
-  @IsOptional()
-  listId?: string;
+  id?: string;
 
   @IsInt()
   @Type(() => Number)
   @IsOptional()
-  per_page? = 10;
+  per_page = 10;
 
   @IsInt()
   @Type(() => Number)
   @IsOptional()
-  page_number? = 0;
+  page_number = 0;
 }
