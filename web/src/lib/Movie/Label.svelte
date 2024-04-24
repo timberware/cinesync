@@ -1,3 +1,3 @@
-<span class="font-black underline">
+<span class="font-black">
   <slot />
 </span>
