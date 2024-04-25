@@ -4,6 +4,8 @@
 ![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/format_lint.yml/badge.svg?branch=dev&event=push)
 
 
+[<img src="images/cinesync.png">](https://cinesync.me/)
+
 ## What is CineSync?
 
 CineSync is a web application that allows movie enthusiasts to synchronize and share their personalized watchlists with friends or groups. This platform empowers users to curate and manage their movie preferences, exchange recommendations, and enjoy the magic of cinema as a cohesive community.
