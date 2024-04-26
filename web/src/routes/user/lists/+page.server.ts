@@ -15,7 +15,7 @@ export const load = async ({ fetch, locals }) => {
 
   try {
     const [listResponse, watchedResponse] = await Promise.all([
-      fetch(`${API}/lists`, {
+      fetch(`${API}/lists?id=${user.id}`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie as string
@@ -35,6 +35,22 @@ export const load = async ({ fetch, locals }) => {
 
     const { list }: { list: ListType[] } = await listResponse.json();
     const watched = await watchedResponse.json();
+
+    const moviesInListsResponse = await Promise.all(
+      list.map(l =>
+        fetch(`${API}/movies?listId=${l.id as string}`, {
+          method: 'GET',
+          headers: {
+            Authorization: locals.cookie as string
+          }
+        })
+      )
+    );
+    const mInl = await Promise.all(moviesInListsResponse.map(m => m.json()));
+
+    list.forEach((l, index) => {
+      l.movie = mInl[index];
+    });
 
     if (!list || !list.length) {
       return { user };

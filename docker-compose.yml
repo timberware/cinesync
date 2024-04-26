@@ -37,6 +37,7 @@ services:
       context: ./web
     environment:
       - API_HOST=${API_HOST}
+      - PUBLIC_API_HOST=${PUBLIC_API_HOST}
       - TMDB_TOKEN=${TMDB_TOKEN}
       - NODE_ENV=${NODE_ENV}
     ports:
