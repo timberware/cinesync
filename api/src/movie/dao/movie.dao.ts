@@ -51,8 +51,8 @@ export class MovieDao {
     return newMovies;
   }
 
-  getMovies(query: QueryDto) {
-    return this.prisma.movie.findMany({
+  async getMovies(query: QueryDto) {
+    return await this.prisma.movie.findMany({
       where: {
         ...(query?.userId && {
           user: {

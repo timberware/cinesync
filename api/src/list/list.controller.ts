@@ -39,6 +39,12 @@ export class ListController {
     private notificationService: NotificationService,
   ) {}
 
+  @UseInterceptors(RemoveListFieldsInterceptor)
+  @Get('/')
+  getLists(@Query() query: QueryDto) {
+    return this.listService.getLists(query);
+  }
+
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @Public()
   @Get('/:id/public')
@@ -50,12 +56,6 @@ export class ListController {
   @Get('/:id')
   getList(@Param('id') listId: string) {
     return this.listService.getList(listId);
-  }
-
-  @UseInterceptors(RemoveListFieldsInterceptor)
-  @Get('/')
-  getLists(@Query() query: QueryDto) {
-    return this.listService.getLists(query);
   }
 
   @UseGuards(ListAuthGuard)

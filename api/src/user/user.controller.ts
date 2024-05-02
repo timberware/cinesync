@@ -63,6 +63,11 @@ export class UserController {
     return this.userService.getUser(userId);
   }
 
+  @Get('/:id/stats')
+  getUserStats(@Param('id') userId: string) {
+    return this.userService.getUserStats(userId);
+  }
+
   @Get('/friends')
   async getFriends(@Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
