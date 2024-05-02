@@ -7,7 +7,7 @@ export class CommentDao {
   constructor(private readonly prisma: PrismaService) {}
 
   async getComments(query: CommentQueryDto) {
-    return this.prisma.comment.findMany({
+    return await this.prisma.comment.findMany({
       where: {
         AND: [
           {
@@ -37,8 +37,8 @@ export class CommentDao {
     });
   }
 
-  updateComment(commentId: string, text: string) {
-    return this.prisma.comment.update({
+  async updateComment(commentId: string, text: string) {
+    return await this.prisma.comment.update({
       where: {
         id: commentId,
       },
@@ -48,8 +48,8 @@ export class CommentDao {
     });
   }
 
-  deleteComment(commentId: string) {
-    return this.prisma.comment.delete({
+  async deleteComment(commentId: string) {
+    return await this.prisma.comment.delete({
       where: {
         id: commentId,
       },

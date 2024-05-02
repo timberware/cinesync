@@ -138,4 +138,69 @@ export class UserDao {
       where: { id: userId },
     });
   }
+
+  async getUserStats(userId: string) {
+    const [listCount, sharedListCount, movieCount, commentCount] =
+      await Promise.all([
+        this.prisma.user.findUniqueOrThrow({
+          where: { id: userId },
+          select: {
+            _count: {
+              select: {
+                list: {
+                  where: {
+                    AND: [{ creatorId: userId }],
+                  },
+                },
+              },
+            },
+          },
+        }),
+
+        this.prisma.user.findUniqueOrThrow({
+          where: { id: userId },
+          select: {
+            _count: {
+              select: {
+                list: {
+                  where: {
+                    NOT: { creatorId: userId },
+                    user: { some: { id: userId } },
+                  },
+                },
+              },
+            },
+          },
+        }),
+
+        this.prisma.user.findUniqueOrThrow({
+          where: { id: userId },
+          select: {
+            _count: {
+              select: {
+                movie: true,
+              },
+            },
+          },
+        }),
+
+        this.prisma.user.findUniqueOrThrow({
+          where: { id: userId },
+          select: {
+            _count: {
+              select: {
+                comments: true,
+              },
+            },
+          },
+        }),
+      ]);
+
+    return {
+      listCount: listCount._count.list,
+      sharedListCount: sharedListCount._count.list,
+      moviesCount: movieCount._count.movie,
+      commentsCount: commentCount._count.comments,
+    };
+  }
 }
