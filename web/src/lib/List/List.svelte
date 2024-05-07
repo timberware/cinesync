@@ -1,19 +1,17 @@
 <script lang="ts">
-  import type { ListType, User } from '../../ambient';
-  import ListTop from './ListTop.svelte';
-  import Movie from '../Movie/Movie.svelte';
-  import ListContainer from './ListContainer.svelte';
-  import MoviesContainer from './MoviesContainer.svelte';
+  import Container from '$lib/List/Container.svelte';
+  import Poster from '$lib/List/Poster.svelte';
+  import ListTitle from '$lib/List/ListTitle.svelte';
 
-  export let list: ListType;
-  export let user: User;
+  export let title: string;
+  export let movies = 0;
+  export let sharees = 0;
+  export let imageUrl = '';
 </script>
 
-<ListContainer>
-  <ListTop list="{list}" user="{user}" />
-  <MoviesContainer>
-    {#each list.movie as movie (movie.id)}
-      <Movie listId="{list.id}" movie="{movie}" />
-    {/each}
-  </MoviesContainer>
-</ListContainer>
+<div class="w-64 mx-auto">
+  <Container>
+    <Poster src="{imageUrl}" movies="{movies}" sharees="{sharees}" />
+    <ListTitle title="{title}" />
+  </Container>
+</div>
