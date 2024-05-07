@@ -15,26 +15,40 @@
 </script>
 
 <Nav username="{user.username}" />
-<div class="flex text-3xl mt-10 mb-2 justify-between">
+<div class="flex text-3xl mt-10 mb-4 justify-between">
   <div class="pl-2">your lists</div>
   <button type="button" class="min-h-full" on:click="{() => (showModal = true)}">
     <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
   </button>
 </div>
-<div>
+<div class="flex flex-wrap gap-y-6">
   {#if lists?.length}
     {#each lists.filter(list => list.creatorUsername === user.username) as list (list.id)}
-      <List list="{list}" user="{user}" />
+      <div class="w-1/4">
+        <List
+          title="{list.name}"
+          movies="{list.movie.length}"
+          sharees="{list.sharees?.length || 0}"
+          imageUrl="{list.movie?.[0]?.posterUrl || ''}"
+        />
+      </div>
     {/each}
   {/if}
 </div>
 {#if lists?.filter(list => list.creatorUsername !== user.username).length}
-  <div class="flex text-3xl mt-14 mb-2 justify-between">
+  <div class="flex text-3xl mt-14 mb-4 justify-between">
     <div class="pl-2">shared with you</div>
   </div>
-  <div>
+  <div class="flex flex-wrap gap-y-6">
     {#each lists.filter(list => list.creatorUsername !== user.username) as list (list.id)}
-      <List list="{list}" user="{user}" />
+      <div class="w-1/4">
+        <List
+          title="{list.name}"
+          movies="{list.movie.length}"
+          sharees="{list.sharees?.length || 0}"
+          imageUrl="{list.movie?.[0]?.posterUrl || ''}"
+        />
+      </div>
     {/each}
   </div>
 {/if}
