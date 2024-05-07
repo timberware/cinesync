@@ -165,7 +165,6 @@ export class UserDao {
                 list: {
                   where: {
                     NOT: { creatorId: userId },
-                    user: { some: { id: userId } },
                   },
                 },
               },
