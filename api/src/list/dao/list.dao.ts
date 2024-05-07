@@ -36,13 +36,26 @@ export class ListDao {
   }
 
   async getLists(query: QueryDto) {
+    const userCondition = {
+      user: {
+        some: {
+          id: query.id,
+        },
+      },
+    };
+
     const l = await this.prisma.list.findMany({
       where: {
-        user: {
-          some: {
-            id: query.id,
-          },
-        },
+        ...(query.shared
+          ? {
+              AND: {
+                NOT: { creatorId: query.id },
+                ...userCondition,
+              },
+            }
+          : {
+              AND: { creatorId: query.id, ...userCondition },
+            }),
       },
       take: query.per_page || 10,
       skip: (query.page_number || 0) * (query.per_page || 10),
