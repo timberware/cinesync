@@ -24,8 +24,9 @@ export type ListType = {
   creatorUsername: string | undefined;
   createdAt: string;
   updatedAt: string;
-  movie: MovieType[];
-  sharees?: User[];
+  movies: number;
+  sharees: number;
+  posterUrl: string;
 };
 
 export type Lists = {

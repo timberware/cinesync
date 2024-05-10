@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { LIST_PLACEHOLDER } from '../utils';
+
   export let src: string;
   export let watched: boolean;
 
@@ -27,14 +29,10 @@
   <img
     class="{`h-full w-full object-scale-down rounded-md ${!watched && ' brightness-25'}`}"
     src="{src}"
-    alt="Document"
+    alt="List"
   />
 {:else if failed}
-  <img
-    class="h-full w-full object-scale-down"
-    src="https://icon-library.com/images/not-found-icon/not-found-icon-20.jpg"
-    alt="Not Found"
-  />
+  <img class="h-full w-full object-scale-down" src="{LIST_PLACEHOLDER}" alt="Not Found" />
 {:else if loading}
   <img
     class="h-full w-full object-scale-down"

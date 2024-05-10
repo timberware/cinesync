@@ -1,7 +1,7 @@
 <script lang="ts">
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-  import List from '$lib/List/List.svelte';
+  import ListContainer from '$lib/List/ListsContainer.svelte';
   import Nav from '$lib/Nav/Nav.svelte';
   import ListModal from '$lib/List/ListModal.svelte';
   import type { ListType, User } from '../../../ambient';
@@ -9,48 +9,24 @@
   export let data: {
     user: User;
     lists: ListType[];
+    sharedLists: ListType[];
   };
+
   let showModal = false;
-  const { user, lists } = data;
+  const { user, lists, sharedLists } = data;
 </script>
 
 <Nav username="{user.username}" />
-<div class="flex text-3xl mt-10 mb-4 justify-between">
-  <div class="pl-2">your lists</div>
+<div class="flex md:text-3xl sm:text-2xl mt-10 mb-4 mx-5 justify-between">
+  <div>your lists</div>
   <button type="button" class="min-h-full" on:click="{() => (showModal = true)}">
     <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
   </button>
 </div>
-<div class="flex flex-wrap gap-y-6">
-  {#if lists?.length}
-    {#each lists.filter(list => list.creatorUsername === user.username) as list (list.id)}
-      <div class="w-1/4">
-        <List
-          title="{list.name}"
-          movies="{list.movie.length}"
-          sharees="{list.sharees?.length || 0}"
-          imageUrl="{list.movie?.[0]?.posterUrl || ''}"
-        />
-      </div>
-    {/each}
-  {/if}
+<ListContainer lists="{lists}" />
+<div class="flex md:text-3xl sm:text-2xl mt-10 mb-4 mx-5 justify-between">
+  <div>shared with you</div>
 </div>
-{#if lists?.filter(list => list.creatorUsername !== user.username).length}
-  <div class="flex text-3xl mt-14 mb-4 justify-between">
-    <div class="pl-2">shared with you</div>
-  </div>
-  <div class="flex flex-wrap gap-y-6">
-    {#each lists.filter(list => list.creatorUsername !== user.username) as list (list.id)}
-      <div class="w-1/4">
-        <List
-          title="{list.name}"
-          movies="{list.movie.length}"
-          sharees="{list.sharees?.length || 0}"
-          imageUrl="{list.movie?.[0]?.posterUrl || ''}"
-        />
-      </div>
-    {/each}
-  </div>
-{/if}
+<ListContainer lists="{sharedLists}" />
 
 <ListModal bind:showModal="{showModal}" />
