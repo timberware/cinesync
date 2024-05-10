@@ -32,9 +32,9 @@ export class MovieService {
   }
 
   async updateWatchedStatus(movieId: string, userId: string) {
-    const watchedMovies = await this.getMovies({ userId });
+    const { movies } = await this.getMovies({ userId });
 
-    const hasWatched = !!watchedMovies.find(
+    const hasWatched = !!movies.find(
       (watchedMovie) => watchedMovie.id === movieId,
     );
 

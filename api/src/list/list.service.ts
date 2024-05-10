@@ -41,7 +41,7 @@ export class ListService {
       comments.forEach((comment, i) =>
         commentsWithUsername.push({
           ...comment,
-          username: users[i][0].username,
+          username: users[i].users[0].username,
         }),
       );
     }
@@ -75,17 +75,17 @@ export class ListService {
   async toggleShareList(listId: string, shareeEmail: string, userId: string) {
     const list = await this.listDao.getList(listId);
     const user = await this.userService.getUser(userId);
-    const [sharee] = await this.userService.getUsers({
+    const { users: sharee } = await this.userService.getUsers({
       email: shareeEmail,
     } as QueryDto);
 
-    const l = await this.getLists({ id: sharee.id } as QueryDto);
-    const isShared = !!l.list.find((shareeList) => shareeList.id === listId);
+    const l = await this.getLists({ id: sharee[0].id } as QueryDto);
+    const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
     await this.notificationService.send(
       {
-        toEmail: sharee.email,
-        toUsername: sharee.username,
+        toEmail: sharee[0].email,
+        toUsername: sharee[0].username,
         ccEmail: user.email,
         ccUsername: user.username,
         listId: list.id,
@@ -103,17 +103,17 @@ export class ListService {
   ) {
     const list = await this.listDao.getList(listId);
     const user = await this.userService.getUser(userId);
-    const [sharee] = await this.userService.getUsers({
+    const { users: sharee } = await this.userService.getUsers({
       username,
     } as QueryDto);
 
-    const l = await this.getLists({ id: sharee.id } as QueryDto);
-    const isShared = !!l.list.find((shareeList) => shareeList.id === listId);
+    const l = await this.getLists({ id: sharee[0].id } as QueryDto);
+    const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
     await this.notificationService.send(
       {
-        toEmail: sharee.email,
-        toUsername: sharee.username,
+        toEmail: sharee[0].email,
+        toUsername: sharee[0].username,
         ccEmail: user.email,
         ccUsername: user.username,
         listId: list.id,
@@ -122,6 +122,10 @@ export class ListService {
       NotificationTypes.LIST_SHARING,
     );
 
-    return await this.listDao.toggleShareList(listId, sharee.email, isShared);
+    return await this.listDao.toggleShareList(
+      listId,
+      sharee[0].email,
+      isShared,
+    );
   }
 }
