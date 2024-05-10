@@ -51,7 +51,6 @@ export class UserController {
     private imageService: ImageService,
   ) {}
 
-  @UseInterceptors(RemoveFieldsInterceptor)
   @Get('/')
   getUsers(@Query() query: QueryDto) {
     return this.userService.getUsers(query);
@@ -69,7 +68,7 @@ export class UserController {
   }
 
   @Get('/friends')
-  async getFriends(@Req() req: Request) {
+  getFriends(@Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
     return this.userService.getFriends(req.user.id);
   }
@@ -77,27 +76,23 @@ export class UserController {
   @UseInterceptors(RemoveFieldsInterceptor)
   @Post('/friends/send')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async sendFriendRequest(
+  sendFriendRequest(
     @Req() req: Request,
     @Body() { username }: { username: string },
   ) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    return await this.userService.sendFriendRequest(req.user.id, username);
+    return this.userService.sendFriendRequest(req.user.id, username);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
   @Post('/friends/update')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async updateFriendRequest(
+  updateFriendRequest(
     @Req() req: Request,
     @Body() { username, status }: { username: string; status: FriendStatus },
   ) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    return await this.userService.updateFriendship(
-      req.user.id,
-      username,
-      status,
-    );
+    return this.userService.updateFriendship(req.user.id, username, status);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
@@ -149,7 +144,7 @@ export class UserController {
   @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/avatar')
-  async deleteAvatar(@Req() req: Request) {
+  deleteAvatar(@Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
     return this.imageService.deleteImage(req.user?.username);
   }

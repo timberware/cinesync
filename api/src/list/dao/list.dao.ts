@@ -44,27 +44,35 @@ export class ListDao {
       },
     };
 
-    const l = await this.prisma.list.findMany({
-      where: {
-        ...(query.shared
-          ? {
-              AND: {
-                NOT: { creatorId: query.id },
-                ...userCondition,
-              },
-            }
-          : {
-              AND: { creatorId: query.id, ...userCondition },
-            }),
-      },
-      take: query.per_page || 10,
-      skip: (query.page_number || 0) * (query.per_page || 10),
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    const queryCondition = {
+      ...(query.shared
+        ? {
+            AND: {
+              NOT: { creatorId: query.id },
+              ...userCondition,
+            },
+          }
+        : {
+            AND: { creatorId: query.id, ...userCondition },
+          }),
+    };
 
-    return { list: l };
+    const [lists, count] = await Promise.all([
+      this.prisma.list.findMany({
+        where: queryCondition,
+        take: query.per_page || 10,
+        skip: (query.page_number || 0) * (query.per_page || 10),
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+
+      this.prisma.list.count({
+        where: queryCondition,
+      }),
+    ]);
+
+    return { lists, count };
   }
 
   async getSharees(listId: string, currentUser: string) {

@@ -11,19 +11,29 @@ export class UserDao {
   constructor(private readonly prisma: PrismaService) {}
 
   async getUsers(query: QueryDto) {
-    return await this.prisma.user.findMany({
-      where: {
-        AND: [
-          {
-            id: query.id,
-            username: query.username,
-            email: query.email,
-          },
-        ],
-      },
-      take: query.per_page || 10,
-      skip: (query.page_number || 0) * (query.per_page || 10),
-    });
+    const queryCondition = {
+      AND: [
+        {
+          id: query.id,
+          username: query.username,
+          email: query.email,
+        },
+      ],
+    };
+
+    const [users, count] = await Promise.all([
+      this.prisma.user.findMany({
+        where: queryCondition,
+        take: query.per_page || 10,
+        skip: (query.page_number || 0) * (query.per_page || 10),
+      }),
+
+      this.prisma.user.count({
+        where: queryCondition,
+      }),
+    ]);
+
+    return { users, count };
   }
 
   async getUser(userId: string) {

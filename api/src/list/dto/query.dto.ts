@@ -1,12 +1,14 @@
 import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 export class QueryDto {
   @IsString()
   @IsOptional()
   id?: string;
 
-  @Type(() => Boolean)
+  @Transform(({ value }) => {
+    return value === 'true' || value === true || value === 1;
+  })
   @IsBoolean()
   @IsOptional()
   shared?: boolean = false;

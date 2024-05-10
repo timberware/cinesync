@@ -52,26 +52,36 @@ export class MovieDao {
   }
 
   async getMovies(query: QueryDto) {
-    return await this.prisma.movie.findMany({
-      where: {
-        ...(query?.userId && {
-          user: {
-            some: {
-              id: query?.userId,
-            },
+    const queryCondition = {
+      ...(query?.userId && {
+        user: {
+          some: {
+            id: query?.userId,
           },
-        }),
-        ...(query?.listId && {
-          list: {
-            some: {
-              id: query?.listId,
-            },
+        },
+      }),
+      ...(query?.listId && {
+        list: {
+          some: {
+            id: query?.listId,
           },
-        }),
-      },
-      take: query?.per_page || 10,
-      skip: (query?.page_number || 0) * (query?.per_page || 10),
-    });
+        },
+      }),
+    };
+
+    const [movies, count] = await Promise.all([
+      this.prisma.movie.findMany({
+        where: queryCondition,
+        take: query?.per_page || 10,
+        skip: (query?.page_number || 0) * (query?.per_page || 10),
+      }),
+
+      this.prisma.movie.count({
+        where: queryCondition,
+      }),
+    ]);
+
+    return { movies, count };
   }
 
   async updateWatchedStatus(

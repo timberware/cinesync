@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Role, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { NotificationService } from '../notification/notification.service';
@@ -14,6 +13,7 @@ import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthModule } from '../auth/auth.module';
 import { QueryDto } from './dto/query.dto';
+import { UserDto } from './dto/user.dto';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -36,16 +36,21 @@ describe('UserController', () => {
         } as User);
       },
       getUsers: (query: QueryDto) => {
-        return Promise.resolve([
-          {
-            id: query.id,
-            username: 'testuser',
-            email: query.email,
-            password: 'test',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          } as User,
-        ]);
+        return Promise.resolve({
+          users: [
+            {
+              id: query.id,
+              username: 'testuser',
+              email: query.email,
+              password: 'test',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              accessToken: '',
+              avatarName: '',
+            } as UserDto,
+          ],
+          count: 1,
+        });
       },
     };
     fakeAuthService = {
@@ -65,41 +70,19 @@ describe('UserController', () => {
       },
     };
     fakeListService = {
-      getLists: ({ id }) => {
+      getLists: (query: QueryDto) => {
         return Promise.resolve({
-          id,
-          username: 'asdf',
-          email: 'asdf@asdf.asdf',
-          password: '123',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          role: Role.USER,
-          avatarName: null,
-          list: [
+          lists: [
             {
-              id: '25',
+              id: query.id || '',
               name: 'My Watchlist_chrischris',
               isPrivate: true,
               creatorId: '123',
               createdAt: new Date(),
               updatedAt: new Date(),
-              movie: [
-                {
-                  id: '1',
-                  title: 'Movie2',
-                  description: 'Description for Movie 2',
-                  genre: ['Horror', 'Family'],
-                  releaseDate: '666',
-                  posterUrl: '123',
-                  rating: 4.5,
-                  tmdbId: 123,
-                  eTag: '123',
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                },
-              ],
             },
           ],
+          count: 1,
         });
       },
       deleteList: (listId: string, userId: string) => {
@@ -154,21 +137,21 @@ describe('UserController', () => {
   });
 
   it.skip('getUsers returns a user with the given email', async () => {
-    const [user] = await controller.getUsers({
+    const { users } = await controller.getUsers({
       email: 'test@test.test',
     } as QueryDto);
 
-    expect(user).toBeDefined();
-    expect(user?.id).toEqual('-1');
-    expect(user?.username).toEqual('testuser');
-    expect(user?.email).toEqual('test@test.test');
+    expect(users).toBeDefined();
+    expect(users[0]?.id).toEqual('-1');
+    expect(users[0]?.username).toEqual('testuser');
+    expect(users[0]?.email).toEqual('test@test.test');
   });
 
   it.skip('getUsers returns a user with the given id', async () => {
-    const [user] = await controller.getUsers({ id: '-1' } as QueryDto);
+    const { users } = await controller.getUsers({ id: '-1' } as QueryDto);
 
-    expect(user).toBeDefined();
-    expect(user?.id).toEqual('-1');
+    expect(users[0]).toBeDefined();
+    expect(users[0]?.id).toEqual('-1');
   });
 
   it.skip('getUsers throws an error if user with given id is not found', async () => {

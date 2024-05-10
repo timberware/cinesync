@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ListController } from './list.controller';
 import { ListService } from './list.service';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -6,6 +6,7 @@ import { NotificationModule } from '../notification/notification.module';
 import { UserModule } from '../user/user.module';
 import { ListDao } from './dao/list.dao';
 import { CommentModule } from '../comment/comment.module';
+import { PaginationMiddleware } from '../middleware/pagination';
 
 @Module({
   imports: [PrismaModule, NotificationModule, UserModule, CommentModule],
@@ -13,4 +14,8 @@ import { CommentModule } from '../comment/comment.module';
   providers: [ListService, ListDao],
   exports: [ListService],
 })
-export class ListModule {}
+export class ListModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PaginationMiddleware).forRoutes('lists/');
+  }
+}
