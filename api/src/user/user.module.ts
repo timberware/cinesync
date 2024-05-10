@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
@@ -7,6 +7,7 @@ import { UserDao } from './dao/user.dao';
 import { AuthModule } from '../auth/auth.module';
 import { ExportModule } from './export/export.module';
 import { ImageModule } from '../image/image.module';
+import { PaginationMiddleware } from '../middleware/pagination';
 
 @Module({
   imports: [PrismaModule, ConfigModule, AuthModule, ExportModule, ImageModule],
@@ -14,4 +15,8 @@ import { ImageModule } from '../image/image.module';
   providers: [UserService, UserDao],
   exports: [UserService],
 })
-export class UserModule {}
+export class UserModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PaginationMiddleware).forRoutes('users/');
+  }
+}

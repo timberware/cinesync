@@ -23,7 +23,7 @@ export class MovieController {
   constructor(private movieService: MovieService) {}
 
   @Get('/')
-  async getMovies(@Query() query: QueryDto) {
+  getMovies(@Query() query: QueryDto) {
     return this.movieService.getMovies(query);
   }
 

@@ -2,6 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QueryDto } from './dto/query.dto';
 import { UserDao } from './dao/user.dao';
+import { plainToInstance } from 'class-transformer';
+import { UserDto } from './dto/user.dto';
 
 export type FriendStatus = 'ACCEPT' | 'REJECT' | 'SENT' | 'PENDING';
 
@@ -10,7 +12,13 @@ export class UserService {
   constructor(private usersDao: UserDao) {}
 
   async getUsers(query: QueryDto) {
-    return await this.usersDao.getUsers(query);
+    const users = await this.usersDao.getUsers(query);
+
+    const strippedUsers = plainToInstance(UserDto, users.users, {
+      excludeExtraneousValues: true,
+    });
+
+    return { users: strippedUsers, count: users.count };
   }
 
   async getUser(userId: string) {
@@ -56,12 +64,12 @@ export class UserService {
   }
 
   async sendFriendRequest(userId: string, newFriend: string) {
-    const [users] = await this.usersDao.getUsers({
+    const { users } = await this.usersDao.getUsers({
       username: newFriend,
     } as QueryDto);
 
     try {
-      await this.usersDao.createFriendship(userId, users.id);
+      await this.usersDao.createFriendship(userId, users[0].id);
     } catch (error) {
       throw new BadRequestException('Friendship already exists');
     }
@@ -72,11 +80,11 @@ export class UserService {
     newFriend: string,
     status: FriendStatus,
   ) {
-    const [users] = await this.usersDao.getUsers({
+    const { users } = await this.usersDao.getUsers({
       username: newFriend,
     } as QueryDto);
 
-    await this.usersDao.updateFriendship(userId, users.id, status);
+    await this.usersDao.updateFriendship(userId, users[0].id, status);
   }
 
   async updateUser(userId: string, attrs: Partial<CreateUserDto>) {

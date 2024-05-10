@@ -39,7 +39,6 @@ export class ListController {
     private notificationService: NotificationService,
   ) {}
 
-  @UseInterceptors(RemoveListFieldsInterceptor)
   @Get('/')
   getLists(@Query() query: QueryDto) {
     return this.listService.getLists(query);
@@ -76,7 +75,7 @@ export class ListController {
   @UseGuards(ListAuthGuard, ShareListAuthGuard)
   @Post('/:id/toggleShareByUsername')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async toggleShareListByUsername(
+  toggleShareListByUsername(
     @Param('id') listId: string,
     @Body() { username }: { username: string },
     @Req() req: Request,
@@ -93,7 +92,7 @@ export class ListController {
   @UseGuards(ListAuthGuard, ShareListAuthGuard)
   @Post('/:id/toggleShare')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async toggleShareList(
+  toggleShareList(
     @Param('id') listId: string,
     @Body() { email: shareeEmail }: { email: string },
     @Req() req: Request,
