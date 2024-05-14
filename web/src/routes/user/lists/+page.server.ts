@@ -1,9 +1,12 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
-import type { ListType, User, MovieType } from '../../../ambient';
+import type { ListType } from '../../../ambient';
 import { API_HOST } from '$env/static/private';
+import { LISTS_PER_PAGE } from '../../../utils/consts';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
+
+type ListsType = { list: ListType[] };
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals }) => {
@@ -13,15 +16,17 @@ export const load = async ({ fetch, locals }) => {
     return {};
   }
 
+  const PER_PAGE = `per_page=${LISTS_PER_PAGE}`;
+
   try {
-    const [listResponse, watchedResponse] = await Promise.all([
-      fetch(`${API}/lists?id=${user.id}`, {
+    const [listResponse, sharedListsResponse] = await Promise.all([
+      fetch(`${API}/lists?id=${user.id}&${PER_PAGE}`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie as string
         }
       }),
-      fetch(`${API}/movies?userId=${user.id as string}`, {
+      fetch(`${API}/lists?id=${user.id}&shared=true&${PER_PAGE}`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie as string
@@ -29,90 +34,83 @@ export const load = async ({ fetch, locals }) => {
       })
     ]);
 
-    if (listResponse.status !== 200 || watchedResponse.status !== 200) {
+    if (listResponse.status !== 200 && sharedListsResponse.status !== 200) {
       return { user: user };
     }
 
-    const { list }: { list: ListType[] } = await listResponse.json();
-    const watched = await watchedResponse.json();
+    const { list: lists }: ListsType = await listResponse.json();
+    const { list: sharedLists }: ListsType = await sharedListsResponse.json();
 
-    const moviesInListsResponse = await Promise.all(
-      list.map(l =>
-        fetch(`${API}/movies?listId=${l.id as string}`, {
-          method: 'GET',
-          headers: {
-            Authorization: locals.cookie as string
-          }
-        })
-      )
-    );
-    const mInl = await Promise.all(moviesInListsResponse.map(m => m.json()));
-
-    list.forEach((l, index) => {
-      l.movie = mInl[index];
-    });
-
-    if (!list || !list.length) {
-      return { user };
-    }
-
-    const shareesResponse = await Promise.all(
-      list.map((l: ListType) =>
-        fetch(`${API}/lists/${l.id}/sharees`, {
-          method: 'GET',
-          headers: {
-            Authorization: locals.cookie as string
-          }
-        })
-      )
-    );
-    let sharees = await Promise.all(shareesResponse.map(sharee => sharee.json()));
-
-    const shareesWatchedResponse = await Promise.all(
-      sharees.map((shareeList: User[]) =>
-        Promise.all(
-          shareeList.map(sharee =>
-            fetch(`${API}/movies?userId=${sharee.id as string}`, {
-              method: 'GET',
-              headers: {
-                Authorization: locals.cookie as string
-              }
-            })
-          )
+    const [
+      moviesInListsResponse,
+      moviesInSharedListsResponse,
+      shareesResponse,
+      shareesInSharedResponse
+    ] = await Promise.all([
+      Promise.all(
+        lists.map((l: ListType) =>
+          fetch(`${API}/movies?listId=${l.id}`, {
+            method: 'GET',
+            headers: {
+              Authorization: locals.cookie as string
+            }
+          })
+        )
+      ),
+      Promise.all(
+        sharedLists.map((l: ListType) =>
+          fetch(`${API}/movies?listId=${l.id}`, {
+            method: 'GET',
+            headers: {
+              Authorization: locals.cookie as string
+            }
+          })
+        )
+      ),
+      Promise.all(
+        lists.map((l: ListType) =>
+          fetch(`${API}/lists/${l.id}/sharees`, {
+            method: 'GET',
+            headers: {
+              Authorization: locals.cookie as string
+            }
+          })
+        )
+      ),
+      Promise.all(
+        sharedLists.map((l: ListType) =>
+          fetch(`${API}/lists/${l.id}/sharees`, {
+            method: 'GET',
+            headers: {
+              Authorization: locals.cookie as string
+            }
+          })
         )
       )
+    ]);
+
+    const moviesInLists = await Promise.all(moviesInListsResponse.map(m => m.json()));
+    const moviesInSharedLists = await Promise.all(
+      moviesInSharedListsResponse.map(m => m.json())
+    );
+    const sharees = await Promise.all(shareesResponse.map(sharee => sharee.json()));
+    const shareesInShared = await Promise.all(
+      shareesInSharedResponse.map(sharee => sharee.json())
     );
 
-    const shareesWatched = await Promise.all(
-      shareesWatchedResponse.map(sharee => Promise.all(sharee.map(sh => sh.json())))
-    );
-
-    sharees.forEach((sh: User[], index) => {
-      list[index].sharees = sh;
-
-      shareesWatched[index].forEach((s: User, i) => {
-        list[index].sharees[i].watched = s.map(m => m.id);
-      });
-
-      if (list[index].creatorId !== user?.id) {
-        const creatorIndex = list[index].sharees.findIndex(
-          s => s.id === list[index].creatorId
-        );
-
-        list[index].creatorUsername = sh[creatorIndex].username;
-      } else {
-        list[index].creatorUsername = user?.username;
-      }
-
-      watched.forEach((m: MovieType) => {
-        const i = list[index].movie.findIndex(mv => mv.id === m.id);
-        if (i !== -1) {
-          list[index].movie[i].watched = true;
-        }
-      });
+    lists.forEach((l, index) => {
+      l.movies = moviesInLists[index].length;
+      l.posterUrl = moviesInLists[index].length && moviesInLists[index][0]?.posterUrl;
+      l.sharees = sharees[index].length;
+    });
+    sharedLists.forEach((l, index) => {
+      l.movies = moviesInSharedLists[index].length;
+      l.posterUrl =
+        moviesInSharedLists[index].length && moviesInSharedLists[index][0]?.posterUrl;
+      l.sharees = shareesInShared[index].length;
     });
 
-    return { lists: list, user: user };
+    return { lists, sharedLists, user: user };
   } catch (e) {
     console.error(e);
   }

@@ -5,10 +5,10 @@
   export let username: string;
 </script>
 
-<nav class="pt-2 text-xl flex justify-between">
-  <div class="">
+<nav class="pt-5 mx-5 md:text-xl sm:text-lg flex justify-between">
+  <div>
     <Link href="/user/profile"><Avatar username="{username}" /></Link>
-    <Link href="/user/profile">{username}</Link>
+    <Link href="/user/profile" hidden>{username}</Link>
     <Link href="/user/lists">lists</Link>
     <Link href="/user/about">about</Link>
     <div class=" inline-block">
