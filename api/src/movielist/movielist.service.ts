@@ -18,16 +18,28 @@ export class MovielistService {
   }
 
   async cloneList(listId: string, userId: string, name?: string) {
+    const { count } = await this.movieService.getMovies({
+      per_page: 0,
+      page_number: 0,
+      listId,
+    });
     const originalList = await this.listService.getList(listId);
-    const { movies } = await this.movieService.getMovies({ listId });
-
-    const clonedList = await this.createListWithMovies(
-      {
-        name: name || originalList.name,
-        movie: movies,
-      },
+    const clonedList = await this.listService.createList(
+      name || originalList.name,
       userId,
     );
+
+    if (count === 0) {
+      return clonedList;
+    }
+
+    const { movies } = await this.movieService.getMovies({
+      per_page: count,
+      page_number: 0,
+      listId,
+    });
+
+    await this.movieService.createMovies(movies, clonedList.id);
 
     return clonedList;
   }
