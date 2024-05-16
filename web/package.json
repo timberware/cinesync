@@ -27,6 +27,7 @@
     "@tsconfig/svelte": "3.0.0",
     "@typescript-eslint/eslint-plugin": "6.14.0",
     "@typescript-eslint/parser": "6.14.0",
+    "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.15",
     "eslint": "8.55.0",
     "eslint-plugin-svelte": "^2.30.0",
@@ -43,5 +44,8 @@
     "vite": "^5.0.0",
     "vitest": "^1.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
 }
