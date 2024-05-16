@@ -1,4 +1,4 @@
-import { redirect } from '@sveltejs/kit';
+import { redirect, fail } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
 
@@ -30,7 +30,7 @@ export const actions = {
       });
 
       if (response.status !== 200) {
-        return await response.json();
+        return fail(401);
       }
 
       const jwt = await response.json();
@@ -43,7 +43,6 @@ export const actions = {
     } catch (e) {
       console.error(e);
     }
-
     redirect(302, '/user/lists');
   }
 };

@@ -1,12 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
-import type { ListType } from '../../../ambient';
+import type { Lists, ListType } from '../../../ambient';
 import { API_HOST } from '$env/static/private';
 import { LISTS_PER_PAGE } from '../../../utils/consts';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
-
-type ListsType = { list: ListType[] };
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals }) => {
@@ -38,8 +36,8 @@ export const load = async ({ fetch, locals }) => {
       return { user: user };
     }
 
-    const { list: lists }: ListsType = await listResponse.json();
-    const { list: sharedLists }: ListsType = await sharedListsResponse.json();
+    const { lists }: Lists = await listResponse.json();
+    const { lists: sharedLists }: Lists = await sharedListsResponse.json();
 
     const [
       moviesInListsResponse,
@@ -99,14 +97,16 @@ export const load = async ({ fetch, locals }) => {
     );
 
     lists.forEach((l, index) => {
-      l.movies = moviesInLists[index].length;
-      l.posterUrl = moviesInLists[index].length && moviesInLists[index][0]?.posterUrl;
+      l.movies = moviesInLists[index].movies.length;
+      l.posterUrl =
+        moviesInLists[index].movies.length && moviesInLists[index].movies[0]?.posterUrl;
       l.sharees = sharees[index].length;
     });
     sharedLists.forEach((l, index) => {
-      l.movies = moviesInSharedLists[index].length;
+      l.movies = moviesInSharedLists[index].movies.length;
       l.posterUrl =
-        moviesInSharedLists[index].length && moviesInSharedLists[index][0]?.posterUrl;
+        moviesInSharedLists[index].movies.length &&
+        moviesInSharedLists[index].movies[0]?.posterUrl;
       l.sharees = shareesInShared[index].length;
     });
 

@@ -16,6 +16,11 @@ export type MovieType = {
   watched: boolean;
 };
 
+export type Movies = {
+  movies: MovieType[];
+  count: number;
+};
+
 export type ListType = {
   id: string;
   name: string;
@@ -30,7 +35,8 @@ export type ListType = {
 };
 
 export type Lists = {
-  list: ListType[];
+  lists: ListType[];
+  count: number;
 };
 
 export type TMDBMovieResult = {
@@ -42,4 +48,14 @@ export type TMDBMovieResult = {
   genre_ids: number[];
   genres: string[];
   vote_average: number;
+};
+
+export type ToastTypes = 'info' | 'success' | 'error';
+
+export type ToastType = {
+  id?: string;
+  message: string;
+  type: ToastTypes;
+  dismissible: boolean;
+  timeout: number;
 };

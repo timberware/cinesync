@@ -1,16 +1,30 @@
 <script lang="ts">
+  import { enhance, applyAction } from '$app/forms';
   import Footer from '$lib/Footer.svelte';
   import { selectRandomDirector } from '../../utils';
-
-  /** @type {import('./$types').ActionData} */
-  export let form;
+  import Toasts from '$lib/Toast/Toasts.svelte';
+  import { addToast } from '../../store/toast';
+  import { error } from './messages';
 </script>
+
+<Toasts />
 
 <header class="container xl:max-w-screen-xl lg:max-w-screen-lg mx-auto">
   <h1 class="text-7xl max-w-fit m-auto mt-20">cinesync</h1>
 </header>
 
-<form method="POST" action="?/login">
+<form
+  method="POST"
+  action="?/login"
+  use:enhance="{() => {
+    return async ({ result }) => {
+      if (result.type === 'failure') {
+        addToast(error);
+      }
+      await applyAction(result);
+    };
+  }}"
+>
   <div class="max-w-md m-auto mt-5">
     <div class="flex pt-2 pb-2 justify-center">
       <label class="w-24 text-center" for="login">email</label>
@@ -35,11 +49,7 @@
       />
     </div>
   </div>
-  {#if form?.statusCode !== 201 && form?.statusCode !== undefined}
-    <div class="flex max-w-xs m-auto pt-5 justify-around">
-      <span>incorrect email or password</span>
-    </div>
-  {/if}
+  <div class="w-full bg-blue-500"></div>
   <div class="flex max-w-xs m-auto pt-5 justify-around">
     <button type="submit">login</button>
   </div>
