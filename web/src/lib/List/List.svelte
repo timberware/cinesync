@@ -9,7 +9,7 @@
   export let imageUrl = '';
 </script>
 
-<div class="w-64 mx-auto">
+<div class="w-60 mx-auto">
   <Container>
     <Poster src="{imageUrl}" movies="{movies}" sharees="{sharees}" />
     <ListTitle title="{title}" />

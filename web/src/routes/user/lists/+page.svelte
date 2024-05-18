@@ -5,6 +5,7 @@
   import Nav from '$lib/Nav/Nav.svelte';
   import ListModal from '$lib/List/ListModal.svelte';
   import type { ListType, User } from '../../../ambient';
+  import TopSection from '$lib/TopSection.svelte';
 
   export let data: {
     user: User;
@@ -17,12 +18,12 @@
 </script>
 
 <Nav username="{user.username}" />
-<div class="flex md:text-3xl sm:text-2xl mt-10 mb-4 mx-5 justify-between">
+<TopSection>
   <div>your lists</div>
   <button type="button" class="min-h-full" on:click="{() => (showModal = true)}">
     <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
   </button>
-</div>
+</TopSection>
 <ListContainer lists="{lists}" />
 <div class="flex md:text-3xl sm:text-2xl mt-10 mb-4 mx-5 justify-between">
   <div>shared with you</div>
