@@ -1,3 +1,3 @@
-<div class="w-1/3 relative flex rounded-xl bg-background p-3 flex-shrink-0">
+<div class="w-full h-60 relative flex rounded-xl bg-secondary mx-5 p-3">
   <slot />
 </div>

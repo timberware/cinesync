@@ -9,12 +9,14 @@
   {#if lists?.length}
     {#each lists as list (list.id)}
       <div class="w-full xl:w-1/4 lg:w-1/3 sm:w-1/2">
-        <List
-          title="{list.name}"
-          movies="{list.movies}"
-          sharees="{list.sharees}"
-          imageUrl="{list.posterUrl || ''}"
-        />
+        <a href="{`/user/list/${list.id}`}">
+          <List
+            title="{list.name}"
+            movies="{list.movies}"
+            sharees="{list.sharees}"
+            imageUrl="{list.posterUrl || ''}"
+          />
+        </a>
       </div>
     {/each}
   {/if}
