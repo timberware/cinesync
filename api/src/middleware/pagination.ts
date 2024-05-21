@@ -1,22 +1,19 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { PER_PAGE, PAGE_NUMBER } from '../utils';
 
 @Injectable()
 export class PaginationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: () => void) {
-    if (!req.query.per_page || !req.query.page_number) {
-      return next();
-    }
-
-    const perPageStr = req.query.per_page?.toString();
-    const pageNumberStr = req.query.page_number?.toString();
-
-    const per_page = parseInt(perPageStr, 10);
-    const page_number = parseInt(pageNumberStr, 10);
-
     const parsedQuery = {
-      per_page,
-      page_number,
+      per_page: parseInt(
+        req.query.per_page?.toString() || PER_PAGE.toString(),
+        10,
+      ),
+      page_number: parseInt(
+        req.query.page_number?.toString() || PAGE_NUMBER.toString(),
+        10,
+      ),
     };
 
     const originalSend: <T>(body: T) => Response = res.send;
@@ -44,12 +41,9 @@ export class PaginationMiddleware implements NestMiddleware {
 }
 
 const calculatePaginationInfo = (
-  query: { per_page: number; page_number: number },
+  { per_page, page_number }: { per_page: number; page_number: number },
   count: number,
 ) => {
-  const per_page = query.per_page || 10;
-  const page_number = query.page_number || 0;
-
   const last_page = Math.floor((count > 0 ? count - 1 : 0) / per_page);
   const current_page = page_number > last_page ? last_page : page_number;
   const prev_page = current_page > 0 ? current_page - 1 : 0;
