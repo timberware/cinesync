@@ -16,7 +16,12 @@ export class SyncService {
 
     const batchSize = 50;
 
-    const { movies } = await this.movieService.getMovies({});
+    const { count } = await this.movieService.getMovies({});
+
+    const { movies } = await this.movieService.getMovies({
+      per_page: count,
+      page_number: 0,
+    });
 
     const chunks = this.chunk(movies, batchSize);
 
@@ -34,7 +39,7 @@ export class SyncService {
     ).flat();
 
     const preparedChunk = megaChunk.filter(
-      (chunk) => chunk.status === HttpStatus.OK,
+      (chunk) => chunk?.status === HttpStatus.OK,
     );
 
     await Promise.all(
