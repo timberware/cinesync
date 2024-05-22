@@ -11,12 +11,15 @@ import {
   Param,
   Query,
   UnauthorizedException,
+  Body,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ListAuthGuard } from '../list/guard/list.guard';
 import { RemoveListFieldsInterceptor } from '../list/interceptor/remove-list-fields.interceptor';
 import { MovieService } from './movie.service';
 import { QueryDto } from './dto/query.dto';
+import { RemoveListCreateFieldsInterceptor } from '../list/interceptor/remove-list-create-fields.interceptor';
+import { UpdateMovieListDto } from './dto/update-movie-list.dto';
 
 @Controller('movies')
 export class MovieController {
@@ -33,6 +36,13 @@ export class MovieController {
   updateWatchedStatus(@Param('id') movieId: string, @Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
     return this.movieService.updateWatchedStatus(movieId, req.user.id);
+  }
+
+  @UseInterceptors(RemoveListCreateFieldsInterceptor)
+  @UseGuards(ListAuthGuard)
+  @Patch('/lists/:id')
+  updateList(@Param('id') listId: string, @Body() body: UpdateMovieListDto) {
+    return this.movieService.createMovies(body.movie, listId);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
