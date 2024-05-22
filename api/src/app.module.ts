@@ -11,7 +11,6 @@ import { ListModule } from './list/list.module';
 import { NotificationModule } from './notification/notification.module';
 import { ImageModule } from './image/image.module';
 import { MovieModule } from './movie/movie.module';
-import { MovielistModule } from './movielist/movielist.module';
 import { SyncModule } from './sync/sync.module';
 import { AuthModule } from './auth/auth.module';
 
@@ -24,7 +23,6 @@ import { AuthModule } from './auth/auth.module';
     NotificationModule,
     ImageModule,
     MovieModule,
-    MovielistModule,
     SyncModule,
   ],
   controllers: [AppController],

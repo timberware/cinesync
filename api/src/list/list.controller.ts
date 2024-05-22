@@ -19,6 +19,7 @@ import { CommentAuthorizationGuard } from '../comment/guard/comment-auth.guard';
 import { Request } from 'express';
 import { ListService } from './list.service';
 import { CommentsService } from '../comment/comment.service';
+import { MovieService } from '../movie/movie.service';
 import { ListAuthGuard } from './guard/list.guard';
 import { RemoveListFieldsInterceptor } from './interceptor/remove-list-fields.interceptor';
 import { RemoveListCreateFieldsInterceptor } from './interceptor/remove-list-create-fields.interceptor';
@@ -34,6 +35,7 @@ import { QueryDto } from './dto/query.dto';
 export class ListController {
   constructor(
     private listService: ListService,
+    private movieService: MovieService,
     private commentService: CommentsService,
     private userService: UserService,
     private notificationService: NotificationService,
@@ -139,6 +141,38 @@ export class ListController {
     }
 
     return createdComment;
+  }
+
+  @UseGuards(ListAuthGuard)
+  @UseInterceptors(RemoveListCreateFieldsInterceptor)
+  @Post('/:id/clone')
+  async cloneList(
+    @Param('id') listId: string,
+    @Body() { name }: { name: string },
+    @Req() req: Request,
+  ) {
+    if (!req.user) throw new UnauthorizedException('user not found');
+
+    const { count } = await this.movieService.getMovies({ listId });
+    const originalList = await this.getList(listId);
+    const clonedList = await this.listService.createList(
+      name || originalList.name,
+      req.user?.id,
+    );
+
+    if (count === 0) {
+      return clonedList;
+    }
+
+    const { movies } = await this.movieService.getMovies({
+      per_page: count,
+      page_number: 0,
+      listId,
+    });
+
+    await this.movieService.createMovies(movies, clonedList.id);
+
+    return clonedList;
   }
 
   @UseGuards(ListAuthGuard, CommentAuthorizationGuard)

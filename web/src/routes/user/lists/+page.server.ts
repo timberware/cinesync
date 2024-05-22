@@ -205,7 +205,7 @@ export const actions = {
     const tmdbId = data.get('id') as string;
 
     try {
-      const response = await fetch(`${API}/movielists/${listId}`, {
+      const response = await fetch(`${API}/movies/lists/${listId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -288,7 +288,7 @@ export const actions = {
     const name = data.get('name');
 
     try {
-      const response = await fetch(`${API}/movielists/${listId}/clone`, {
+      const response = await fetch(`${API}/lists/${listId}/clone`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
