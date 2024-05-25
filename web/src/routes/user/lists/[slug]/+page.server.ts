@@ -127,7 +127,5 @@ export const actions = {
     } catch (e) {
       console.error(e);
     }
-
-    // redirect(302, '/user/lists');
   }
 };

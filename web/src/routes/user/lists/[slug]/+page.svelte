@@ -22,19 +22,18 @@
   let toBeDeleted: string;
   let displayedMovies = movies;
 
-  const caquita = (id: string) => {
+  const deleteMovieFromList = (id: string) => {
     if (id) {
-      const deleteThis = displayedMovies.filter(m => m.id !== id);
-      console.log({ deleteThis });
+      const filteredList = displayedMovies.filter(m => m.id !== id);
 
-      if (deleteThis.length) {
-        displayedMovies = deleteThis;
+      if (filteredList.length) {
+        displayedMovies = filteredList;
       }
       toBeDeleted = '';
     }
   };
 
-  $: caquita(toBeDeleted);
+  $: deleteMovieFromList(toBeDeleted);
 </script>
 
 <Nav username="{user.username}" />
