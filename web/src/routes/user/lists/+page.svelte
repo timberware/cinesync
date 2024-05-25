@@ -1,6 +1,7 @@
 <script lang="ts">
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+  import { page } from '$app/stores';
   import ListContainer from '$lib/List/ListsContainer.svelte';
   import Nav from '$lib/Nav/Nav.svelte';
   import ListModal from '$lib/List/ListModal.svelte';
@@ -15,6 +16,7 @@
 
   let showModal = false;
   const { user, lists, sharedLists } = data;
+  console.log({ page: $page });
 </script>
 
 <Nav username="{user.username}" />

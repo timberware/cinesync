@@ -17,8 +17,24 @@
     };
   };
 
-  let showModal = false;
   const { user, movies, list } = data;
+  let showModal = false;
+  let toBeDeleted: string;
+  let displayedMovies = movies;
+
+  const caquita = (id: string) => {
+    if (id) {
+      const deleteThis = displayedMovies.filter(m => m.id !== id);
+      console.log({ deleteThis });
+
+      if (deleteThis.length) {
+        displayedMovies = deleteThis;
+      }
+      toBeDeleted = '';
+    }
+  };
+
+  $: caquita(toBeDeleted);
 </script>
 
 <Nav username="{user.username}" />
@@ -29,9 +45,9 @@
   </button>
 </TopSection>
 <MoviesSection>
-  {#if movies?.length}
-    {#each movies as movie (movie.id)}
-      <Movie listId="{list.id}" movie="{movie}" />
+  {#if displayedMovies?.length}
+    {#each displayedMovies as movie (movie.id)}
+      <Movie listId="{list.id}" movie="{movie}" bind:toBeDeleted="{toBeDeleted}" />
     {/each}
   {/if}
 </MoviesSection>

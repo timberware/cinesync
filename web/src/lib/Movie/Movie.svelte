@@ -3,21 +3,24 @@
   import Delete from './Delete.svelte';
   import Watch from './Watched.svelte';
   import Image from '$lib/Image.svelte';
-  import MovieContainer from './MovieContainer.svelte';
+  import Container from './Container.svelte';
   import Label from './Label.svelte';
   import { getPosterUrl } from '../../utils';
 
   export let listId: string;
   export let movie: MovieType;
+  export let toBeDeleted: string;
+
+  $: watched = movie.watched;
 </script>
 
-<MovieContainer>
+<Container>
   <div class="absolute flex top-1 right-1 gap-2 bg-secondary px-1 rounded-md z-10">
-    <Watch movieId="{movie.id}" watched="{movie.watched}" />
-    <Delete listId="{listId}" movieId="{movie.id}" />
+    <Watch movieId="{movie.id}" bind:watched="{movie.watched}" />
+    <Delete listId="{listId}" movieId="{movie.id}" bind:toBeDeleted="{toBeDeleted}" />
   </div>
   <div class="w-40 mr-3 bg-black rounded-xl">
-    <Image src="{getPosterUrl(movie.posterUrl)}" watched="{movie.watched}" />
+    <Image src="{getPosterUrl(movie.posterUrl)}" watched="{watched}" />
   </div>
   <div class="w-full overflow-y-auto">
     <p>
@@ -41,4 +44,4 @@
       {movie.description}
     </p>
   </div>
-</MovieContainer>
+</Container>
