@@ -121,9 +121,6 @@ export const actions = {
       if (response.status !== 204) {
         return fail(400);
       }
-      console.log('hey sailor');
-      console.log({ listId });
-      console.log({ movieId });
     } catch (e) {
       console.error(e);
     }
