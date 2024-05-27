@@ -17,8 +17,23 @@
     };
   };
 
-  let showModal = false;
   const { user, movies, list } = data;
+  let showModal = false;
+  let toBeDeleted: string;
+  let displayedMovies = movies;
+
+  const deleteMovieFromList = (id: string) => {
+    if (id) {
+      const filteredList = displayedMovies.filter(m => m.id !== id);
+
+      if (filteredList.length) {
+        displayedMovies = filteredList;
+      }
+      toBeDeleted = '';
+    }
+  };
+
+  $: deleteMovieFromList(toBeDeleted);
 </script>
 
 <Nav username="{user.username}" />
@@ -29,9 +44,9 @@
   </button>
 </TopSection>
 <MoviesSection>
-  {#if movies?.length}
-    {#each movies as movie (movie.id)}
-      <Movie listId="{list.id}" movie="{movie}" />
+  {#if displayedMovies?.length}
+    {#each displayedMovies as movie (movie.id)}
+      <Movie listId="{list.id}" movie="{movie}" bind:toBeDeleted="{toBeDeleted}" />
     {/each}
   {/if}
 </MoviesSection>

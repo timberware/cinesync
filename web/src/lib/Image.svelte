@@ -27,7 +27,9 @@
 
 {#if loaded}
   <img
-    class="{`h-full w-full object-scale-down rounded-md ${!watched && ' brightness-25'}`}"
+    class="{`transition-all ease-in-out duration-500 h-full w-full object-scale-down rounded-md ${
+      !watched && ' brightness-25'
+    }`}"
     src="{src}"
     alt="List"
   />
