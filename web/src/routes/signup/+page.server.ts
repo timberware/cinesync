@@ -1,3 +1,4 @@
+import { fail, redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
 
@@ -12,7 +13,7 @@ export const actions = {
     const password = data.get('password');
 
     try {
-      const response = await fetch(`${API}/users/signup`, {
+      const response = await fetch(`${API}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json'
@@ -24,10 +25,14 @@ export const actions = {
         })
       });
 
-      const r = await response.json();
-      return r;
+      if (response.status !== 201) {
+        return fail(response.status);
+      }
+
+      await response.json();
     } catch (e) {
       console.error(e);
     }
+    redirect(302, '/user/login');
   }
 };
