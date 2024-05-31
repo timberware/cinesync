@@ -37,6 +37,7 @@ export class AuthController {
   @UseInterceptors(RemoveFieldsInterceptor)
   @Public()
   @Post('/signup')
+  @HttpCode(HttpStatus.CREATED)
   async signup(@Body() body: CreateUserDto) {
     const user = await this.authService.signup(body);
     await this.notificationService.send(

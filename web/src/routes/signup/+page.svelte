@@ -1,16 +1,30 @@
 <script>
+  import { enhance, applyAction } from '$app/forms';
   import Footer from '$lib/Footer.svelte';
+  import Toasts from '$lib/Toast/Toasts.svelte';
+  import { addToast } from '../../store';
   import { selectRandomDirector } from '../../utils';
-
-  /** @type {import('./$types').ActionData} */
-  export let form;
+  import { conflictError } from './messages';
 </script>
+
+<Toasts />
 
 <header class="container xl:max-w-screen-xl lg:max-w-screen-lg mx-auto">
   <h1 class="text-7xl max-w-fit m-auto pt-20">cinesync</h1>
 </header>
 
-<form method="POST" action="?/signup">
+<form
+  method="POST"
+  action="?/signup"
+  use:enhance="{() => {
+    return async ({ result }) => {
+      if (result.type === 'failure') {
+        addToast(conflictError);
+      }
+      await applyAction(result);
+    };
+  }}"
+>
   <div class="max-w-md m-auto mt-5">
     <div class="flex pt-2 pb-2 justify-center">
       <label class="w-24 text-center" for="username">username</label>
@@ -46,11 +60,6 @@
       />
     </div>
   </div>
-  {#if form?.statusCode !== 201 && form?.statusCode !== undefined}
-    <div class="flex max-w-xs m-auto pt-5 justify-around">
-      <span>invalid username or email</span>
-    </div>
-  {/if}
   <div class="flex max-w-xs m-auto pt-5 justify-around">
     <button type="submit">sign Up</button>
   </div>
