@@ -6,7 +6,8 @@ import { CommentDto } from '../comment/dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
 import { CommentsService } from '../comment/comment.service';
-import { QueryDto } from '../user/dto/query.dto';
+import { QueryDto } from './dto/query.dto';
+import { QueryDto as UserQueryDto } from '../user/dto/query.dto';
 
 @Injectable()
 export class ListService {
@@ -77,9 +78,12 @@ export class ListService {
     const user = await this.userService.getUser(userId);
     const { users: sharee } = await this.userService.getUsers({
       email: shareeEmail,
-    } as QueryDto);
+    } as UserQueryDto);
 
-    const l = await this.getLists({ id: sharee[0].id } as QueryDto);
+    const l = await this.getLists({
+      id: sharee[0].id,
+      shared: true,
+    } as QueryDto);
     const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
     await this.notificationService.send(
@@ -105,9 +109,12 @@ export class ListService {
     const user = await this.userService.getUser(userId);
     const { users: sharee } = await this.userService.getUsers({
       username,
-    } as QueryDto);
+    } as UserQueryDto);
 
-    const l = await this.getLists({ id: sharee[0].id } as QueryDto);
+    const l = await this.getLists({
+      id: sharee[0].id,
+      shared: true,
+    } as QueryDto);
     const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
     await this.notificationService.send(

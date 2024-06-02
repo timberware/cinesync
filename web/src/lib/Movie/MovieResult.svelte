@@ -20,7 +20,7 @@
     </p>
     <form
       method="POST"
-      action="lists?/updateList"
+      action="?/updateList"
       class="absolute top-0 left-0 px-1 bg-background rounded-br-md"
     >
       <input type="hidden" name="listId" value="{listId}" />

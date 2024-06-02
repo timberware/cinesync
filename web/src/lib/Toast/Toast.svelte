@@ -24,7 +24,7 @@
   role="alert"
   transition:fade
 >
-  <div class="text-text">
+  <div class="text-text md:text-xl sm:text-lg">
     <slot />
   </div>
 
