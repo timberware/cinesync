@@ -10,7 +10,17 @@ export class MovieService {
   constructor(private moviesDao: MovieDao, private tmdbDao: TMDBDao) {}
 
   async getMovies(query: QueryDto) {
-    return await this.moviesDao.getMovies(query);
+    const { movies, count } = await this.moviesDao.getMovies(query);
+
+    const moviesWithCreatedAt = movies.map((listMovie) => {
+      const { Movie, createdAt } = listMovie;
+      return {
+        ...Movie,
+        createdAt,
+      };
+    });
+
+    return { movies: moviesWithCreatedAt, count };
   }
 
   async createMovies(movies: MovieDto[], listId: string) {

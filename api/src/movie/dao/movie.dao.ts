@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MovieDto } from '../dto/movie.dto';
 import { QueryDto } from '../dto/query.dto';
+import { PER_PAGE, PAGE_NUMBER } from '../../utils';
 
 @Injectable()
 export class MovieDao {
@@ -34,15 +35,18 @@ export class MovieDao {
 
       await Promise.all(
         newMovies.map((movie) =>
-          this.prisma.movie.update({
-            where: { id: movie.id },
-            data: {
-              list: {
-                connect: {
-                  id: listId,
-                },
+          this.prisma.listMovie.upsert({
+            where: {
+              listId_movieId: {
+                listId,
+                movieId: movie.id,
               },
             },
+            create: {
+              listId,
+              movieId: movie.id,
+            },
+            update: {},
           }),
         ),
       );
@@ -56,24 +60,31 @@ export class MovieDao {
       ...(query?.userId && {
         user: {
           some: {
-            id: query?.userId,
+            id: query.userId,
           },
         },
       }),
       ...(query?.listId && {
-        list: {
+        listMovie: {
           some: {
-            id: query?.listId,
+            listId: query.listId,
           },
         },
       }),
     };
 
     const [movies, count] = await Promise.all([
-      this.prisma.movie.findMany({
-        where: queryCondition,
-        take: query?.per_page || 10,
-        skip: (query?.page_number || 0) * (query?.per_page || 10),
+      this.prisma.listMovie.findMany({
+        where: query?.listId ? { listId: query?.listId } : {},
+        include: {
+          Movie: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: query?.per_page || PER_PAGE,
+        skip:
+          (query?.page_number || PAGE_NUMBER) * (query?.per_page || PER_PAGE),
       }),
 
       this.prisma.movie.count({
@@ -116,8 +127,8 @@ export class MovieDao {
     return await this.prisma.movie.update({
       where: { id: movieId },
       data: {
-        list: {
-          disconnect: { id: listId },
+        listMovie: {
+          delete: { listId_movieId: { listId, movieId } },
         },
       },
     });

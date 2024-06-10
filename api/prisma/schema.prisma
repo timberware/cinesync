@@ -8,30 +8,40 @@ datasource db {
 }
 
 model List {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
-  isPrivate Boolean   @map("is_private")
-  creatorId String    @map("creator_id")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  movie     Movie[]
+  isPrivate Boolean     @map("is_private")
+  creatorId String      @map("creator_id")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  listMovie ListMovie[]
   user      User[]
   comments  Comment[]
 }
 
+model ListMovie {
+  listId    String   @map("list_id") @db.Uuid
+  movieId   String   @map("movie_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  List      List     @relation(fields: [listId], references: [id])
+  Movie     Movie    @relation(fields: [movieId], references: [id])
+
+  @@id([listId, movieId])
+}
+
 model Movie {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String
   description String
   genre       String[]
-  releaseDate String   @map("release_date")
-  posterUrl   String   @map("poster_url")
+  releaseDate String      @map("release_date")
+  posterUrl   String      @map("poster_url")
   rating      Float
-  tmdbId      Int      @unique @map("tmdb_id")
+  tmdbId      Int         @unique @map("tmdb_id")
   eTag        String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  list        List[]
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  listMovie   ListMovie[]
   user        User[]
 }
 

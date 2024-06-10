@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { Role, User } from '@prisma/client';
 import { UpdateListDto } from '../dto/update-list.dto';
 import { QueryDto } from '../dto/query.dto';
+import { PER_PAGE, PAGE_NUMBER } from '../../utils';
 
 @Injectable()
 export class ListDao {
@@ -60,8 +61,8 @@ export class ListDao {
     const [lists, count] = await Promise.all([
       this.prisma.list.findMany({
         where: queryCondition,
-        take: query.per_page || 10,
-        skip: (query.page_number || 0) * (query.per_page || 10),
+        take: query.per_page || PER_PAGE,
+        skip: (query.page_number || PAGE_NUMBER) * (query.per_page || PER_PAGE),
         orderBy: {
           createdAt: 'desc',
         },
@@ -118,7 +119,7 @@ export class ListDao {
   async updateListPrivacy(listId: string) {
     const list = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },
-      include: { user: true, movie: true },
+      include: { user: true, listMovie: true },
     });
 
     return await this.prisma.list.update({
