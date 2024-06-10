@@ -5,6 +5,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { QueryDto } from '../dto/query.dto';
 import { FriendStatus } from '../user.service';
 import { Role } from '@prisma/client';
+import { PAGE_NUMBER, PER_PAGE } from '../../utils';
 
 @Injectable()
 export class UserDao {
@@ -24,8 +25,8 @@ export class UserDao {
     const [users, count] = await Promise.all([
       this.prisma.user.findMany({
         where: queryCondition,
-        take: query.per_page || 10,
-        skip: (query.page_number || 0) * (query.per_page || 10),
+        take: query.per_page || PER_PAGE,
+        skip: (query.page_number || PAGE_NUMBER) * (query.per_page || PER_PAGE),
       }),
 
       this.prisma.user.count({
@@ -60,7 +61,7 @@ export class UserDao {
       include: {
         list: {
           include: {
-            movie: true,
+            listMovie: true,
           },
         },
         movie: true,
