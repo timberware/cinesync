@@ -20,6 +20,7 @@
   import ListShareModal from '$lib/List/ListShareModal.svelte';
   import Avatar from '$lib/Avatar.svelte';
 
+  /** @type {import('./$types').PageData} */
   export let data: {
     user: User;
     movies: MovieType[];
