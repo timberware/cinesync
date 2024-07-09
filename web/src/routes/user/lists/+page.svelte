@@ -26,9 +26,11 @@
   </button>
 </TopSection>
 <ListContainer lists="{lists}" />
-<div class="flex md:text-3xl sm:text-2xl mt-10 mb-4 mx-5 justify-between">
-  <Title>shared with you</Title>
-</div>
-<ListContainer lists="{sharedLists}" />
+{#if sharedLists.length}
+  <div class="flex md:text-3xl sm:text-2xl mt-10 mb-4 mx-5 justify-between">
+    <Title>shared with you</Title>
+  </div>
+  <ListContainer lists="{sharedLists}" />
+{/if}
 
 <ListModal bind:showModal="{showModal}" />

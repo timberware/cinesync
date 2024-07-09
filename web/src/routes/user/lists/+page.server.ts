@@ -1,4 +1,6 @@
+import { fail } from '@sveltejs/kit';
 import type { Lists, ListType } from '../../../ambient';
+import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
 import { LISTS_PER_PAGE } from '../../../utils/consts';
 
@@ -111,5 +113,34 @@ export const load = async ({ fetch, locals }) => {
     return { lists, sharedLists, user: user };
   } catch (e) {
     console.error(e);
+  }
+};
+
+/** @type {import('./$types').Actions} */
+export const actions = {
+  createList: async ({ request, fetch, locals }: RequestEvent) => {
+    const data = await request.formData();
+    const listName = data.get('list-name') as string;
+
+    try {
+      const list = {
+        name: listName
+      };
+
+      const response = await fetch(`${API}/lists`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify(list)
+      });
+
+      if (response.status !== 200) {
+        return fail(400);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 };

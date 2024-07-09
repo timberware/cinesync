@@ -117,31 +117,6 @@ export const actions = {
       console.error(e);
     }
   },
-  createList: async ({ request, fetch, locals }: RequestEvent) => {
-    const data = await request.formData();
-    const listName = data.get('list-name') as string;
-
-    try {
-      const list = {
-        name: listName
-      };
-
-      const response = await fetch(`${API}/lists`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
-        },
-        body: JSON.stringify(list)
-      });
-
-      if (response.status !== 200) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
   deleteList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
