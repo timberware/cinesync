@@ -12,15 +12,7 @@ export class MovieService {
   async getMovies(query: QueryDto) {
     const { movies, count } = await this.moviesDao.getMovies(query);
 
-    const moviesWithCreatedAt = movies.map((listMovie) => {
-      const { Movie, createdAt } = listMovie;
-      return {
-        ...Movie,
-        createdAt,
-      };
-    });
-
-    return { movies: moviesWithCreatedAt, count };
+    return { movies, count };
   }
 
   async createMovies(movies: MovieDto[], listId: string) {
@@ -44,14 +36,14 @@ export class MovieService {
   async updateWatchedStatus(movieId: string, userId: string) {
     const { movies } = await this.getMovies({ userId });
 
-    const hasWatched = !!movies.find(
+    const hasWatched = movies.find(
       (watchedMovie) => watchedMovie.id === movieId,
     );
 
     return await this.moviesDao.updateWatchedStatus(
       movieId,
       userId,
-      hasWatched,
+      !!hasWatched,
     );
   }
 

@@ -13,7 +13,7 @@ export class QueryDto {
   @IsInt()
   @Type(() => Number)
   @IsOptional()
-  per_page? = 10;
+  per_page? = 500;
 
   @IsInt()
   @Type(() => Number)

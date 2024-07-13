@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { MovieDto } from '../dto/movie.dto';
 import { QueryDto } from '../dto/query.dto';
 import { PER_PAGE, PAGE_NUMBER } from '../../utils';
+import { Movie } from '@prisma/client';
 
 @Injectable()
 export class MovieDao {
@@ -57,31 +58,29 @@ export class MovieDao {
 
   async getMovies(query: QueryDto) {
     const queryCondition = {
-      ...(query?.userId && {
-        user: {
-          some: {
-            id: query.userId,
-          },
+      AND: [
+        {
+          ...(query?.userId && {
+            user: {
+              some: {
+                id: query.userId,
+              },
+            },
+          }),
+          ...(query?.listId && {
+            listMovie: {
+              some: {
+                listId: query.listId,
+              },
+            },
+          }),
         },
-      }),
-      ...(query?.listId && {
-        listMovie: {
-          some: {
-            listId: query.listId,
-          },
-        },
-      }),
+      ],
     };
 
     const [movies, count] = await Promise.all([
-      this.prisma.listMovie.findMany({
-        where: query?.listId ? { listId: query?.listId } : {},
-        include: {
-          Movie: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
+      this.prisma.movie.findMany({
+        where: queryCondition,
         take: query?.per_page || PER_PAGE,
         skip:
           (query?.page_number || PAGE_NUMBER) * (query?.per_page || PER_PAGE),
@@ -92,7 +91,34 @@ export class MovieDao {
       }),
     ]);
 
-    return { movies, count };
+    let sortedMovies: Movie[] = [];
+
+    if (query.listId && count) {
+      const m = movies.map((m) => m.id);
+
+      const lm = await this.prisma.listMovie.findMany({
+        where: {
+          movieId: {
+            in: m,
+          },
+          listId: query.listId,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      lm.forEach((l) => {
+        const movie = movies.find((mv) => mv.id === l.movieId);
+
+        if (movie) {
+          movie.createdAt = l.createdAt;
+          sortedMovies.push(movie);
+        }
+      });
+    } else sortedMovies = movies;
+
+    return { movies: sortedMovies, count };
   }
 
   async updateWatchedStatus(
