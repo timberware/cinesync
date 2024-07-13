@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PUBLIC_API_HOST } from '$env/static/public';
+  import { env } from '$env/dynamic/public';
   import { onMount } from 'svelte';
   export let username: string;
   export let isLarge: Boolean = false;
@@ -12,7 +12,7 @@
   const imageClass = `inline-block text-center rounded-full bg-accent text-text select-none ${
     isLarge ? 'h-24 w-24 text-8xl' : 'h-6 w-6 has-tooltip'
   }`;
-  const fullPath = `${PUBLIC_API_HOST || 'http://localhost:4000'}/images/${username}`;
+  const fullPath = `${env.PUBLIC_API_HOST || 'http://localhost:4000'}/images/${username}`;
 
   onMount(() => {
     const img = new Image();
