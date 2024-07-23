@@ -2,7 +2,6 @@ import { fail } from '@sveltejs/kit';
 import type { Lists, ListType } from '../../../ambient';
 import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
-import { LISTS_PER_PAGE } from '../../../utils/consts';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
 
@@ -14,17 +13,15 @@ export const load = async ({ fetch, locals }) => {
     return {};
   }
 
-  const PER_PAGE = `per_page=${LISTS_PER_PAGE}`;
-
   try {
     const [listResponse, sharedListsResponse] = await Promise.all([
-      fetch(`${API}/lists?id=${user.id}&${PER_PAGE}`, {
+      fetch(`${API}/lists?id=${user.id}`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie as string
         }
       }),
-      fetch(`${API}/lists?id=${user.id}&shared=true&${PER_PAGE}`, {
+      fetch(`${API}/lists?id=${user.id}&shared=true&`, {
         method: 'GET',
         headers: {
           Authorization: locals.cookie as string
