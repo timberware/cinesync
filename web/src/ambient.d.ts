@@ -59,3 +59,11 @@ export type ToastType = {
   dismissible: boolean;
   timeout: number;
 };
+
+export type Stats = {
+  id?: string;
+  listCount: number;
+  moviesCount: number;
+  sharedListCount: number;
+  commentsCount: number;
+};
