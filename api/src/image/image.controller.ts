@@ -10,8 +10,8 @@ export class ImageController {
   @Public()
   @Get('/:name')
   async getImage(@Param('name') name: string, @Res() res: Response) {
-    const image = await this.imageService.getImage(name);
+    const { image, mimetype } = await this.imageService.getImage(name);
 
-    res.end(image);
+    res.contentType(mimetype).end(image);
   }
 }

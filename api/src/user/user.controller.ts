@@ -29,6 +29,7 @@ import { QueryDto } from './dto/query.dto';
 import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor';
 import { FriendStatus } from './user.service';
 import { ImageService } from '../image/image.service';
+import { AVATAR_MAX_SIZE } from 'src/utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -108,14 +109,14 @@ export class UserController {
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.CREATED)
   @Post('/avatar')
   @UseInterceptors(FileInterceptor('image'))
   async createAvatar(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+          new MaxFileSizeValidator({ maxSize: AVATAR_MAX_SIZE }),
           new FileTypeValidator({ fileType: '.(png|jpeg|gif)' }),
         ],
       }),
@@ -125,27 +126,18 @@ export class UserController {
   ) {
     if (!req.user) throw new UnauthorizedException('user not found');
 
-    const extension = file.originalname
-      .split('.')
-      .slice(-1) as unknown as string;
     const { username } = req.user;
-    const avatarName = `${username}.${extension}`;
+    const { mimetype } = file;
 
-    if (req.user.avatarName) {
-      this.imageService.deleteImage(req.user.avatarName);
-    }
-
-    this.userService.updateUser(req.user.id, { avatarName });
-
-    return this.imageService.createImage(avatarName, file?.buffer);
+    return this.imageService.createImage(username, mimetype, file?.buffer);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
   @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/avatar')
-  deleteAvatar(@Req() req: Request) {
+  async deleteAvatar(@Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    return this.imageService.deleteImage(req.user?.username);
+    await this.imageService.deleteImage(req.user?.username);
   }
 }
