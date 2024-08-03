@@ -5,24 +5,31 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class ImageDao {
   constructor(private readonly prisma: PrismaService) {}
 
-  getImage(filename: string) {
+  getImage(username: string) {
     return this.prisma.image.findUniqueOrThrow({
       where: {
-        name: filename,
+        name: username,
       },
     });
   }
 
-  createImage(filename: string, image: Buffer) {
-    return this.prisma.image.create({
-      data: { name: filename, image },
+  createImage(username: string, mimetype: string, image: Buffer) {
+    return this.prisma.image.upsert({
+      where: {
+        name: username,
+      },
+      update: {
+        mimetype,
+        image,
+      },
+      create: { name: username, image, mimetype },
     });
   }
 
-  async deleteImage(filename: string) {
-    return await this.prisma.image.delete({
+  deleteImage(username: string) {
+    this.prisma.image.delete({
       where: {
-        name: filename,
+        name: username,
       },
     });
   }

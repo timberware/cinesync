@@ -1,25 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ImageDao } from './daos/image.dao';
 
 @Injectable()
 export class ImageService {
   constructor(private imageDao: ImageDao) {}
 
-  async getImage(filename: string) {
-    const { image } = await this.imageDao.getImage(filename);
-
-    if (!image) {
-      throw new NotFoundException('No image found');
-    }
-
-    return image;
+  async getImage(username: string) {
+    return this.imageDao.getImage(username);
   }
 
-  async createImage(filename: string, image: Buffer) {
-    return this.imageDao.createImage(filename, image);
+  async createImage(username: string, mimetype: string, image: Buffer) {
+    return this.imageDao.createImage(username, mimetype, image);
   }
 
-  async deleteImage(filename: string) {
-    return await this.imageDao.deleteImage(filename);
+  async deleteImage(username: string) {
+    return this.imageDao.deleteImage(username);
   }
 }

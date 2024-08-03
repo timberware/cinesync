@@ -97,8 +97,13 @@ describe('UserController', () => {
       },
     };
     fakeImageService = {
-      async getImage(name: string) {
-        return Buffer.from(name);
+      getImage: (name: string) => {
+        return Promise.resolve({
+          id: '1234',
+          name,
+          image: Buffer.from(name),
+          mimetype: 'image/jpeg',
+        });
       },
     };
 

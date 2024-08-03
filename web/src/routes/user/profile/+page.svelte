@@ -1,25 +1,64 @@
 <script lang="ts">
+  /** @type {import('./$types').PageData} */
+  import { enhance, applyAction } from '$app/forms';
   import Avatar from '$lib/Avatar.svelte';
   import Nav from '$lib/Nav/Nav.svelte';
-  import type { User } from '../../../ambient';
+  import Toasts from '$lib/Toast/Toasts.svelte';
+  import { addToast } from '../../../store';
+  import { error, success } from './messages';
 
-  export let data: {
-    user: User;
+  export let data;
+  const { user, stats } = data;
+  let trigger = {};
+
+  const reload = () => {
+    trigger = {};
   };
-  const { user } = data;
 </script>
 
+<Toasts />
+
 <Nav username="{user.username}" />
-<div class="flex max-w-4xl mt-20">
-  <div class="w-1/5 mx-auto">
-    <div class="m-auto text-center">
+<div class="sm:flex w-full justify-around mt-20 mx-auto">
+  <div class="max-w-64 text-center mx-auto mb-8 sm:mb-0">
+    {#key trigger}
       <Avatar username="{user.username}" isLarge />
-      <div class="mt-2">{user.username}</div>
-    </div>
+    {/key}
+    <form
+      method="POST"
+      action="?/saveAvatar"
+      use:enhance="{() => {
+        return async ({ result }) => {
+          if (result.type === 'failure') {
+            addToast(error);
+          } else if (result.type === 'success') {
+            addToast(success);
+            reload();
+          }
+          await applyAction(result);
+        };
+      }}"
+      enctype="multipart/form-data"
+    >
+      <input
+        type="file"
+        name="file"
+        accept="image/jpg, image/png"
+        class="mt-4 p-0 file:mr-2 file:py-2 file:px-2
+            file:rounded-full file:border-0
+            file:text-sm file:bg-primary max-w-64"
+        required
+      />
+      <button type="submit" class="mt-4">Upload</button>
+    </form>
   </div>
-  <div class="flex-grow pl-2 pt-2">
-    <div class="mb-2">email: {user.email}</div>
-    <div class="mb-2">lists: N/A</div>
-    <div class="mb-2">watched movies: N/A</div>
+  <div
+    class="max-w-md sm:max-w-xl mx-auto text-xl sm:text-2xl grid content-evenly pl-8 sm:pl-0"
+  >
+    <div>email: {user.email}</div>
+    <div>lists: {stats.listCount}</div>
+    <div>movies: {stats.moviesCount}</div>
+    <div>shared with you: {stats.sharedListCount}</div>
+    <div>comments: {stats.commentsCount}</div>
   </div>
 </div>
