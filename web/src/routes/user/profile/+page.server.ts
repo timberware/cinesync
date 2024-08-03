@@ -1,5 +1,3 @@
-// import { fail } from '@sveltejs/kit';
-// import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
 import { fail } from '@sveltejs/kit';
 import type { Stats } from '../../../ambient';
