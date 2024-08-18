@@ -1,17 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import { ListDao } from './dao/list.dao';
 import { UserService } from '../user/user.service';
-import { UpdateListDto } from './dto';
+import { ListItem, UpdateListDto } from './dto';
 import { CommentDto } from '../comment/dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
 import { CommentsService } from '../comment/comment.service';
 import { QueryDto } from './dto/query.dto';
 import { QueryDto as UserQueryDto } from '../user/dto/query.dto';
+import { UserDto } from './dto/sharee.dto';
 
 @Injectable()
 export class ListService {
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private listDao: ListDao,
     private userService: UserService,
     private notificationService: NotificationService,
@@ -23,31 +27,44 @@ export class ListService {
   }
 
   async getList(listId: string) {
-    const [list, comments] = await Promise.all([
-      this.listDao.getList(listId),
-      this.commentService.getComments({ listId }),
-    ]);
+    let list: ListItem | undefined = await this.cacheManager.get(listId);
 
-    const commentsWithUsername: CommentDto[] = [];
+    let comments: CommentDto[] | undefined = await this.cacheManager.get(
+      `${listId}-comments`,
+    );
 
-    if (comments.length) {
-      const users = await Promise.all(
-        comments.map((comment) =>
-          this.userService.getUsers({
-            id: comment.userId,
-          } as QueryDto),
-        ),
-      );
-
-      comments.forEach((comment, i) =>
-        commentsWithUsername.push({
-          ...comment,
-          username: users[i].users[0].username,
-        }),
-      );
+    if (!list) {
+      list = await this.listDao.getList(listId);
+      await this.cacheManager.set(listId, list);
     }
 
-    return { ...list, comments: commentsWithUsername };
+    if (!comments) {
+      const c = await this.commentService.getComments({ listId });
+
+      const commentsWithUsername: CommentDto[] = [];
+
+      if (c.length) {
+        const users = await Promise.all(
+          c.map((comment) =>
+            this.userService.getUsers({
+              id: comment.userId,
+            } as QueryDto),
+          ),
+        );
+
+        c.forEach((comment, i) =>
+          commentsWithUsername.push({
+            ...comment,
+            username: users[i].users[0].username,
+          }),
+        );
+      }
+      comments = commentsWithUsername;
+
+      await this.cacheManager.set(`${listId}-comments`, comments || []);
+    }
+
+    return { ...list, comments };
   }
 
   async getLists(query: QueryDto) {
@@ -55,7 +72,16 @@ export class ListService {
   }
 
   async getSharees(listId: string, userId: string) {
-    return await this.listDao.getSharees(listId, userId);
+    let sharees: UserDto[] | undefined = await this.cacheManager.get(
+      `${listId}-${userId}-sharees`,
+    );
+
+    if (!sharees) {
+      sharees = await this.listDao.getSharees(listId, userId);
+      sharees.length &&
+        (await this.cacheManager.set(`${listId}-${userId}-sharees`, sharees));
+    }
+    return sharees;
   }
 
   async createList(name: string, userId: string) {
@@ -65,11 +91,15 @@ export class ListService {
   }
 
   async updateList(listId: string, updateListDto: UpdateListDto) {
+    await this.cacheManager.del(listId);
+
     return await this.listDao.updateList(listId, updateListDto);
   }
 
   async deleteList(listId: string, userId: string) {
     const user = await this.userService.getUser(userId);
+    await this.cacheManager.del(listId);
+
     return await this.listDao.deleteList(listId, user);
   }
 
@@ -97,6 +127,8 @@ export class ListService {
       },
       NotificationTypes.LIST_SHARING,
     );
+    await this.cacheManager.del(`${listId}-${userId}-sharees`);
+
     return await this.listDao.toggleShareList(listId, shareeEmail, isShared);
   }
 
@@ -128,6 +160,8 @@ export class ListService {
       },
       NotificationTypes.LIST_SHARING,
     );
+
+    await this.cacheManager.del(`${listId}-${userId}-sharees`);
 
     return await this.listDao.toggleShareList(
       listId,

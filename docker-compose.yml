@@ -45,3 +45,16 @@ services:
     depends_on:
       - api
     restart: "unless-stopped"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_volume_data:/data
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass docker
+
+volumes:
+  redis_volume_data:

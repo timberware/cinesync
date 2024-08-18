@@ -1,9 +1,9 @@
+import { HttpService } from '@nestjs/axios';
+import { HttpStatus } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { logLevels } from './utils/logLevels';
 import { PrismaClientExceptionFilter } from './prisma/filter/prisma-client-exception.filter';
-import { HttpService } from '@nestjs/axios';
-import { HttpStatus } from '@nestjs/common';
 
 const port = 4000;
 

@@ -29,7 +29,7 @@ import { QueryDto } from './dto/query.dto';
 import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor';
 import { FriendStatus } from './user.service';
 import { ImageService } from '../image/image.service';
-import { AVATAR_MAX_SIZE } from 'src/utils';
+import { AVATAR_MAX_SIZE } from '../utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

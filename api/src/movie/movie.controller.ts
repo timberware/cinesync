@@ -35,13 +35,20 @@ export class MovieController {
   @HttpCode(HttpStatus.NO_CONTENT)
   updateWatchedStatus(@Param('id') movieId: string, @Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
+
     return this.movieService.updateWatchedStatus(movieId, req.user.id);
   }
 
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @UseGuards(ListAuthGuard)
   @Patch('/lists/:id')
-  updateList(@Param('id') listId: string, @Body() body: UpdateMovieListDto) {
+  updateList(
+    @Param('id') listId: string,
+    @Body() body: UpdateMovieListDto,
+    @Req() req: Request,
+  ) {
+    if (!req.user) throw new UnauthorizedException('user not found');
+
     return this.movieService.createMovies(body.movie, listId);
   }
 
@@ -55,6 +62,7 @@ export class MovieController {
     @Req() req: Request,
   ) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    return this.movieService.removeMovieFromList(listId, movieId);
+
+    return this.movieService.removeMovieFromList(listId, movieId, req.user.id);
   }
 }
