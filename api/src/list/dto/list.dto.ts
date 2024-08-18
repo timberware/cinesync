@@ -1,9 +1,9 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 
-class ListItem {
+export class ListItem {
   @Expose()
-  id: number;
+  id: string;
 
   @Expose()
   name: string;
@@ -12,7 +12,7 @@ class ListItem {
   isPrivate: boolean;
 
   @Expose()
-  creatorId: number;
+  creatorId: string;
 
   @Expose()
   createdAt: Date;

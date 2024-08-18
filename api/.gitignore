@@ -398,7 +398,6 @@ Temporary Items
 dist
 .webpack
 .serverless/**/*.zip
-package-lock.json
 
 # local db
 db-data

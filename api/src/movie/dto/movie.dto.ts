@@ -1,11 +1,14 @@
 import { IsString, IsArray, IsNumber, IsOptional } from 'class-validator';
 
 export class MovieDto {
+  @IsOptional()
+  @IsString()
+  id: string;
+
   @IsString()
   title: string;
 
   @IsString()
-  @IsOptional()
   description: string;
 
   @IsArray()

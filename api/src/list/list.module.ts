@@ -1,3 +1,4 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ListController } from './list.controller';
 import { ListService } from './list.service';
@@ -8,6 +9,7 @@ import { ListDao } from './dao/list.dao';
 import { CommentModule } from '../comment/comment.module';
 import { PaginationMiddleware } from '../middleware/pagination';
 import { MovieModule } from '../movie/movie.module';
+import { RedisOptions } from '../config/redisCache';
 
 @Module({
   imports: [
@@ -16,6 +18,7 @@ import { MovieModule } from '../movie/movie.module';
     UserModule,
     CommentModule,
     MovieModule,
+    CacheModule.registerAsync(RedisOptions),
   ],
   controllers: [ListController],
   providers: [ListService, ListDao],

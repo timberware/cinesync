@@ -121,6 +121,10 @@ export class MovieDao {
     return { movies: sortedMovies, count };
   }
 
+  getCount() {
+    return this.prisma.movie.count();
+  }
+
   async updateWatchedStatus(
     movieId: string,
     userId: string,
@@ -158,5 +162,24 @@ export class MovieDao {
         },
       },
     });
+  }
+
+  getListsContainingMovie(userId: string, movieId: string) {
+    return Promise.all([
+      this.prisma.listMovie.findMany({
+        where: {
+          movieId,
+          List: {
+            user: {
+              some: {
+                id: userId,
+              },
+            },
+          },
+        },
+        take: PER_PAGE,
+        skip: PAGE_NUMBER * PER_PAGE,
+      }),
+    ]);
   }
 }

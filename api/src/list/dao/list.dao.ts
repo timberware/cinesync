@@ -23,14 +23,6 @@ export class ListDao {
   async getList(listId: string) {
     const list = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },
-      select: {
-        id: true,
-        name: true,
-        isPrivate: true,
-        creatorId: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
 
     return list;
