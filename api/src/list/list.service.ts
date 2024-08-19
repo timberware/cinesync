@@ -61,7 +61,7 @@ export class ListService {
       }
       comments = commentsWithUsername;
 
-      await this.cacheManager.set(`${listId}-comments`, comments || []);
+      await this.cacheManager.set(`${listId}-comments`, comments);
     }
 
     return { ...list, comments };
@@ -78,8 +78,8 @@ export class ListService {
 
     if (!sharees) {
       sharees = await this.listDao.getSharees(listId, userId);
-      sharees.length &&
-        (await this.cacheManager.set(`${listId}-${userId}-sharees`, sharees));
+      if (sharees.length)
+        await this.cacheManager.set(`${listId}-${userId}-sharees`, sharees);
     }
     return sharees;
   }
@@ -116,7 +116,7 @@ export class ListService {
     } as QueryDto);
     const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
-    await this.notificationService.send(
+    this.notificationService.send(
       {
         toEmail: sharee[0].email,
         toUsername: sharee[0].username,
@@ -149,7 +149,7 @@ export class ListService {
     } as QueryDto);
     const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
-    await this.notificationService.send(
+    this.notificationService.send(
       {
         toEmail: sharee[0].email,
         toUsername: sharee[0].username,

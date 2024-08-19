@@ -13,7 +13,7 @@ export class MovieDao {
   async createMovies(movies: MovieDto[], listId: string) {
     let newMovies;
 
-    if (movies?.length) {
+    if (movies.length) {
       newMovies = await Promise.all(
         movies.map((movie) =>
           this.prisma.movie.upsert({
@@ -60,14 +60,14 @@ export class MovieDao {
     const queryCondition = {
       AND: [
         {
-          ...(query?.userId && {
+          ...(query.userId && {
             user: {
               some: {
                 id: query.userId,
               },
             },
           }),
-          ...(query?.listId && {
+          ...(query.listId && {
             listMovie: {
               some: {
                 listId: query.listId,
@@ -81,9 +81,8 @@ export class MovieDao {
     const [movies, count] = await Promise.all([
       this.prisma.movie.findMany({
         where: queryCondition,
-        take: query?.per_page || PER_PAGE,
-        skip:
-          (query?.page_number || PAGE_NUMBER) * (query?.per_page || PER_PAGE),
+        take: query.per_page ?? PER_PAGE,
+        skip: (query.page_number ?? PAGE_NUMBER) * (query.per_page ?? PER_PAGE),
       }),
 
       this.prisma.movie.count({

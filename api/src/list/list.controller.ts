@@ -128,7 +128,7 @@ export class ListController {
     ]);
 
     if (list.creatorId !== commenter.id) {
-      await this.notificationService.send(
+      this.notificationService.send(
         {
           toEmail: listOwner.email,
           toUsername: listOwner.username,
@@ -157,7 +157,7 @@ export class ListController {
     const originalList = await this.getList(listId);
     const clonedList = await this.listService.createList(
       name || originalList.name,
-      req.user?.id,
+      req.user.id,
     );
 
     if (count === 0) {

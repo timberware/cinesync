@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async login(user: any) {
+  login(user: any) {
     const payload = { username: user.email, sub: user.id };
 
     return {

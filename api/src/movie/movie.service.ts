@@ -21,8 +21,8 @@ export class MovieService {
     let count = 0;
 
     let cacheTag = '';
-    listId && (cacheTag = `${listId}-`);
-    userId && (cacheTag += `${userId}-`);
+    if (listId) cacheTag = `${listId}-`;
+    if (userId) cacheTag += `${userId}-`;
     cacheTag += 'movies';
 
     if (cacheTag !== 'movies') movies = await this.cacheManager.get(cacheTag);
@@ -55,7 +55,7 @@ export class MovieService {
   async updateMovie(movieData: TMDBMovieDto, eTag: string) {
     try {
       await this.moviesDao.updateMovie(this.tmdbToDao(movieData, eTag));
-    } catch (error) {
+    } catch {
       throw new BadRequestException(
         `error updating movie with tmdbId ${movieData.id}`,
       );
@@ -98,7 +98,7 @@ export class MovieService {
     return {
       title: movie.title,
       description: movie.overview,
-      genre: movie.genres?.map((g) => g.name),
+      genre: movie.genres.map((g) => g.name),
       releaseDate: movie.release_date,
       posterUrl: movie.poster_path,
       rating: movie.vote_average,

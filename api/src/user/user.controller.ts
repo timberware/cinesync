@@ -101,7 +101,7 @@ export class UserController {
   async updateUser(@Req() req: Request, @Body() body: UpdateUserDto) {
     if (!req.user) throw new UnauthorizedException('user not found');
 
-    if (body?.password) {
+    if (body.password) {
       body.password = await this.authService.hash(body.password);
     }
 
@@ -129,15 +129,15 @@ export class UserController {
     const { username } = req.user;
     const { mimetype } = file;
 
-    return this.imageService.createImage(username, mimetype, file?.buffer);
+    return this.imageService.createImage(username, mimetype, file.buffer);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
   @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/avatar')
-  async deleteAvatar(@Req() req: Request) {
+  deleteAvatar(@Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('user not found');
-    await this.imageService.deleteImage(req.user?.username);
+    this.imageService.deleteImage(req.user.username);
   }
 }

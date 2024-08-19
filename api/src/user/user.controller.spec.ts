@@ -50,9 +50,6 @@ describe.skip('UserController', () => {
       },
     };
     fakeAuthService = {
-      login: () => {
-        return Promise.reject(new UnauthorizedException());
-      },
       signup: (createUser: CreateUserDto) => {
         return Promise.resolve({ id: '-1', ...createUser } as User);
       },

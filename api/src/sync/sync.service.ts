@@ -29,19 +29,18 @@ export class SyncService {
     const chunks = this.chunk(movies, this.BATCH_SIZE);
     const megaChunk = (
       await Promise.all(
-        chunks.map(
-          async (chunk) =>
-            await Promise.all(
-              chunk.map((movie) =>
-                this.movieService.getTMDBMovie(movie.tmdbId, movie.eTag || ''),
-              ),
+        chunks.map((chunk) =>
+          Promise.all(
+            chunk.map((movie) =>
+              this.movieService.getTMDBMovie(movie.tmdbId, movie.eTag ?? ''),
             ),
+          ),
         ),
       )
     ).flat();
 
     const preparedChunk = megaChunk.filter(
-      (chunk) => chunk?.status === HttpStatus.OK,
+      (chunk) => (chunk.status as HttpStatus) === HttpStatus.OK,
     );
 
     const preparedCount = preparedChunk.length;

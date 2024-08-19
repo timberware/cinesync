@@ -40,7 +40,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() body: CreateUserDto) {
     const user = await this.authService.signup(body);
-    await this.notificationService.send(
+    this.notificationService.send(
       { toEmail: body.email, toUsername: body.username },
       NotificationTypes.SIGN_UP,
     );
@@ -52,10 +52,9 @@ export class AuthController {
   @Public()
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  async signin(@Req() req: Request) {
+  signin(@Req() req: Request) {
     if (!req.user) throw new UnauthorizedException('req contains no user');
-    const user = await this.authService.login(req.user);
-    return user;
+    return this.authService.login(req.user);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
@@ -66,7 +65,7 @@ export class AuthController {
     if (!req.user) throw new UnauthorizedException('user not found');
 
     await this.authService.deleteUser(req.user.id);
-    await this.notificationService.send(
+    this.notificationService.send(
       { toEmail: req.user.email, toUsername: '' },
       NotificationTypes.ACCOUNT_DELETED,
     );

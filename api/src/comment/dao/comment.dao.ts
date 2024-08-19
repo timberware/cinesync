@@ -11,12 +11,12 @@ export class CommentDao {
       where: {
         AND: [
           {
-            id: query?.commentId,
+            id: query.commentId,
             list: {
-              id: query?.listId,
+              id: query.listId,
             },
             user: {
-              id: query?.userId,
+              id: query.userId,
             },
           },
         ],

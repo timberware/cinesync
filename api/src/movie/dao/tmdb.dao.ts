@@ -1,17 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class TMDBDao {
-  private TMDB_TOKEN: string;
+  private TMDB_TOKEN: string | undefined;
 
   constructor(
     private httpService: HttpService,
     private configService: ConfigService,
   ) {
-    this.TMDB_TOKEN = this.configService.get<string>('TMDB_TOKEN') as string;
+    this.TMDB_TOKEN = this.configService.get<string>('TMDB_TOKEN');
+
+    if (!this.TMDB_TOKEN)
+      throw new InternalServerErrorException('Env var TMDB_TOKEN is missing');
   }
 
   async getTMDBMovie(tmdbId: number, eTag: string) {

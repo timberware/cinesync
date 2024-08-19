@@ -26,7 +26,7 @@ export class CommentAuthorizationGuard implements CanActivate {
       return false;
     }
 
-    if (comment?.userId === user.id) {
+    if (comment.userId === user.id) {
       return true;
     }
 

@@ -4,39 +4,34 @@ import { PER_PAGE, PAGE_NUMBER } from '../utils';
 
 @Injectable()
 export class PaginationMiddleware implements NestMiddleware {
-  async use(req: Request, res: Response, next: () => void) {
+  use(req: Request, res: Response, next: () => void) {
     const parsedQuery = {
       per_page: parseInt(
-        req.query.per_page?.toString() || PER_PAGE.toString(),
+        req.query.per_page?.toString() ?? PER_PAGE.toString(),
         10,
       ),
       page_number: parseInt(
-        req.query.page_number?.toString() || PAGE_NUMBER.toString(),
+        req.query.page_number?.toString() ?? PAGE_NUMBER.toString(),
         10,
       ),
     };
 
-    const originalSend: <T>(body: T) => Response = res.send;
+    const originalSend: (body: string) => Response = res.send;
 
-    res.send = function (body) {
+    res.send = (body) => {
       const parsedBody = JSON.parse(body);
 
-      const paginationInfo = calculatePaginationInfo(
-        parsedQuery,
-        parsedBody.count,
-      );
-
-      res.links(paginationInfo);
-
-      if (parsedBody.hasOwnProperty('count')) {
-        delete parsedBody.count;
+      if (!('count' in parsedBody)) {
+        return originalSend.call(this, body);
       }
 
-      const modifiedBody = JSON.stringify(parsedBody);
-      return originalSend.call(this, modifiedBody);
+      res.links(calculatePaginationInfo(parsedQuery, parsedBody.count));
+      delete parsedBody.count;
+
+      return originalSend.call(this, JSON.stringify(parsedBody));
     };
 
-    return next();
+    next();
   }
 }
 

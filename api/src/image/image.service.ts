@@ -13,7 +13,7 @@ export class ImageService {
     return this.imageDao.createImage(username, mimetype, image);
   }
 
-  async deleteImage(username: string) {
-    return this.imageDao.deleteImage(username);
+  deleteImage(username: string) {
+    this.imageDao.deleteImage(username);
   }
 }
