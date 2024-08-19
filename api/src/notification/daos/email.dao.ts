@@ -1,24 +1,25 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IMailgunClient } from 'mailgun.js/Interfaces';
-import MailGun from '../../config/mailgin';
-import { NotificationType, messageTemplates } from '../templates';
+import { MailgunMessageData } from 'mailgun.js';
+import MailGun from '../../config/mailgun';
+import {
+  CreateEmailFunctionType,
+  NotificationType,
+  messageTemplates,
+} from '../templates';
 import { RecipientsDto } from '../dto/email.dto';
 
 @Injectable()
 export class EmailDao {
   private emailClient: IMailgunClient;
   private isProduction: boolean;
-  private mailgunDomain: string;
-  private mailgunApiKey: string;
+  private mailgunDomain: string | undefined;
+  private mailgunApiKey: string | undefined;
 
   constructor(private readonly configService: ConfigService) {
-    this.mailgunApiKey = this.configService.get<string>(
-      'MAILGUN_KEY',
-    ) as string;
-    this.mailgunDomain = this.configService.get<string>(
-      'MAILGUN_DOMAIN',
-    ) as string;
+    this.mailgunApiKey = this.configService.get<string>('MAILGUN_KEY');
+    this.mailgunDomain = this.configService.get<string>('MAILGUN_DOMAIN');
 
     if (!this.mailgunApiKey || !this.mailgunDomain) {
       throw new Error('Mailgun API key or domain is not configured');
@@ -28,21 +29,18 @@ export class EmailDao {
       username: 'api',
       key: this.mailgunApiKey,
     });
-
-    this.mailgunDomain = this.configService.get<string>(
-      'MAILGUN_DOMAIN',
-    ) as string;
   }
 
   send(recipients: RecipientsDto, emailType: NotificationType) {
-    const createMessage = messageTemplates.get(emailType);
-    if (this.isProduction && createMessage) {
+    const createMessage: CreateEmailFunctionType | undefined =
+      messageTemplates.get(emailType);
+    if (this.mailgunDomain && this.isProduction && createMessage) {
       try {
         return this.emailClient.messages.create(
           this.mailgunDomain,
-          createMessage(recipients),
+          createMessage(recipients) as MailgunMessageData,
         );
-      } catch (error) {
+      } catch {
         throw new InternalServerErrorException(
           'Error attempting to send email',
         );

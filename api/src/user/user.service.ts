@@ -43,9 +43,9 @@ export class UserService {
         (user_2) => user_2.userId1 === user.userId2,
       );
 
-      if (possibleFriend?.isFriend && user?.isFriend) {
+      if (possibleFriend?.isFriend && user.isFriend) {
         status = 'ACCEPT';
-      } else if (!possibleFriend?.isFriend && !user?.isFriend) {
+      } else if (!possibleFriend?.isFriend && !user.isFriend) {
         status = 'REJECT';
       } else if (!user.isFriend) {
         status = 'PENDING';
@@ -70,7 +70,7 @@ export class UserService {
 
     try {
       await this.usersDao.createFriendship(userId, users[0].id);
-    } catch (error) {
+    } catch {
       throw new BadRequestException('Friendship already exists');
     }
   }

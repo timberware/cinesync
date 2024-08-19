@@ -9,6 +9,9 @@ export const NotificationTypes = {
 export type NotificationType =
   (typeof NotificationTypes)[keyof typeof NotificationTypes];
 
+// eslint-disable-next-line
+export type CreateEmailFunctionType = (p: RecipientsDto) => EmailDto;
+
 export const FONT_SETUP = `<style>@import url('https://fonts.cdnfonts.com/css/courier-prime');p {font-family: 'Courier Prime', sans-serif;}</style>`;
 
 export const signup = (recipients: RecipientsDto): EmailDto => ({
@@ -77,8 +80,7 @@ export const accountDeleted = (recipients: RecipientsDto): EmailDto => ({
 		`,
 });
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const messageTemplates = new Map<string, Function>([
+export const messageTemplates = new Map<string, CreateEmailFunctionType>([
   [NotificationTypes.SIGN_UP, signup],
   [NotificationTypes.LIST_SHARING, listShare],
   [NotificationTypes.COMMENT, newComment],

@@ -8,12 +8,12 @@ export const RedisOptions: CacheModuleAsyncOptions = {
     const store = await redisStore({
       socket: {
         host: configService.get<string>('REDIS_HOST'),
-        port: parseInt(configService.get<string>('REDIS_PORT') || '6379'),
+        port: parseInt(configService.get<string>('REDIS_PORT') ?? '6379'),
         reconnectStrategy: parseInt(
-          configService.get<string>('REDIS_RETRY_INTERVAL') || '10000',
+          configService.get<string>('REDIS_RETRY_INTERVAL') ?? '10000',
         ),
       },
-      password: configService.get<string>('REDIS_AUTH') || 'docker',
+      password: configService.get<string>('REDIS_AUTH') ?? 'docker',
       ttl: 0,
     });
 

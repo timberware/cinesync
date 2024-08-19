@@ -22,6 +22,7 @@ async function bootstrap() {
       return response;
     },
     (error) => {
+      // eslint-disable-next-line
       if (error.response.status === HttpStatus.NOT_MODIFIED) return error;
     },
   );

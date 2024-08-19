@@ -48,11 +48,13 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.0",
     "@nestjs/cli": "^10.0.1",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.3.10",
     "@swc/cli": "^0.1.62",
     "@swc/core": "^1.3.64",
+    "@types/eslint__js": "^8.42.3",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/multer": "^1.4.9",
@@ -63,7 +65,7 @@
     "@types/uuid": "^9.0.5",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
-    "eslint": "^8.42.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.0",
@@ -76,7 +78,8 @@
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.2.0"
   },
   "jest": {
     "moduleFileExtensions": [
