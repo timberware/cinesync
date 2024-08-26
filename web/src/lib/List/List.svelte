@@ -7,11 +7,14 @@
   export let movies = 0;
   export let sharees = 0;
   export let imageUrl = '';
+  export let id = '';
 </script>
 
 <div class="w-60 mx-auto">
-  <Container>
-    <Poster src="{imageUrl}" movies="{movies}" sharees="{sharees}" />
-    <ListTitle title="{title}" />
-  </Container>
+  <a href="{`/user/lists/${id}`}">
+    <Container>
+      <Poster src="{imageUrl}" movies="{movies}" sharees="{sharees}" />
+      <ListTitle title="{title}" />
+    </Container>
+  </a>
 </div>
