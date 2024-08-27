@@ -136,7 +136,6 @@ export const actions = {
     } catch (e) {
       console.error(e);
     }
-    redirect(302, '/user/lists');
   },
   updateList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();

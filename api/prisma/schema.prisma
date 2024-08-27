@@ -23,7 +23,7 @@ model ListMovie {
   listId    String   @map("list_id") @db.Uuid
   movieId   String   @map("movie_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
-  List      List     @relation(fields: [listId], references: [id])
+  List      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   Movie     Movie    @relation(fields: [movieId], references: [id])
 
   @@id([listId, movieId])

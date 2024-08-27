@@ -5,7 +5,6 @@
     faPlusCircle,
     faShareNodes
   } from '@fortawesome/free-solid-svg-icons';
-  import type { MovieType, User } from '../../../../ambient';
   import Nav from '$lib/Nav/Nav.svelte';
   import Movie from '$lib/Movie/Movie.svelte';
   import MovieModal from '$lib/Movie/MovieModal.svelte';
@@ -21,36 +20,14 @@
   import Avatar from '$lib/Avatar.svelte';
 
   /** @type {import('./$types').PageData} */
-  export let data: {
-    user: User;
-    movies: MovieType[];
-    sharees: User[];
-    list: {
-      id: string;
-      name: string;
-      isPrivate: boolean;
-      creatorId: string;
-    };
-  };
+  export let data;
 
-  const { user, movies, list, sharees } = data;
+  const { user, list } = data;
   let showModal = false;
   let showShareListModal = false;
-  let toBeDeleted: string;
-  let displayedMovies = movies;
 
-  const deleteMovieFromList = (id: string) => {
-    if (id) {
-      const filteredList = displayedMovies.filter(m => m.id !== id);
-
-      if (filteredList.length) {
-        displayedMovies = filteredList;
-      }
-      toBeDeleted = '';
-    }
-  };
-
-  $: deleteMovieFromList(toBeDeleted);
+  $: movies = data.movies;
+  $: sharees = data.sharees;
 </script>
 
 <Toasts />
@@ -97,9 +74,9 @@
   {/if}
 </div>
 <MoviesSection>
-  {#if displayedMovies?.length}
-    {#each displayedMovies as movie (movie.id)}
-      <Movie listId="{list.id}" movie="{movie}" bind:toBeDeleted="{toBeDeleted}" />
+  {#if movies.length}
+    {#each movies as movie (movie.id)}
+      <Movie listId="{list.id}" movie="{movie}" />
     {/each}
   {/if}
 </MoviesSection>
