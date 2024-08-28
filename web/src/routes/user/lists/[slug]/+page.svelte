@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    faEdit,
     faLock,
     faLockOpen,
     faPlusCircle,
@@ -19,6 +20,7 @@
   import Toasts from '$lib/Toast/Toasts.svelte';
   import ListShareModal from '$lib/List/ListShareModal.svelte';
   import Avatar from '$lib/Avatar.svelte';
+  import ListNameModal from '$lib/List/ListNameModal.svelte';
 
   /** @type {import('./$types').PageData} */
   export let data: {
@@ -36,6 +38,7 @@
   const { user, movies, list, sharees } = data;
   let showModal = false;
   let showShareListModal = false;
+  let showListNameModal = false;
   let toBeDeleted: string;
   let displayedMovies = movies;
 
@@ -59,6 +62,13 @@
 <TopSection>
   <Title>{list.name}</Title>
   <div class="flex gap-x-2">
+    <IconButton
+      type="button"
+      classes="h-4"
+      icon="{faEdit}"
+      tooltip="edit name"
+      on:click="{() => (showListNameModal = true)}"
+    />
     <IconButton
       type="button"
       classes="min-h-full"
@@ -105,4 +115,5 @@
 </MoviesSection>
 
 <ListShareModal bind:showShareListModal="{showShareListModal}" listId="{list.id}" />
+<ListNameModal bind:showListNameModal="{showListNameModal}" listId="{list.id}" />
 <MovieModal bind:showMovieModal="{showModal}" listId="{list.id}" />
