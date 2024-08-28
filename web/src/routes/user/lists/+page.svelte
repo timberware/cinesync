@@ -20,7 +20,7 @@
 
 <Nav username="{user.username}" />
 <TopSection>
-  <Title>your lists</Title>
+  <Title>lists</Title>
   <button type="button" class="min-h-full" on:click="{() => (showModal = true)}">
     <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
   </button>

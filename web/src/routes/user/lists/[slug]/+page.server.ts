@@ -223,6 +223,28 @@ export const actions = {
       console.error(e);
     }
   },
+  updateListInfo: async ({ request, fetch, locals }: RequestEvent) => {
+    const data = await request.formData();
+    const listId = data.get('listId');
+    const name = data.get('name');
+
+    try {
+      const response = await fetch(`${API}/lists/${listId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify({ name })
+      });
+
+      if (response.status !== 204) {
+        return fail(400);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  },
   toggleWatched: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
     const movieId = data.get('movieId');
