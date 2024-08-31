@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance, applyAction } from '$app/forms';
+  import { goto } from '$app/navigation';
   import { faTrash } from '@fortawesome/free-solid-svg-icons';
   import IconButton from '$lib/IconButton.svelte';
   import { addToast } from '../../store/toast';
@@ -17,6 +18,7 @@
         addToast(deletedError);
       } else if (result.type === 'success') {
         addToast(deletedSuccess);
+        goto('/user/lists');
       }
       await applyAction(result);
     };

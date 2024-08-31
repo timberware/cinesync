@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import type { Movies } from '../../../../ambient.d';
 import { API_HOST } from '$env/static/private';
@@ -136,7 +136,6 @@ export const actions = {
     } catch (e) {
       console.error(e);
     }
-    redirect(302, '/user/lists');
   },
   updateList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();
@@ -177,7 +176,6 @@ export const actions = {
     } catch (e) {
       console.error(e);
     }
-    redirect(302, `/user/lists/${listId}`);
   },
   cloneList: async ({ request, fetch, locals }: RequestEvent) => {
     const data = await request.formData();

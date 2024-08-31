@@ -6,7 +6,6 @@
     faPlusCircle,
     faShareNodes
   } from '@fortawesome/free-solid-svg-icons';
-  import type { MovieType, User } from '../../../../ambient';
   import Nav from '$lib/Nav/Nav.svelte';
   import Movie from '$lib/Movie/Movie.svelte';
   import MovieModal from '$lib/Movie/MovieModal.svelte';
@@ -23,37 +22,16 @@
   import ListNameModal from '$lib/List/ListNameModal.svelte';
 
   /** @type {import('./$types').PageData} */
-  export let data: {
-    user: User;
-    movies: MovieType[];
-    sharees: User[];
-    list: {
-      id: string;
-      name: string;
-      isPrivate: boolean;
-      creatorId: string;
-    };
-  };
+  export let data;
 
-  const { user, movies, list, sharees } = data;
+  const { user } = data;
   let showModal = false;
   let showShareListModal = false;
   let showListNameModal = false;
-  let toBeDeleted: string;
-  let displayedMovies = movies;
 
-  const deleteMovieFromList = (id: string) => {
-    if (id) {
-      const filteredList = displayedMovies.filter(m => m.id !== id);
-
-      if (filteredList.length) {
-        displayedMovies = filteredList;
-      }
-      toBeDeleted = '';
-    }
-  };
-
-  $: deleteMovieFromList(toBeDeleted);
+  $: movies = data.movies;
+  $: list = data.list;
+  $: sharees = data.sharees;
 </script>
 
 <Toasts />
@@ -84,7 +62,6 @@
         tooltip="share list"
         on:click="{() => (showShareListModal = true)}"
       />
-      <Delete listId="{list.id}" />
       <SubmitButton
         formAction="?/togglePrivacy"
         inputs="{[
@@ -94,6 +71,7 @@
         icon="{list.isPrivate ? faLock : faLockOpen}"
         tooltip="{list.isPrivate ? 'private list' : 'public list'}"
       />
+      <Delete listId="{list.id}" />
     {:else}
       <Clone name="{list.name}" listId="{list.id}" />
     {/if}
@@ -107,9 +85,9 @@
   {/if}
 </div>
 <MoviesSection>
-  {#if displayedMovies?.length}
-    {#each displayedMovies as movie (movie.id)}
-      <Movie listId="{list.id}" movie="{movie}" bind:toBeDeleted="{toBeDeleted}" />
+  {#if movies.length}
+    {#each movies as movie (movie.id)}
+      <Movie listId="{list.id}" movie="{movie}" />
     {/each}
   {/if}
 </MoviesSection>
