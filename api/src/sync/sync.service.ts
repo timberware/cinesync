@@ -26,12 +26,12 @@ export class SyncService {
       page_number: 0,
     });
 
-    const chunks = this.chunk(movies, this.BATCH_SIZE);
-    const megaChunk = (
+    const movieBatches = this.createBatches(movies, this.BATCH_SIZE);
+    const res = (
       await Promise.all(
-        chunks.map((chunk) =>
+        movieBatches.map((batch) =>
           Promise.all(
-            chunk.map((movie) =>
+            batch.map((movie) =>
               this.movieService.getTMDBMovie(movie.tmdbId, movie.eTag ?? ''),
             ),
           ),
@@ -39,31 +39,31 @@ export class SyncService {
       )
     ).flat();
 
-    const preparedChunk = megaChunk.filter(
-      (chunk) => (chunk.status as HttpStatus) === HttpStatus.OK,
+    const modifiedMovies = res.filter(
+      (response) => (response.status as HttpStatus) === HttpStatus.OK,
     );
 
-    const preparedCount = preparedChunk.length;
+    const modifiedMoviesCount = modifiedMovies.length;
 
-    this.logger.log(`${preparedCount} movie(s) to be updated.`);
-    if (!preparedCount) {
+    this.logger.log(`${modifiedMoviesCount} movie(s) to be updated.`);
+    if (modifiedMoviesCount) {
       this.logger.debug('Clearing all cache');
       this.cacheManager.reset();
-    }
 
-    await Promise.all(
-      preparedChunk.map((chunk) => {
-        this.movieService.updateMovie(
-          chunk.data as TMDBMovieDto,
-          chunk.headers.etag as string,
-        );
-      }),
-    );
+      await Promise.all(
+        modifiedMovies.map((batch) => {
+          this.movieService.updateMovie(
+            batch.data as TMDBMovieDto,
+            batch.headers.etag as string,
+          );
+        }),
+      );
+    }
 
     this.logger.log('Movie Refresh Job Completed');
   }
 
-  private chunk = (arr: MovieDto[], size: number) =>
+  private createBatches = (arr: MovieDto[], size: number) =>
     Array.from(
       { length: Math.ceil(arr.length / size) },
       (_: MovieDto[], i: number) => arr.slice(i * size, i * size + size),
