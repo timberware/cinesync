@@ -30,9 +30,9 @@
       use:enhance="{() => {
         return async ({ result }) => {
           if (result.type === 'failure') {
-            addToast(addedSuccess);
-          } else if (result.type === 'success') {
             addToast(addedError);
+          } else if (result.type === 'success') {
+            addToast(addedSuccess);
             invalidateAll();
           }
           applyAction(result);
