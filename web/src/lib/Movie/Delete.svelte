@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance, applyAction } from '$app/forms';
+  import { invalidateAll } from '$app/navigation';
   import { faTrash } from '@fortawesome/free-solid-svg-icons';
   import IconButton from '$lib/IconButton.svelte';
   import { addToast } from '../../store/toast';
@@ -7,7 +8,6 @@
 
   export let listId: string;
   export let movieId: string;
-  export let toBeDeleted: string;
 </script>
 
 <form
@@ -19,7 +19,7 @@
         addToast(deletedError);
       } else if (result.type === 'success') {
         addToast(deletedSuccess);
-        toBeDeleted = movieId;
+        invalidateAll();
       }
       await applyAction(result);
     };

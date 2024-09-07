@@ -40,3 +40,27 @@ export const clonedSuccess: ToastType = {
   type: 'success',
   ...messageCommonProps
 };
+
+export const updateNameError: ToastType = {
+  message: "There was an error updating the list's name",
+  type: 'error',
+  ...messageCommonProps
+};
+
+export const updateNameSuccess: ToastType = {
+  message: "List's name updated",
+  type: 'success',
+  ...messageCommonProps
+};
+
+export const shareListError: ToastType = {
+  message: 'There was an error sharing the list',
+  type: 'error',
+  ...messageCommonProps
+};
+
+export const shareListSuccess: ToastType = {
+  message: 'List shared successfully',
+  type: 'success',
+  ...messageCommonProps
+};

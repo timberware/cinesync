@@ -28,3 +28,15 @@ export const deletedSuccess: ToastType = {
   type: 'success',
   ...messageCommonProps
 };
+
+export const addedError: ToastType = {
+  message: 'There was an error adding the movie to your list',
+  type: 'error',
+  ...messageCommonProps
+};
+
+export const addedSuccess: ToastType = {
+  message: 'Movie successfully added to your list',
+  type: 'success',
+  ...messageCommonProps
+};

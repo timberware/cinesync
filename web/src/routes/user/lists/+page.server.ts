@@ -96,14 +96,16 @@ export const load = async ({ fetch, locals }) => {
     lists.forEach((l, index) => {
       l.movies = moviesInLists[index].movies.length;
       l.posterUrl =
-        moviesInLists[index].movies.length && moviesInLists[index].movies[0]?.posterUrl;
+        l.movies &&
+        moviesInLists[index].movies[Math.floor(Math.random() * l.movies)]?.posterUrl;
       l.sharees = sharees[index].length;
     });
     sharedLists.forEach((l, index) => {
       l.movies = moviesInSharedLists[index].movies.length;
       l.posterUrl =
-        moviesInSharedLists[index].movies.length &&
-        moviesInSharedLists[index].movies[0]?.posterUrl;
+        l.movies &&
+        moviesInSharedLists[index].movies[Math.floor(Math.random() * l.movies)]
+          ?.posterUrl;
       l.sharees = shareesInShared[index].length;
     });
 

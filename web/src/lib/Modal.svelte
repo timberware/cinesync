@@ -42,6 +42,10 @@
     dialog.showModal();
   }
 
+  $: if (dialog && !showModal) {
+    closeDialog();
+  }
+
   const closeDialog = () => dialog.close();
 </script>
 

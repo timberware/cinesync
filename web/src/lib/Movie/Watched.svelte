@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance, applyAction } from '$app/forms';
+  import { invalidateAll } from '$app/navigation';
   import IconButton from '$lib/IconButton.svelte';
   import { faEye } from '@fortawesome/free-solid-svg-icons';
   import Toasts from '$lib/Toast/Toasts.svelte';
@@ -21,7 +22,7 @@
         addToast(watchedError);
       } else if (result.type === 'success') {
         addToast(watchedSuccess);
-        watched = !watched;
+        invalidateAll();
       }
       await applyAction(result);
     };

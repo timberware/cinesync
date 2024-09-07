@@ -1,13 +1,18 @@
 <script lang="ts">
+  import { applyAction, enhance } from '$app/forms';
+  import { invalidateAll } from '$app/navigation';
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
   import type { TMDBMovieResult } from '../../ambient';
   import Image from '$lib/Image.svelte';
   import Label from './Label.svelte';
   import { getPosterUrl } from '../../utils';
+  import { addToast } from '../../store';
+  import { addedError, addedSuccess } from './messages';
 
   export let movie: TMDBMovieResult;
   export let listId: string;
+  export let showMovieModal: boolean;
 </script>
 
 <div class="w-96 h-80 flex rounded-xl bg-background p-3 flex-shrink-0 mb-5">
@@ -22,6 +27,18 @@
       method="POST"
       action="?/updateList"
       class="absolute top-0 left-0 px-1 bg-background rounded-br-md"
+      use:enhance="{() => {
+        return async ({ result }) => {
+          if (result.type === 'failure') {
+            addToast(addedError);
+          } else if (result.type === 'success') {
+            addToast(addedSuccess);
+            invalidateAll();
+          }
+          applyAction(result);
+          showMovieModal = false;
+        };
+      }}"
     >
       <input type="hidden" name="listId" value="{listId}" />
       <input type="hidden" name="title" value="{movie.title}" />

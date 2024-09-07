@@ -1,5 +1,4 @@
 <script lang="ts">
-  /** @type {import('./$types').PageData} */
   import { enhance, applyAction } from '$app/forms';
   import Avatar from '$lib/Avatar.svelte';
   import Nav from '$lib/Nav/Nav.svelte';
@@ -7,13 +6,9 @@
   import { addToast } from '../../../store';
   import { error, success } from './messages';
 
+  /** @type {import('./$types').PageData} */
   export let data;
   const { user, stats } = data;
-  let trigger = {};
-
-  const reload = () => {
-    trigger = {};
-  };
 </script>
 
 <Toasts />
@@ -21,9 +16,7 @@
 <Nav username="{user.username}" />
 <div class="sm:flex w-full justify-around mt-20 mx-auto">
   <div class="max-w-64 text-center mx-auto mb-8 sm:mb-0">
-    {#key trigger}
-      <Avatar username="{user.username}" isLarge />
-    {/key}
+    <Avatar username="{user.username}" isLarge />
     <form
       method="POST"
       action="?/saveAvatar"
@@ -33,7 +26,6 @@
             addToast(error);
           } else if (result.type === 'success') {
             addToast(success);
-            reload();
           }
           await applyAction(result);
         };
@@ -43,7 +35,7 @@
       <input
         type="file"
         name="file"
-        accept="image/jpg, image/png"
+        accept="image/jpeg, image/png"
         class="mt-4 p-0 file:mr-2 file:py-2 file:px-2
             file:rounded-full file:border-0
             file:text-sm file:bg-primary max-w-64"
