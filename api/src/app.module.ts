@@ -13,6 +13,7 @@ import { ImageModule } from './image/image.module';
 import { MovieModule } from './movie/movie.module';
 import { SyncModule } from './sync/sync.module';
 import { AuthModule } from './auth/auth.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     ImageModule,
     MovieModule,
     SyncModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [
