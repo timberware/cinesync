@@ -16,7 +16,7 @@ export class SyncService {
     private movieService: MovieService,
   ) {}
 
-  @Cron(CronExpression.EVERY_12_HOURS)
+  @Cron(CronExpression.EVERY_6_HOURS)
   async updateMovies() {
     this.logger.log('Movie Refresh Job Starting');
 
@@ -40,7 +40,8 @@ export class SyncService {
     ).flat();
 
     const modifiedMovies = res.filter(
-      (response) => (response.status as HttpStatus) === HttpStatus.OK,
+      (response) =>
+        response.status && (response.status as HttpStatus) === HttpStatus.OK,
     );
 
     const modifiedMoviesCount = modifiedMovies.length;
