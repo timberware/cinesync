@@ -76,6 +76,7 @@ export class MovieService {
       lists[0].map((l) =>
         this.cacheManager.del(`${l.listId}-${userId}-movies`),
       ),
+      lists[0].map((l) => this.cacheManager.del(`${l.listId}-movies`)),
     ]);
 
     return await this.moviesDao.updateWatchedStatus(
