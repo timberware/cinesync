@@ -22,7 +22,7 @@
     </div>
     <div>
       <a href="{THE_MOVIE_DB}" target="_blank" rel="noreferrer">
-        <img src="{THE_MOVIE_DB_AVATAR}" alt="TMDB logo" width="{60}" />
+        <img loading="lazy" src="{THE_MOVIE_DB_AVATAR}" alt="TMDB logo" width="{60}" />
       </a>
     </div>
   </div>

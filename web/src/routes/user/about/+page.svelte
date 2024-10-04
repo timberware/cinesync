@@ -34,7 +34,13 @@
   </p>
   <div class="mt-10">
     <a href="https://www.themoviedb.org/">
-      <img src="{THE_MOVIE_DB_BIG_AVATAR}" alt="TMDB logo" height="{12}" width="{165}" />
+      <img
+        loading="lazy"
+        src="{THE_MOVIE_DB_BIG_AVATAR}"
+        alt="TMDB logo"
+        height="{12}"
+        width="{165}"
+      />
     </a>
     <p class="mt-1">
       This product uses the TMDB API but is not endorsed or certified by TMDB.

@@ -34,9 +34,15 @@
     alt="List"
   />
 {:else if failed}
-  <img class="h-full w-full object-scale-down" src="{LIST_PLACEHOLDER}" alt="Not Found" />
+  <img
+    loading="lazy"
+    class="h-full w-full object-scale-down"
+    src="{LIST_PLACEHOLDER}"
+    alt="Not Found"
+  />
 {:else if loading}
   <img
+    loading="lazy"
     class="h-full w-full object-scale-down"
     src="https://c.tenor.com/On7kvXhzml4AAAAi/loading-gif.gif"
     alt="Loading..."
