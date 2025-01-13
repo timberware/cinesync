@@ -1,4 +1,4 @@
-FROM node:lts-alpine as build
+FROM node:20-alpine3.17 as build
 
 WORKDIR "/cinesync"
 
