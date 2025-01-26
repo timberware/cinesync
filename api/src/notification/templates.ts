@@ -9,7 +9,6 @@ export const NotificationTypes = {
 export type NotificationType =
   (typeof NotificationTypes)[keyof typeof NotificationTypes];
 
-// eslint-disable-next-line
 export type CreateEmailFunctionType = (p: RecipientsDto) => EmailDto;
 
 export const FONT_SETUP = `<style>@import url('https://fonts.cdnfonts.com/css/courier-prime');p {font-family: 'Courier Prime', sans-serif;}</style>`;

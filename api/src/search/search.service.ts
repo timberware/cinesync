@@ -3,6 +3,7 @@ import { QueryDto } from './dto/query.dto';
 import { ListItem, MovieDto } from './dto/search.dto';
 import { MovieDao } from './dao/movie.dao';
 import { TMDBDao } from './dao/tmdb.dao';
+import { tmdbMovieDtoToMovieDto } from 'src/utils/mappers';
 
 @Injectable()
 export class SearchService {
@@ -16,9 +17,12 @@ export class SearchService {
       | (MovieDto & { listMovie?: { List: ListItem }[] })[]
       | undefined;
 
-    const tmdbResults = await this.tmdbDao.search(query.search);
+    const [tmdbRes, genres] = await Promise.all([
+      this.tmdbDao.search(query.search),
+      this.tmdbDao.getGenres(),
+    ]);
 
-    const dbSearchResult = movies?.map((m) => {
+    const dbRes = movies?.map((m) => {
       const { listMovie, ...movie } = m;
 
       return {
@@ -28,16 +32,9 @@ export class SearchService {
     });
 
     return {
-      db: dbSearchResult ?? [],
-      tmdb: tmdbResults.data.results.map(
-        ({ id, title, overview, release_date, vote_average, poster_path }) => ({
-          id,
-          title,
-          overview,
-          release_date,
-          vote_average,
-          poster_path,
-        }),
+      db: dbRes ?? [],
+      tmdb: tmdbRes.data.results.map((tmdb) =>
+        tmdbMovieDtoToMovieDto(tmdb, genres.data.genres),
       ),
     };
   }

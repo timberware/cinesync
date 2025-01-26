@@ -5,15 +5,11 @@ import { PER_PAGE, PAGE_NUMBER } from '../utils';
 @Injectable()
 export class PaginationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: () => void) {
+    const per_page = req.query.per_page ?? PER_PAGE.toString();
+    const page_number = req.query.page_number ?? PAGE_NUMBER.toString();
     const parsedQuery = {
-      per_page: parseInt(
-        req.query.per_page?.toString() ?? PER_PAGE.toString(),
-        10,
-      ),
-      page_number: parseInt(
-        req.query.page_number?.toString() ?? PAGE_NUMBER.toString(),
-        10,
-      ),
+      per_page: parseInt(per_page as string, 10),
+      page_number: parseInt(page_number as string, 10),
     };
 
     const originalSend: (body: string) => Response = res.send;

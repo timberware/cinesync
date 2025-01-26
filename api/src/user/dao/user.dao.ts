@@ -69,10 +69,13 @@ export class UserDao {
     });
   }
 
-  async createUser(createUser: CreateUserDto) {
+  async createUser(user: CreateUserDto) {
     return await this.prisma.user.create({
       data: {
-        ...createUser,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        avatarName: user.avatarName,
         id: uuidv4(),
         role: Role.USER,
       },
