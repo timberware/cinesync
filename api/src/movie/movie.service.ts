@@ -17,7 +17,7 @@ export class MovieService {
 
   async getMovies(query: QueryDto) {
     const { listId, userId } = query;
-    let movies: MovieDto[] | undefined;
+    let movies: MovieDto[] | undefined | null;
     let count = 0;
 
     let cacheTag = '';
