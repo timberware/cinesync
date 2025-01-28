@@ -80,9 +80,13 @@ export class TMDBMovieDto {
 
   @IsString()
   poster_path: string;
+
+  @IsArray()
+  @IsNumber()
+  genre_ids: number[];
 }
 
-export class SearchResult {
+export class SearchResultDto {
   @IsArray()
   @Type(() => DbResults)
   @ValidateNested()
@@ -92,4 +96,12 @@ export class SearchResult {
   @Type(() => TMDBMovieDto)
   @ValidateNested()
   tmdb: TMDBMovieDto[];
+}
+
+export class TMDBGenreDto {
+  @IsNumber()
+  id: number;
+
+  @IsString()
+  name: string;
 }

@@ -57,5 +57,15 @@ services:
       - 6379:6379
     command: redis-server --requirepass docker
 
+  redis_insight:
+    image: redislabs/redisinsight:latest
+    container_name: redis_insight
+    restart: always
+    ports:
+      - 5540:5540
+    volumes:
+      - redis_insight_volume_data:/db
+
 volumes:
   redis_volume_data:
+  redis_insight_volume_data:

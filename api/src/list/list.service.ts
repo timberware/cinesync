@@ -64,7 +64,15 @@ export class ListService {
       await this.cacheManager.set(`${listId}-comments`, comments);
     }
 
-    return { ...list, comments };
+    return {
+      id: list.id,
+      name: list.name,
+      isPrivate: list.isPrivate,
+      creatorId: list.creatorId,
+      createdAt: list.createdAt,
+      updatedAt: list.updatedAt,
+      comments,
+    };
   }
 
   async getLists(query: QueryDto) {

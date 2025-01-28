@@ -7,13 +7,11 @@ import { getTMDBUrl } from '../../utils';
 @Injectable()
 export class TMDBDao {
   private TMDB_TOKEN: string | undefined;
-  private getTMDBUrl: Function;
 
   constructor(
     private httpService: HttpService,
     private configService: ConfigService,
   ) {
-    this.getTMDBUrl = getTMDBUrl;
     this.TMDB_TOKEN = this.configService.get<string>('TMDB_TOKEN');
 
     if (!this.TMDB_TOKEN)
@@ -21,7 +19,7 @@ export class TMDBDao {
   }
 
   async getTMDBMovie(tmdbId: number, eTag: string) {
-    const URL = this.getTMDBUrl(tmdbId);
+    const URL = getTMDBUrl(tmdbId);
 
     const response = this.httpService.get(URL, {
       headers: {

@@ -2,8 +2,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
-import { getSearchTMDBUrl } from '../../utils';
-import { TMDBMovieDto } from '../dto/search.dto';
+import { getSearchTMDBUrl, getTMDBGenresUrl } from '../../utils';
+import { TMDBGenreDto, TMDBMovieDto } from '../dto/search.dto';
 
 @Injectable()
 export class TMDBDao {
@@ -28,6 +28,20 @@ export class TMDBDao {
         accept: 'application/json',
       },
     });
+
+    return await lastValueFrom(response);
+  }
+
+  async getGenres() {
+    const response = this.httpService.get<{ genres: TMDBGenreDto[] }>(
+      getTMDBGenresUrl,
+      {
+        headers: {
+          Authorization: `Bearer ${this.TMDB_TOKEN}`,
+          accept: 'application/json',
+        },
+      },
+    );
 
     return await lastValueFrom(response);
   }

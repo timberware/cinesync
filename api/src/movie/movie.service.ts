@@ -11,7 +11,7 @@ import { QueryDto } from './dto/query.dto';
 export class MovieService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private moviesDao: MovieDao,
+    private movieDao: MovieDao,
     private tmdbDao: TMDBDao,
   ) {}
 
@@ -28,7 +28,7 @@ export class MovieService {
     if (cacheTag !== 'movies') movies = await this.cacheManager.get(cacheTag);
 
     if (!movies) {
-      const res = await this.moviesDao.getMovies(query);
+      const res = await this.movieDao.getMovies(query);
       movies = res.movies;
       count = res.count;
 
@@ -39,13 +39,13 @@ export class MovieService {
   }
 
   getCount() {
-    return this.moviesDao.getCount();
+    return this.movieDao.getCount();
   }
 
   async createMovies(movies: MovieDto[], listId: string) {
     await this.cacheManager.del(`${listId}-movies`);
 
-    return await this.moviesDao.createMovies(movies, listId);
+    return await this.movieDao.createMovies(movies, listId);
   }
 
   getTMDBMovie(tmdbId: number, eTag: string) {
@@ -54,7 +54,7 @@ export class MovieService {
 
   async updateMovie(movieData: TMDBMovieDto, eTag: string) {
     try {
-      await this.moviesDao.updateMovie(this.tmdbToDao(movieData, eTag));
+      await this.movieDao.updateMovie(this.tmdbToDao(movieData, eTag));
     } catch {
       throw new BadRequestException(
         `error updating movie with tmdbId ${movieData.id}`,
@@ -69,7 +69,7 @@ export class MovieService {
       (watchedMovie) => watchedMovie.id === movieId,
     );
 
-    const lists = await this.moviesDao.getListsContainingMovie(userId, movieId);
+    const lists = await this.movieDao.getListsContainingMovie(userId, movieId);
 
     await Promise.all([
       this.cacheManager.del(`${userId}-movies`),
@@ -79,7 +79,7 @@ export class MovieService {
       lists[0].map((l) => this.cacheManager.del(`${l.listId}-movies`)),
     ]);
 
-    return await this.moviesDao.updateWatchedStatus(
+    return await this.movieDao.updateWatchedStatus(
       movieId,
       userId,
       !!hasWatched,
@@ -92,7 +92,7 @@ export class MovieService {
       this.cacheManager.del(`${listId}-${userId}-movies`),
     ]);
 
-    return this.moviesDao.removeMovieFromList(listId, movieId);
+    return this.movieDao.removeMovieFromList(listId, movieId);
   }
 
   private tmdbToDao(movie: TMDBMovieDto, eTag: string): MovieDto {
