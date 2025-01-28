@@ -27,9 +27,9 @@ export class ListService {
   }
 
   async getList(listId: string) {
-    let list: ListItem | undefined = await this.cacheManager.get(listId);
+    let list: ListItem | undefined | null = await this.cacheManager.get(listId);
 
-    let comments: CommentDto[] | undefined = await this.cacheManager.get(
+    let comments: CommentDto[] | undefined | null = await this.cacheManager.get(
       `${listId}-comments`,
     );
 
@@ -80,7 +80,7 @@ export class ListService {
   }
 
   async getSharees(listId: string, userId: string) {
-    let sharees: UserDto[] | undefined = await this.cacheManager.get(
+    let sharees: UserDto[] | undefined | null = await this.cacheManager.get(
       `${listId}-${userId}-sharees`,
     );
 

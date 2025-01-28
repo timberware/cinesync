@@ -46,10 +46,12 @@ export class SyncService {
 
     const modifiedMoviesCount = modifiedMovies.length;
 
-    this.logger.log(`${modifiedMoviesCount} movie(s) to be updated.`);
+    this.logger.log(
+      `${modifiedMoviesCount.toString()} movie(s) to be updated.`,
+    );
     if (modifiedMoviesCount) {
       this.logger.debug('Clearing all cache');
-      this.cacheManager.reset();
+      await this.cacheManager.clear();
 
       await Promise.all(
         modifiedMovies.map((batch) => {
