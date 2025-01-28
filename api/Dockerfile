@@ -1,4 +1,8 @@
-FROM node:20-alpine3.17 as build
+FROM node:22-alpine3.21 as build
+
+RUN apk update && apk add \
+  openssl \
+  && rm -rf /var/cache/apk/*
 
 WORKDIR "/cinesync"
 

@@ -11,7 +11,7 @@ export class ListAuthGuard implements CanActivate {
     const { user } = request;
 
     const listId =
-      request.params.listId || request.body.listId || request.params.id;
+      request.params?.listId ?? request.body?.listId ?? request.params?.id;
 
     const list = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },

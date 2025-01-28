@@ -22,6 +22,14 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         });
         break;
       }
+      case 'P2023': {
+        const status = HttpStatus.BAD_REQUEST;
+        response.status(status).send({
+          statusCode: status,
+          message,
+        });
+        break;
+      }
       case 'P2025': {
         const status = HttpStatus.NOT_FOUND;
         response.status(status).send({
