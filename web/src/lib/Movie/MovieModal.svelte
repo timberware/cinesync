@@ -3,15 +3,15 @@
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
   import MovieResult from './MovieResult.svelte';
-  import type { TMDBMovieResult } from '../../ambient';
+  import type { MovieType } from '../../ambient';
 
   export let showMovieModal: boolean;
   export let listId: string;
-  let movieTitle: string;
-  let movies: TMDBMovieResult[] = [];
+  let search: string;
+  let movies: MovieType[] = [];
 
   const handleOnClick = async () => {
-    const response = await fetch(`/search?movieTitle=${movieTitle}`, {
+    const response = await fetch(`/search?search=${search}`, {
       method: 'GET',
       headers: {
         accept: 'application/json'
@@ -35,7 +35,7 @@
         name="movie-name"
         id="movie-name"
         placeholder="The Godfather"
-        bind:value="{movieTitle}"
+        bind:value="{search}"
         required
       />
       <button class="pl-4" type="button" on:click="{handleOnClick}"
@@ -44,7 +44,7 @@
     </div>
     {#if movies.length}
       <h2 class="font-bold text-2xl underline text-center mt-4 mb-2">results</h2>
-      {#each movies as movie (movie.id)}
+      {#each movies as movie (movie.tmdbId)}
         <MovieResult
           bind:showMovieModal="{showMovieModal}"
           movie="{movie}"

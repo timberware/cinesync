@@ -28,7 +28,7 @@
 <ListContainer lists="{lists}" />
 
 {#if sharedLists.length}
-  <div class="flex md:text-3xl sm:text-2xl mt-10 mb-4 mx-5 justify-between">
+  <div class="flex text-2xl mt-10 mb-4 mx-5 justify-between">
     <Title>shared with you</Title>
   </div>
   <ListContainer lists="{sharedLists}" />

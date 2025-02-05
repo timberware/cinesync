@@ -77,12 +77,15 @@
     {/if}
   </div>
 </TopSection>
-<div class="rounded-xl flex gap-x-2 mx-5 mb-4 p-1">
+<div class="flex justify-between mx-5 pb-3">
   {#if sharees?.length}
-    {#each sharees as sharee (sharee.email)}
-      <Avatar username="{sharee.username}" />
-    {/each}
+    <div class="flex gap-x-2">
+      {#each sharees as sharee (sharee.email)}
+        <Avatar username="{sharee.username}" />
+      {/each}
+    </div>
   {/if}
+  <div class="my-auto"></div>
 </div>
 <MoviesSection>
   {#if movies.length}
