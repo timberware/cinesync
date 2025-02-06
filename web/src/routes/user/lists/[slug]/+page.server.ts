@@ -141,12 +141,12 @@ export const actions = {
     const data = await request.formData();
     const listId = data.get('listId') as string;
     const title = data.get('title') as string;
-    const description = data.get('overview') as string;
-    const genre = data.get('genres') as string;
-    const releaseDate = data.get('release_date') as string;
-    const posterUrl = data.get('poster_path') as string;
-    const rating = data.get('vote_average');
-    const tmdbId = data.get('id') as string;
+    const description = data.get('description') as string;
+    const genre = data.get('genre') as string;
+    const releaseDate = data.get('releaseDate') as string;
+    const posterUrl = data.get('posterUrl') as string;
+    const rating = data.get('rating');
+    const tmdbId = data.get('tmdbId') as string;
 
     try {
       const response = await fetch(`${API}/movies/lists/${listId}`, {

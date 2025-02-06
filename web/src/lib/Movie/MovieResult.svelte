@@ -42,12 +42,12 @@
     >
       <input type="hidden" name="listId" value="{listId}" />
       <input type="hidden" name="title" value="{movie.title}" />
-      <input type="hidden" name="overview" value="{movie.description}" />
-      <input type="hidden" name="genres" value="{movie.genre}" />
-      <input type="hidden" name="release_date" value="{movie.releaseDate}" />
-      <input type="hidden" name="poster_path" value="{movie.posterUrl}" />
-      <input type="hidden" name="vote_average" value="{movie.rating}" />
-      <input type="hidden" name="id" value="{movie.id}" />
+      <input type="hidden" name="description" value="{movie.description}" />
+      <input type="hidden" name="genre" value="{movie.genre}" />
+      <input type="hidden" name="releaseDate" value="{movie.releaseDate}" />
+      <input type="hidden" name="posterUrl" value="{movie.posterUrl}" />
+      <input type="hidden" name="rating" value="{movie.rating}" />
+      <input type="hidden" name="tmdbId" value="{movie.tmdbId}" />
       <button type="submit">
         <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
       </button>
