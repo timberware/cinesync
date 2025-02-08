@@ -10,10 +10,11 @@ export type MovieType = {
   title: string;
   description?: string;
   genre: string[];
-  releaseDate?: number;
+  releaseDate: string;
   rating: number;
   posterUrl: string;
   watched: boolean;
+  tmdbId: number;
 };
 
 export type Movies = {
@@ -39,17 +40,6 @@ export type Lists = {
   count: number;
 };
 
-export type TMDBMovieResult = {
-  id: number;
-  title: string;
-  overview: string;
-  poster_path: string;
-  release_date: string;
-  genre_ids: number[];
-  genres: string[];
-  vote_average: number;
-};
-
 export type ToastTypes = 'info' | 'success' | 'error';
 
 export type ToastType = {
@@ -66,4 +56,9 @@ export type Stats = {
   moviesCount: number;
   sharedListCount: number;
   commentsCount: number;
+};
+
+export type SearchResult = {
+  db: (MovieTye & { lists: ListType })[];
+  tmdb: MovieType[];
 };
