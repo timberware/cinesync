@@ -56,7 +56,7 @@
   bind:this="{dialog}"
   on:close="{() => (showModal = false)}"
   on:click|self="{closeDialog}"
-  class="min-w-96 bg-background text-text rounded-xl"
+  class="w-11/12 sm:w-2/3 lg:w-2/4 xl:w-1/3 3xl:w-1/4 bg-background text-text rounded-xl"
 >
   <div class="relative" on:click|stopPropagation>
     <slot />
