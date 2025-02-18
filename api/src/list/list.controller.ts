@@ -115,7 +115,7 @@ export class ListController {
     if (!req.user) throw new UnauthorizedException('user not found');
 
     const { id: userId } = req.user;
-    const createdComment = await this.commentService.createComment(
+    const createdComment = await this.commentService.create(
       text,
       listId,
       userId,
@@ -180,16 +180,20 @@ export class ListController {
   @HttpCode(HttpStatus.NO_CONTENT)
   updateComment(
     @Param('commentId') commentId: string,
+    @Param('id') listId: string,
     @Body() updateCommentDto: string,
   ) {
-    return this.commentService.updateComment(updateCommentDto, commentId);
+    return this.commentService.update(updateCommentDto, commentId, listId);
   }
 
   @UseGuards(ListAuthGuard, CommentAuthorizationGuard)
   @Delete('/:id/comments/:commentId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteComment(@Param('commentId') commentId: string) {
-    return this.commentService.deleteComment(commentId);
+  deleteComment(
+    @Param('commentId') commentId: string,
+    @Param('id') listId: string,
+  ) {
+    return this.commentService.delete(commentId, listId);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)

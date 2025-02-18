@@ -1,24 +1,28 @@
+import KeyvRedis from '@keyv/redis';
+import Keyv from 'keyv';
 import { CacheModuleAsyncOptions } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { redisStore } from 'cache-manager-redis-store';
 
 export const RedisOptions: CacheModuleAsyncOptions = {
   imports: [ConfigModule],
-  useFactory: async (configService: ConfigService) => {
-    const store = await redisStore({
+  useFactory: (configService: ConfigService) => {
+    const redisHost = configService.get<string>('REDIS_HOST') ?? 'locahost';
+    const port = parseInt(configService.get<string>('REDIS_PORT') ?? '6379');
+
+    const store = new KeyvRedis({
+      url: `redis://${redisHost}:${port.toString()}`,
+      password: configService.get<string>('REDIS_AUTH') ?? 'docker',
       socket: {
-        host: configService.get<string>('REDIS_HOST'),
-        port: parseInt(configService.get<string>('REDIS_PORT') ?? '6379'),
         reconnectStrategy: parseInt(
           configService.get<string>('REDIS_RETRY_INTERVAL') ?? '10000',
         ),
+        tls: false,
+        keepAlive: 30000,
       },
-      password: configService.get<string>('REDIS_AUTH') ?? 'docker',
-      ttl: 0,
     });
 
     return {
-      store: () => store,
+      stores: [new Keyv(store)],
     };
   },
 

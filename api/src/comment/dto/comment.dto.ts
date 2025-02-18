@@ -8,7 +8,7 @@ export class CommentDto {
 
   @Expose()
   @IsString()
-  username: string;
+  userId: string;
 
   @Expose()
   @IsString()

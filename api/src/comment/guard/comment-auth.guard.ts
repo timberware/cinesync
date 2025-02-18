@@ -11,7 +11,7 @@ export class CommentAuthorizationGuard implements CanActivate {
     const { commentId } = request.params;
 
     const [comments] = await Promise.all([
-      this.commentService.getComments({
+      this.commentService.get({
         commentId,
       }),
     ]);

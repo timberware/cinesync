@@ -4,7 +4,6 @@ import { Cache } from 'cache-manager';
 import { ListDao } from './dao/list.dao';
 import { UserService } from '../user/user.service';
 import { ListItem, UpdateListDto } from './dto';
-import { CommentDto } from '../comment/dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
 import { CommentsService } from '../comment/comment.service';
@@ -27,41 +26,13 @@ export class ListService {
   }
 
   async getList(listId: string) {
-    let list: ListItem | undefined | null = await this.cacheManager.get(listId);
-
-    let comments: CommentDto[] | undefined | null = await this.cacheManager.get(
-      `${listId}-comments`,
-    );
+    let list: ListItem | undefined | null =
+      await this.cacheManager.get<ListItem>(listId);
+    const comments = await this.commentService.get({ listId });
 
     if (!list) {
       list = await this.listDao.getList(listId);
       await this.cacheManager.set(listId, list);
-    }
-
-    if (!comments) {
-      const c = await this.commentService.getComments({ listId });
-
-      const commentsWithUsername: CommentDto[] = [];
-
-      if (c.length) {
-        const users = await Promise.all(
-          c.map((comment) =>
-            this.userService.getUsers({
-              id: comment.userId,
-            } as QueryDto),
-          ),
-        );
-
-        c.forEach((comment, i) =>
-          commentsWithUsername.push({
-            ...comment,
-            username: users[i].users[0].username,
-          }),
-        );
-      }
-      comments = commentsWithUsername;
-
-      await this.cacheManager.set(`${listId}-comments`, comments);
     }
 
     return {
