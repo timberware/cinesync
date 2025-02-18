@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CommentQueryDto } from '../dto';
+import { CommentDto, CommentQueryDto } from '../dto';
 
 @Injectable()
 export class CommentDao {
   constructor(private readonly prisma: PrismaService) {}
 
   async getComments(query: CommentQueryDto) {
-    return await this.prisma.comment.findMany({
+    const res = await this.prisma.comment.findMany({
       where: {
         AND: [
           {
@@ -25,6 +25,16 @@ export class CommentDao {
         createdAt: 'desc',
       },
     });
+
+    const r: CommentDto[] = res.map((r) => ({
+      id: r.id,
+      userId: r.userId,
+      text: r.text,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
+    }));
+
+    return r;
   }
 
   async createComment(listId: string, userId: string, text: string) {
