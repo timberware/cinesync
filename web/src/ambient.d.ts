@@ -59,6 +59,8 @@ export type Stats = {
 };
 
 export type SearchResult = {
-  db: (MovieTye & { lists: ListType })[];
+  db: MovieWithLists[];
   tmdb: MovieType[];
 };
+
+export type MovieWithLists = MovieType & { lists: ListType[] };

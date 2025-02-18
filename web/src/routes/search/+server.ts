@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { SearchResult } from '../../ambient.js';
+import type { MovieWithLists, SearchResult } from '../../ambient.js';
 import { API_HOST } from '$env/static/private';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
@@ -24,9 +24,18 @@ export const GET = async ({ url, locals, fetch }) => {
     if (res.status !== 200) {
       throw new Error();
     }
-    const { tmdb }: SearchResult = await res.json();
+    const { tmdb, db }: SearchResult = await res.json();
 
-    return json(tmdb);
+    const moviesWithLists: MovieWithLists[] = tmdb.map(movie => {
+      const dbMovie = db.find(m => m.tmdbId === movie.tmdbId);
+
+      return {
+        ...movie,
+        lists: dbMovie ? dbMovie.lists.filter(l => l.creatorId === locals.user?.id) : []
+      };
+    });
+
+    return json(moviesWithLists);
   } catch (e) {
     console.error({ error: e });
   }

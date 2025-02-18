@@ -3,12 +3,12 @@
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
   import MovieResult from './MovieResult.svelte';
-  import type { MovieType } from '../../ambient';
+  import type { MovieWithLists } from '../../ambient';
 
   export let showMovieModal: boolean;
   export let listId: string;
   let search: string;
-  let movies: MovieType[] = [];
+  let movies: MovieWithLists[] = [];
 
   const handleOnClick = async () => {
     const response = await fetch(`/search?search=${search}`, {
@@ -22,11 +22,15 @@
       movies = await response.json();
     }
   };
+
+  const handleKeyPress = async (e: KeyboardEvent) => {
+    e.key === 'Enter' && (await handleOnClick());
+  };
 </script>
 
 <Modal bind:showModal="{showMovieModal}">
   <div class="p-4">
-    <h2 class="font-bold text-4xl underline text-center mb-4">movie</h2>
+    <h2 class="font-bold text-4xl underline text-center mb-4">search</h2>
     <div class="flex pt-2 pb-2 mb-3 justify-center">
       <label class="text-right pr-4" for="list-name">title</label>
       <input
@@ -37,6 +41,7 @@
         placeholder="The Godfather"
         bind:value="{search}"
         required
+        on:keypress="{handleKeyPress}"
       />
       <button class="pl-4" type="button" on:click="{handleOnClick}"
         ><FontAwesomeIcon class="text-text text-md" icon="{faMagnifyingGlass}" /></button
