@@ -3,10 +3,10 @@ name: API Unit/e2e Tests
 on:
   pull_request:
     branches:
-      - dev
+      - main 
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   files-changed:
@@ -40,7 +40,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20 
+          node-version: 22 
           cache: npm
           cache-dependency-path: api/package.json
 
