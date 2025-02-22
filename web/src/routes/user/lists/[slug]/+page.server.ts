@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
-import type { Movies } from '../../../../ambient.d';
+import type { ListInfoType, Movies, User } from '../../../../ambient.d';
 import { API_HOST } from '$env/static/private';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
@@ -45,13 +45,13 @@ export const load = async ({ fetch, locals, params }) => {
     }
 
     const { movies }: Movies = await moviesResponse.json();
-    const listInfo = await listInfoResponse.json();
+    const listInfo: ListInfoType = await listInfoResponse.json();
 
     if (shareesResponse.status !== 200) {
       return { movies, user, listId };
     }
 
-    const sharees = await shareesResponse.json();
+    const sharees: User[] = await shareesResponse.json();
 
     const userAndSharees = [user, ...sharees];
     const watchedByUsersResponse = await Promise.all(
@@ -75,6 +75,14 @@ export const load = async ({ fetch, locals, params }) => {
       }
     });
 
+    const comments = listInfo.comments.map(comment => {
+      const user = userAndSharees.find(u => u.id === comment.userId);
+
+      if (user) comment.username = user.username;
+
+      return comment;
+    });
+
     return {
       movies,
       user,
@@ -84,7 +92,8 @@ export const load = async ({ fetch, locals, params }) => {
         isPrivate: listInfo.isPrivate,
         creatorId: listInfo.creatorId
       },
-      sharees
+      sharees,
+      comments
     };
   } catch (e) {
     console.error(e);
@@ -275,6 +284,28 @@ export const actions = {
           'Content-Type': 'application/json',
           Authorization: locals.cookie as string
         }
+      });
+
+      if (response.status !== 204) {
+        return fail(400);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  submitComment: async ({ request, fetch, locals }: RequestEvent) => {
+    const data = await request.formData();
+    const listId = data.get('listId');
+    const text = data.get('text');
+
+    try {
+      const response = await fetch(`${API}/lists/${listId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: locals.cookie as string
+        },
+        body: JSON.stringify({ text })
       });
 
       if (response.status !== 204) {

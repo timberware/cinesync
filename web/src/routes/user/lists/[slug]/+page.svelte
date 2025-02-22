@@ -4,8 +4,11 @@
     faLock,
     faLockOpen,
     faPlusCircle,
-    faShareNodes
+    faShareNodes,
+    faComments
   } from '@fortawesome/free-solid-svg-icons';
+  import { quartOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
   import Nav from '$lib/Nav/Nav.svelte';
   import Movie from '$lib/Movie/Movie.svelte';
   import MovieModal from '$lib/Movie/MovieModal.svelte';
@@ -20,6 +23,7 @@
   import ListShareModal from '$lib/List/ListShareModal.svelte';
   import Avatar from '$lib/Avatar.svelte';
   import ListNameModal from '$lib/List/ListNameModal.svelte';
+  import Comment from '$lib/Comment/Comment.svelte';
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -32,6 +36,9 @@
   $: movies = data.movies;
   $: list = data.list;
   $: sharees = data.sharees;
+  $: comments = data.comments;
+
+  $: displaycomments = false;
 </script>
 
 <Toasts />
@@ -75,6 +82,13 @@
     {:else}
       <Clone name="{list.name}" listId="{list.id}" />
     {/if}
+    <IconButton
+      type="button"
+      classes="h-4"
+      icon="{faComments}"
+      tooltip="display comments"
+      on:click="{() => (displaycomments = !displaycomments)}"
+    />
   </div>
 </TopSection>
 <div class="flex justify-between mx-5 pb-3">
@@ -87,6 +101,15 @@
   {/if}
   <div class="my-auto"></div>
 </div>
+{#if displaycomments}
+  <div
+    class="mx-5"
+    in:slide="{{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}"
+    out:slide="{{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}"
+  >
+    <Comment comments="{comments}" listId="{list.id}" />
+  </div>
+{/if}
 <MoviesSection>
   {#if movies.length}
     {#each movies as movie (movie.id)}

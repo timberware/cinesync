@@ -22,6 +22,16 @@ export type Movies = {
   count: number;
 };
 
+export type ListInfoType = {
+  id: string;
+  name: string;
+  isPrivate: boolean;
+  creatorId: string;
+  createdAt: string;
+  updatedAt: string;
+  comments: Comment[];
+};
+
 export type ListType = {
   id: string;
   name: string;
@@ -38,6 +48,7 @@ export type ListType = {
 export type Lists = {
   lists: ListType[];
   count: number;
+  comments: Comment[];
 };
 
 export type ToastTypes = 'info' | 'success' | 'error';
@@ -64,3 +75,11 @@ export type SearchResult = {
 };
 
 export type MovieWithLists = MovieType & { lists: ListType[] };
+export type Comment = {
+  id: string;
+  userId: string;
+  username?: string;
+  text: string;
+  createdAt: string;
+  updatedAt: string;
+};
