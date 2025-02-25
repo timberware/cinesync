@@ -6,25 +6,27 @@ import { API_HOST } from '$env/static/private';
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
 
 /** @type {import('./$types').PageServerLoad} */
-export const load = async ({ fetch, locals }) => {
+export const load = async ({ fetch, locals, cookies }) => {
   const { user } = locals;
 
   if (!user) {
     return {};
   }
 
+  const cookie = cookies.get('Authorization');
+
   try {
     const [listResponse, sharedListsResponse] = await Promise.all([
       fetch(`${API}/lists?id=${user.id}`, {
         method: 'GET',
         headers: {
-          Authorization: locals.cookie as string
+          Authorization: cookie as string
         }
       }),
       fetch(`${API}/lists?id=${user.id}&shared=true&`, {
         method: 'GET',
         headers: {
-          Authorization: locals.cookie as string
+          Authorization: cookie as string
         }
       })
     ]);
@@ -47,7 +49,7 @@ export const load = async ({ fetch, locals }) => {
           fetch(`${API}/movies?listId=${l.id}`, {
             method: 'GET',
             headers: {
-              Authorization: locals.cookie as string
+              Authorization: cookie as string
             }
           })
         )
@@ -57,7 +59,7 @@ export const load = async ({ fetch, locals }) => {
           fetch(`${API}/movies?listId=${l.id}`, {
             method: 'GET',
             headers: {
-              Authorization: locals.cookie as string
+              Authorization: cookie as string
             }
           })
         )
@@ -67,7 +69,7 @@ export const load = async ({ fetch, locals }) => {
           fetch(`${API}/lists/${l.id}/sharees`, {
             method: 'GET',
             headers: {
-              Authorization: locals.cookie as string
+              Authorization: cookie as string
             }
           })
         )
@@ -77,7 +79,7 @@ export const load = async ({ fetch, locals }) => {
           fetch(`${API}/lists/${l.id}/sharees`, {
             method: 'GET',
             headers: {
-              Authorization: locals.cookie as string
+              Authorization: cookie as string
             }
           })
         )
@@ -117,7 +119,8 @@ export const load = async ({ fetch, locals }) => {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  createList: async ({ request, fetch, locals }: RequestEvent) => {
+  createList: async ({ request, fetch, cookies }: RequestEvent) => {
+    const cookie = cookies.get('Authorization');
     const data = await request.formData();
     const listName = data.get('list-name') as string;
 
@@ -130,7 +133,7 @@ export const actions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookie as string
         },
         body: JSON.stringify(list)
       });

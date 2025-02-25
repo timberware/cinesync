@@ -1,6 +1,7 @@
 import { redirect, fail } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import { API_HOST } from '$env/static/private';
+import { AUTHORIZATION } from '../../utils/consts.js';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
 
@@ -8,8 +9,7 @@ const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
 export const actions = {
   login: async ({ request, fetch, cookies, locals }: RequestEvent) => {
     locals.user = null;
-    locals.cookie = null;
-    cookies.delete('Authorization', {
+    cookies.delete(AUTHORIZATION, {
       path: '/'
     });
 
@@ -34,7 +34,7 @@ export const actions = {
       }
 
       const jwt = await response.json();
-      cookies.set('Authorization', `Bearer ${jwt.accessToken}`, {
+      cookies.set(AUTHORIZATION, `Bearer ${jwt.accessToken}`, {
         path: '/',
         maxAge: 60 * 60 * 24 * 7,
         httpOnly: true,

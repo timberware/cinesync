@@ -30,6 +30,8 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           context: ./web
           file: web/Dockerfile
@@ -52,6 +54,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: web-${{ github.event.inputs.tag }}
-          release_name: Release web-${{ github.event.inputs.tag }}
+          release_name: web-${{ github.event.inputs.tag }}
           draft: false
           prerelease: false

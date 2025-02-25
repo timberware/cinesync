@@ -2,11 +2,12 @@ import { fail } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import type { ListInfoType, Movies, User } from '../../../../ambient.d';
 import { API_HOST } from '$env/static/private';
+import { AUTHORIZATION } from '../../../../utils/consts.js';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
 
 /** @type {import('./$types').PageServerLoad} */
-export const load = async ({ fetch, locals, params }) => {
+export const load = async ({ fetch, locals, cookies, params }) => {
   const { slug: listId } = params;
   const { user } = locals;
 
@@ -18,24 +19,26 @@ export const load = async ({ fetch, locals, params }) => {
     return fail(401);
   }
 
+  const cookie = cookies.get(AUTHORIZATION);
+
   try {
     const [moviesResponse, shareesResponse, listInfoResponse] = await Promise.all([
       fetch(`${API}/movies?listId=${listId}`, {
         method: 'GET',
         headers: {
-          Authorization: locals.cookie as string
+          Authorization: cookie as string
         }
       }),
       fetch(`${API}/lists/${listId}/sharees`, {
         method: 'GET',
         headers: {
-          Authorization: locals.cookie as string
+          Authorization: cookie as string
         }
       }),
       fetch(`${API}/lists/${listId}`, {
         method: 'GET',
         headers: {
-          Authorization: locals.cookie as string
+          Authorization: cookie as string
         }
       })
     ]);
@@ -59,7 +62,7 @@ export const load = async ({ fetch, locals, params }) => {
         fetch(`${API}/movies?listId=${listId}&userId=${sharee.id}&per_page=999`, {
           method: 'GET',
           headers: {
-            Authorization: locals.cookie as string
+            Authorization: cookie as string
           }
         })
       )
@@ -102,7 +105,7 @@ export const load = async ({ fetch, locals, params }) => {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  togglePrivacy: async ({ request, fetch, locals }: RequestEvent) => {
+  togglePrivacy: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
     const isPrivate = data.get('isPrivate');
@@ -112,7 +115,7 @@ export const actions = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         },
         body: JSON.stringify({
           isPrivate: !(isPrivate === 'true')
@@ -126,7 +129,7 @@ export const actions = {
       console.error(e);
     }
   },
-  deleteList: async ({ request, fetch, locals }: RequestEvent) => {
+  deleteList: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
 
@@ -135,7 +138,7 @@ export const actions = {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         }
       });
 
@@ -146,7 +149,7 @@ export const actions = {
       console.error(e);
     }
   },
-  updateList: async ({ request, fetch, locals }: RequestEvent) => {
+  updateList: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId') as string;
     const title = data.get('title') as string;
@@ -162,7 +165,7 @@ export const actions = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         },
         body: JSON.stringify({
           movie: [
@@ -186,7 +189,7 @@ export const actions = {
       console.error(e);
     }
   },
-  cloneList: async ({ request, fetch, locals }: RequestEvent) => {
+  cloneList: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
     const name = data.get('name');
@@ -196,7 +199,7 @@ export const actions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         },
         body: JSON.stringify({ name })
       });
@@ -208,7 +211,7 @@ export const actions = {
       console.error(e);
     }
   },
-  shareList: async ({ request, fetch, locals }: RequestEvent) => {
+  shareList: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
     const username = data.get('username');
@@ -218,7 +221,7 @@ export const actions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         },
         body: JSON.stringify({ username })
       });
@@ -230,7 +233,7 @@ export const actions = {
       console.error(e);
     }
   },
-  updateListInfo: async ({ request, fetch, locals }: RequestEvent) => {
+  updateListInfo: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
     const name = data.get('name');
@@ -240,7 +243,7 @@ export const actions = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         },
         body: JSON.stringify({ name })
       });
@@ -252,7 +255,7 @@ export const actions = {
       console.error(e);
     }
   },
-  toggleWatched: async ({ request, fetch, locals }: RequestEvent) => {
+  toggleWatched: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const movieId = data.get('movieId');
 
@@ -261,7 +264,7 @@ export const actions = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         }
       });
 
@@ -272,7 +275,7 @@ export const actions = {
       console.error(e);
     }
   },
-  deleteMovie: async ({ request, fetch, locals }: RequestEvent) => {
+  deleteMovie: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
     const movieId = data.get('movieId');
@@ -282,7 +285,7 @@ export const actions = {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         }
       });
 
@@ -293,7 +296,7 @@ export const actions = {
       console.error(e);
     }
   },
-  submitComment: async ({ request, fetch, locals }: RequestEvent) => {
+  submitComment: async ({ request, fetch, cookies }: RequestEvent) => {
     const data = await request.formData();
     const listId = data.get('listId');
     const text = data.get('text');
@@ -303,7 +306,7 @@ export const actions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         },
         body: JSON.stringify({ text })
       });

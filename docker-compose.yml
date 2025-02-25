@@ -43,6 +43,7 @@ services:
       - API_HOST=${API_HOST}
       - PUBLIC_API_HOST=${PUBLIC_API_HOST}
       - NODE_ENV=${NODE_ENV}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
     ports:
       - 3000:3000
     depends_on:
