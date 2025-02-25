@@ -11,7 +11,6 @@ declare global {
         email: string;
         id: string;
       } | null;
-      cookie: string | null;
     }
     // interface PageData {}
     // interface Platform {}

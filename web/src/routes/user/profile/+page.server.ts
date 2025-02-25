@@ -1,12 +1,12 @@
 import { API_HOST } from '$env/static/private';
 import { fail } from '@sveltejs/kit';
 import type { Stats } from '../../../ambient';
-import type { RequestEvent } from '../$types';
+import { AUTHORIZATION } from '../../../utils';
 
 const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
 
 /** @type {import('./$types').PageServerLoad} */
-export const load = async ({ fetch, locals }) => {
+export const load = async ({ fetch, locals, cookies }) => {
   const { user } = locals;
 
   if (!user) {
@@ -17,7 +17,7 @@ export const load = async ({ fetch, locals }) => {
     const userStats = await fetch(`${API}/users/${user.id}/stats`, {
       method: 'GET',
       headers: {
-        Authorization: locals.cookie as string
+        Authorization: cookies.get(AUTHORIZATION) as string
       }
     });
 
@@ -35,7 +35,7 @@ export const load = async ({ fetch, locals }) => {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  saveAvatar: async ({ request, fetch, locals }: RequestEvent) => {
+  saveAvatar: async ({ request, fetch, cookies }) => {
     const data = await request.formData();
     const avatar = data.get('file') as File;
 
@@ -54,7 +54,7 @@ export const actions = {
       const response = await fetch(`${API}/users/avatar`, {
         method: 'POST',
         headers: {
-          Authorization: locals.cookie as string
+          Authorization: cookies.get(AUTHORIZATION) as string
         },
         body: formData
       });

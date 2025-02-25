@@ -1,7 +1,8 @@
 ### Dev
-![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/api_test.yml/badge.svg?branch=dev&event=push)
-![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/docker.yml/badge.svg?branch=dev&event=push)
-![Node.js CI](https://github.com/funnls/cinesync/actions/workflows/format_lint.yml/badge.svg?branch=dev&event=push)
+![Node.js CI](https://github.com/timberware/cinesync/actions/workflows/api_test.yml/badge.svg?branch=main&event=push)
+![Node.js CI](https://github.com/timberware/cinesync/actions/workflows/format_lint.yml/badge.svg?branch=main&event=push)
+![Node.js CI](https://github.com/timberware/cinesync/actions/workflows/cd-api.yml/badge.svg?branch=main)
+![Node.js CI](https://github.com/timberware/cinesync/actions/workflows/cd-web.yml/badge.svg?branch=main)
 
 
 [<img src="images/cinesync.png">](https://cinesync.me/)
