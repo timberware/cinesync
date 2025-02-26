@@ -1,8 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
-import { API_HOST } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
+const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
 /** @type {import('./$types').Actions} */
 export const actions = {

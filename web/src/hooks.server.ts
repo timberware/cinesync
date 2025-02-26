@@ -1,9 +1,9 @@
 import type { Handle } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
-import { API_HOST } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 const AUTH_PATHS = ['/login', '/', '/signup'];
-const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
+const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle: Handle = async ({ event, resolve }) => {

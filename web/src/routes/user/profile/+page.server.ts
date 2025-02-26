@@ -1,9 +1,9 @@
-import { API_HOST } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { fail } from '@sveltejs/kit';
 import type { Stats } from '../../../ambient';
 import { AUTHORIZATION } from '../../../utils';
 
-const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
+const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals, cookies }) => {

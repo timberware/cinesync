@@ -26,8 +26,8 @@
 
   onMount(() => {
     img = new Image();
-    img.src = fullPath;
     loading = true;
+    img.src = fullPath;
 
     img.onload = () => {
       loading = false;

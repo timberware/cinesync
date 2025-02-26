@@ -11,8 +11,8 @@
 
   onMount(() => {
     const img = new Image();
-    img.src = src;
     loading = true;
+    img.src = src;
 
     img.onload = () => {
       loading = false;
@@ -27,6 +27,7 @@
 
 {#if loaded}
   <img
+    loading="lazy"
     class="{`transition-all ease-in-out duration-500 h-full w-full object-scale-down rounded-md ${
       !watched && ' brightness-25'
     }`}"

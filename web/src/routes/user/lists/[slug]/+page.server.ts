@@ -1,10 +1,10 @@
 import { fail } from '@sveltejs/kit';
 import type { RequestEvent } from './$types.js';
 import type { ListInfoType, Movies, User } from '../../../../ambient.d';
-import { API_HOST } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { AUTHORIZATION } from '../../../../utils/consts.js';
 
-const API = process.env.API_HOST || API_HOST || 'http://localhost:4000';
+const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = async ({ fetch, locals, cookies, params }) => {
