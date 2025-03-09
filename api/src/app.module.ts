@@ -1,11 +1,9 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+import { APP_PIPE } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
-import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { UserModule } from './user/user.module';
 import { ListModule } from './list/list.module';
 import { NotificationModule } from './notification/notification.module';
@@ -29,10 +27,6 @@ import { SearchModule } from './search/search.module';
   ],
   controllers: [AppController],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
     AppService,
     {
       provide: APP_PIPE,
@@ -41,7 +35,6 @@ import { SearchModule } from './search/search.module';
       }),
     },
     PrismaService,
-    JwtService,
   ],
 })
 export class AppModule {}

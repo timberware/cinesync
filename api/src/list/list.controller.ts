@@ -9,14 +9,11 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
-  Req,
   Param,
-  UnauthorizedException,
   Query,
 } from '@nestjs/common';
 import { CreateListDto, UpdateListDto } from './dto';
 import { CommentAuthorizationGuard } from '../comment/guard/comment-auth.guard';
-import { Request } from 'express';
 import { ListService } from './list.service';
 import { CommentsService } from '../comment/comment.service';
 import { MovieService } from '../movie/movie.service';
@@ -30,6 +27,9 @@ import { UserService } from '../user/user.service';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
 import { QueryDto } from './dto/query.dto';
+import { CurrentUser } from '../auth/decorator/current-user.decorator';
+import { UserDto } from './dto/sharee.dto';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @Controller('lists')
 export class ListController {
@@ -41,6 +41,7 @@ export class ListController {
     private notificationService: NotificationService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('/')
   getLists(@Query() query: QueryDto) {
     return this.listService.getLists(query);
@@ -54,77 +55,69 @@ export class ListController {
   }
 
   @UseGuards(ListAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('/:id')
   getList(@Param('id') listId: string) {
     return this.listService.getList(listId);
   }
 
   @UseGuards(ListAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('/:id/sharees')
-  getSharees(@Param('id') listId: string, @Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.listService.getSharees(listId, req.user.id);
+  getSharees(@Param('id') listId: string, @CurrentUser() user: UserDto) {
+    return this.listService.getSharees(listId, user.id);
   }
 
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @Post('/')
-  createList(@Body() { name }: CreateListDto, @Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.listService.createList(name, req.user.id);
+  createList(@Body() { name }: CreateListDto, @CurrentUser() user: UserDto) {
+    return this.listService.createList(name, user.id);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
-  @UseGuards(ListAuthGuard, ShareListAuthGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard, ShareListAuthGuard)
   @Post('/:id/toggleShareByUsername')
   @HttpCode(HttpStatus.NO_CONTENT)
   toggleShareListByUsername(
     @Param('id') listId: string,
     @Body() { username }: { username: string },
-    @Req() req: Request,
+    @CurrentUser() user: UserDto,
   ) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.listService.toggleShareByUsername(
-      listId,
-      username,
-      req.user.id,
-    );
+    return this.listService.toggleShareByUsername(listId, username, user.id);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
-  @UseGuards(ListAuthGuard, ShareListAuthGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard, ShareListAuthGuard)
   @Post('/:id/toggleShare')
   @HttpCode(HttpStatus.NO_CONTENT)
   toggleShareList(
     @Param('id') listId: string,
     @Body() { email: shareeEmail }: { email: string },
-    @Req() req: Request,
+    @CurrentUser() user: UserDto,
   ) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.listService.toggleShareList(listId, shareeEmail, req.user.id);
+    return this.listService.toggleShareList(listId, shareeEmail, user.id);
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
-  @UseGuards(ListAuthGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard)
   @Post('/:id/comments')
   @HttpCode(HttpStatus.NO_CONTENT)
   async createComment(
     @Param('id') listId: string,
     @Body() { text }: { text: string },
-    @Req() req: Request,
+    @CurrentUser() user: UserDto,
   ) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-
-    const { id: userId } = req.user;
     const createdComment = await this.commentService.create(
       text,
       listId,
-      userId,
+      user.id,
     );
 
     const list = await this.listService.getList(listId);
     const [listOwner, commenter] = await Promise.all([
       this.userService.getUser(list.creatorId),
-      this.userService.getUser(userId),
+      this.userService.getUser(user.id),
     ]);
 
     if (list.creatorId !== commenter.id) {
@@ -143,21 +136,19 @@ export class ListController {
     return createdComment;
   }
 
-  @UseGuards(ListAuthGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard)
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @Post('/:id/clone')
   async cloneList(
     @Param('id') listId: string,
     @Body() { name }: { name: string },
-    @Req() req: Request,
+    @CurrentUser() user: UserDto,
   ) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-
     const { count } = await this.movieService.getMovies({ listId });
     const originalList = await this.getList(listId);
     const clonedList = await this.listService.createList(
       name || originalList.name,
-      req.user.id,
+      user.id,
     );
 
     if (count === 0) {
@@ -175,7 +166,7 @@ export class ListController {
     return clonedList;
   }
 
-  @UseGuards(ListAuthGuard, CommentAuthorizationGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard, CommentAuthorizationGuard)
   @Patch('/:id/comments/:commentId')
   @HttpCode(HttpStatus.NO_CONTENT)
   updateComment(
@@ -186,7 +177,7 @@ export class ListController {
     return this.commentService.update(updateCommentDto, commentId, listId);
   }
 
-  @UseGuards(ListAuthGuard, CommentAuthorizationGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard, CommentAuthorizationGuard)
   @Delete('/:id/comments/:commentId')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteComment(
@@ -197,7 +188,7 @@ export class ListController {
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
-  @UseGuards(ListAuthGuard, ListPrivacyAuthGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard, ListPrivacyAuthGuard)
   @Patch('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   updateList(
@@ -208,11 +199,10 @@ export class ListController {
   }
 
   @UseInterceptors(RemoveListFieldsInterceptor)
-  @UseGuards(ListAuthGuard)
+  @UseGuards(JwtAuthGuard, ListAuthGuard)
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteList(@Param('id') listId: string, @Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.listService.deleteList(listId, req.user.id);
+  deleteList(@Param('id') listId: string, @CurrentUser() user: UserDto) {
+    return this.listService.deleteList(listId, user.id);
   }
 }

@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { logLevels } from './utils/logLevels';
 import { PrismaClientExceptionFilter } from './prisma/filter/prisma-client-exception.filter';
+import * as cookieParser from 'cookie-parser';
 
 const port = 4000;
 
@@ -29,11 +30,12 @@ async function bootstrap() {
   }
 
   app.enableCors({ origin: true, credentials: true });
-  const httpService = new HttpService();
+  app.use(cookieParser());
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
+  const httpService = new HttpService();
   httpService.axiosRef.interceptors.response.use(
     (response) => {
       return response;

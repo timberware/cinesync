@@ -8,7 +8,6 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-  Req,
   UseInterceptors,
   Patch,
   Param,
@@ -16,10 +15,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
 import { AdminGuard } from '../auth/guard/admin.guard';
@@ -30,19 +26,9 @@ import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor
 import { FriendStatus } from './user.service';
 import { ImageService } from '../image/image.service';
 import { AVATAR_MAX_SIZE } from '../utils';
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Express {
-    interface User {
-      id: string;
-      username: string;
-      email: string;
-      role: Role;
-      avatarName: string;
-    }
-  }
-}
+import { CurrentUser } from '../auth/decorator/current-user.decorator';
+import { UserDto } from './dto/user.dto';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -52,63 +38,66 @@ export class UserController {
     private imageService: ImageService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('/')
   getUsers(@Query() query: QueryDto) {
     return this.userService.getUsers(query);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  getUserById(@Param('id') userId: string) {
-    return this.userService.getUser(userId);
+  getUserById(@Param('id') id: string) {
+    return this.userService.getUser(id);
   }
 
   @Get('/:id/stats')
+  @UseGuards(JwtAuthGuard)
   getUserStats(@Param('id') userId: string) {
     return this.userService.getUserStats(userId);
   }
 
   @Get('/friends')
-  getFriends(@Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.userService.getFriends(req.user.id);
+  @UseGuards(JwtAuthGuard)
+  getFriends(@CurrentUser() user: UserDto) {
+    return this.userService.getFriends(user.id);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @Post('/friends/send')
   @HttpCode(HttpStatus.NO_CONTENT)
   sendFriendRequest(
-    @Req() req: Request,
     @Body() { username }: { username: string },
+    @CurrentUser() user: UserDto,
   ) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.userService.sendFriendRequest(req.user.id, username);
+    return this.userService.sendFriendRequest(user.id, username);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @Post('/friends/update')
   @HttpCode(HttpStatus.NO_CONTENT)
   updateFriendRequest(
-    @Req() req: Request,
     @Body() { username, status }: { username: string; status: FriendStatus },
+    @CurrentUser() user: UserDto,
   ) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    return this.userService.updateFriendship(req.user.id, username, status);
+    return this.userService.updateFriendship(user.id, username, status);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @Patch('/update')
-  async updateUser(@Req() req: Request, @Body() body: UpdateUserDto) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-
+  async updateUser(@Body() body: UpdateUserDto, @CurrentUser() user: UserDto) {
     if (body.password) {
       body.password = await this.authService.hash(body.password);
     }
 
-    return this.userService.updateUser(req.user.id, body);
+    return this.userService.updateUser(user.id, body);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/avatar')
   @UseInterceptors(FileInterceptor('image'))
@@ -122,22 +111,18 @@ export class UserController {
       }),
     )
     file: Express.Multer.File,
-    @Req() req: Request,
+    @CurrentUser() user: UserDto,
   ) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-
-    const { username } = req.user;
     const { mimetype } = file;
 
-    return this.imageService.createImage(username, mimetype, file.buffer);
+    return this.imageService.createImage(user.username, mimetype, file.buffer);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/avatar')
-  deleteAvatar(@Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-    this.imageService.deleteImage(req.user.username);
+  deleteAvatar(@CurrentUser() user: UserDto) {
+    this.imageService.deleteImage(user.username);
   }
 }

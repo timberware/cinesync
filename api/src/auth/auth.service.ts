@@ -1,16 +1,23 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthDao } from './dao/auth.dao';
+import { UserDto } from './dto/user.dto';
+import { TokenPayload } from './dto/token-payload.dto';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private authDao: AuthDao,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly authDao: AuthDao,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   hash(pwd: string) {
@@ -39,6 +46,10 @@ export class AuthService {
     return this.authDao.getUser(email);
   }
 
+  getUserById(id: string) {
+    return this.authDao.getUserById(id);
+  }
+
   deleteUser(userId: string) {
     return this.authDao.deleteUser(userId);
   }
@@ -46,8 +57,7 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.authDao.getUser(email);
 
-    if (!user)
-      throw new UnauthorizedException('Email or Password are incorrect');
+    if (!user) throw new NotFoundException('Email or Password are incorrect');
 
     const passwordsMatch = await this.compare(password, user.password);
 
@@ -58,19 +68,25 @@ export class AuthService {
     return user;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  login(user: any) {
-    const payload = { username: user.email, sub: user.id };
+  login(user: UserDto, response: Response) {
+    const expirationTime = new Date();
+    const extraTime =
+      this.configService.getOrThrow<string>('JWT_EXPIRATION_MS');
 
-    return {
-      accessToken: this.jwtService.sign(payload, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-        ...(this.configService.get<string>('NODE_ENV') === 'production'
-          ? {
-              expiresIn: '7d',
-            }
-          : null),
-      }),
-    };
+    expirationTime.setMilliseconds(
+      expirationTime.getMilliseconds() + parseInt(extraTime, 10),
+    );
+
+    const payload: TokenPayload = { userId: user.id };
+    const accessToken = this.jwtService.sign(payload, {
+      secret: this.configService.getOrThrow<string>('JWT_SECRET'),
+      expiresIn: `${extraTime}ms`,
+    });
+
+    response.cookie('Authentication', accessToken, {
+      httpOnly: true,
+      secure: this.configService.get<string>('NODE_ENV') === 'production',
+      expires: expirationTime,
+    });
   }
 }
