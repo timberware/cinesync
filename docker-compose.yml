@@ -21,6 +21,7 @@ services:
       - TZ=America/Toronto
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
       - TMDB_TOKEN=${TMDB_TOKEN}
       - MAILGUN_KEY=${MAILGUN_KEY}
       - MAILGUN_DOMAIN=${MAILGUN_DOMAIN}

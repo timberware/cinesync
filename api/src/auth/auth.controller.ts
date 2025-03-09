@@ -7,19 +7,20 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-  Req,
   UseInterceptors,
-  UnauthorizedException,
+  Res,
 } from '@nestjs/common';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationTypes } from '../notification/templates';
 import { AuthService } from './auth.service';
 import { AdminGuard } from './guard/admin.guard';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Request } from 'express';
+import { Response } from 'express';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { RemoveFieldsInterceptor } from './interceptor/remove-fields.interceptor';
-import { Public } from './decorator/public.decorator';
+import { CurrentUser } from './decorator/current-user.decorator';
+import { UserDto } from './dto/user.dto';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -29,13 +30,13 @@ export class AuthController {
   ) {}
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @Get('/whoami')
-  whoAmI(@Req() req: Request) {
-    return req.user;
+  whoAmI(@CurrentUser() user: UserDto) {
+    return user;
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
-  @Public()
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() body: CreateUserDto) {
@@ -49,24 +50,24 @@ export class AuthController {
 
   @UseInterceptors(RemoveFieldsInterceptor)
   @UseGuards(LocalAuthGuard)
-  @Public()
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  signin(@Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('req contains no user');
-    return this.authService.login(req.user);
+  login(
+    @CurrentUser() user: UserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    this.authService.login(user, response);
   }
 
   @UseInterceptors(RemoveFieldsInterceptor)
+  @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/delete')
-  async deleteUser(@Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('user not found');
-
-    await this.authService.deleteUser(req.user.id);
+  async deleteUser(@CurrentUser() user: UserDto) {
+    await this.authService.deleteUser(user.id);
     this.notificationService.send(
-      { toEmail: req.user.email, toUsername: '' },
+      { toEmail: user.email, toUsername: '' },
       NotificationTypes.ACCOUNT_DELETED,
     );
   }

@@ -5,11 +5,10 @@
       "type": "node",
       "request": "launch",
       "name": "Debug",
-      "runtimeExecutable": "node",
-      "skipFiles": ["<node_internals>/**", "node_modules/**"],
-      "program": "${workspaceFolder}/src/main.ts",
-      "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
     }
   ]
 }

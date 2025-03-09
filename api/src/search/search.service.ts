@@ -3,7 +3,7 @@ import { QueryDto } from './dto/query.dto';
 import { ListItem, MovieDto } from './dto/search.dto';
 import { MovieDao } from './dao/movie.dao';
 import { TMDBDao } from './dao/tmdb.dao';
-import { tmdbMovieDtoToMovieDto } from 'src/utils/mappers';
+import { tmdbMovieDtoToMovieDto } from '../utils/mappers';
 
 @Injectable()
 export class SearchService {
