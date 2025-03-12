@@ -1,15 +1,14 @@
 import { redirect } from '@sveltejs/kit';
-import type { RequestEvent } from './$types.js';
-import { AUTHORIZATION } from '../../utils/consts.js';
+import { AUTHENTICATION } from '../../utils/consts.js';
+import type { Actions } from './$types.js';
 
-/** @type {import('./$types').Actions} */
 export const actions = {
-  logout: async ({ locals, cookies }: RequestEvent) => {
+  logout: async ({ locals, cookies }) => {
     locals.user = null;
-    cookies.delete(AUTHORIZATION, {
+    cookies.delete(AUTHENTICATION, {
       path: '/'
     });
 
     redirect(301, '/');
   }
-};
+} satisfies Actions;

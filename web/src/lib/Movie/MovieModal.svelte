@@ -50,11 +50,7 @@
     {#if movies.length}
       <h2 class="font-bold text-2xl underline text-center mt-4 mb-2">results</h2>
       {#each movies as movie (movie.tmdbId)}
-        <MovieResult
-          bind:showMovieModal="{showMovieModal}"
-          movie="{movie}"
-          listId="{listId}"
-        />
+        <MovieResult bind:showMovieModal {movie} {listId} />
       {/each}
     {/if}
   </div>

@@ -1,12 +1,11 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { RequestEvent } from './$types.js';
 import { env } from '$env/dynamic/private';
+import type { Actions } from './$types.js';
 
 const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
-/** @type {import('./$types').Actions} */
 export const actions = {
-  signup: async ({ request, fetch }: RequestEvent) => {
+  signup: async ({ request, fetch }) => {
     const data = await request.formData();
     const username = data.get('username');
     const email = data.get('email');
@@ -15,9 +14,6 @@ export const actions = {
     try {
       const response = await fetch(`${API}/auth/signup`, {
         method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
         body: JSON.stringify({
           username,
           email,
@@ -35,4 +31,4 @@ export const actions = {
     }
     redirect(302, '/user/login');
   }
-};
+} satisfies Actions;

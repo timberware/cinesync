@@ -24,9 +24,9 @@
   import Avatar from '$lib/Avatar.svelte';
   import ListNameModal from '$lib/List/ListNameModal.svelte';
   import Comment from '$lib/Comment/Comment.svelte';
+  import type { PageData } from './$types';
 
-  /** @type {import('./$types').PageData} */
-  export let data;
+  export let data: PageData;
 
   const { user } = data;
   let showModal = false;
@@ -38,7 +38,7 @@
   $: sharees = data.sharees;
   $: comments = data.comments;
 
-  $: displaycomments = false;
+  $: displayComments = false;
 </script>
 
 <Toasts />
@@ -101,23 +101,23 @@
   {/if}
   <div class="my-auto"></div>
 </div>
-{#if displaycomments}
+{#if displayComments}
   <div
     class="mx-5"
     in:slide="{{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}"
     out:slide="{{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}"
   >
-    <Comment comments="{comments}" listId="{list.id}" />
+    <Comment {comments} listId="{list.id}" />
   </div>
 {/if}
 <MoviesSection>
   {#if movies.length}
     {#each movies as movie (movie.id)}
-      <Movie listId="{list.id}" movie="{movie}" />
+      <Movie listId="{list.id}" {movie} />
     {/each}
   {/if}
 </MoviesSection>
 
-<ListShareModal bind:showShareListModal="{showShareListModal}" listId="{list.id}" />
-<ListNameModal bind:showListNameModal="{showListNameModal}" listId="{list.id}" />
+<ListShareModal bind:showShareListModal listId="{list.id}" />
+<ListNameModal bind:showListNameModal listId="{list.id}" />
 <MovieModal bind:showMovieModal="{showModal}" listId="{list.id}" />

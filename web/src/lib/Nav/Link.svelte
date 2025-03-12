@@ -10,7 +10,7 @@
 </script>
 
 <a
-  href="{href}"
+  {href}
   class="{`${isActive ? 'text-text' : 'text-primary'} hover:text-text active:text-text ${
     hidden && 'hidden sm:inline'
   }`} "

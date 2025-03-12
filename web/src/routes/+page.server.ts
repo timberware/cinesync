@@ -1,19 +1,15 @@
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { AUTHORIZATION } from '../utils/consts.js';
+import type { PageServerLoad } from './$types';
 
 const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
-/** @type {import('./$types').PageServerLoad} */
-export const load = async ({ fetch, cookies }) => {
+export const load: PageServerLoad = async ({ fetch }) => {
   let status = 404;
 
   try {
     const response = await fetch(`${API}/auth/whoami`, {
-      method: 'GET',
-      headers: {
-        Authorization: cookies.get(AUTHORIZATION) as string
-      }
+      method: 'GET'
     });
 
     status = response.status;

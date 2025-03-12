@@ -10,9 +10,9 @@
   export let icon: any;
 </script>
 
-<button class="{`has-tooltip ${classes}`}" type="{type}" on:click>
+<button class="{`has-tooltip ${classes}`}" {type} on:click>
   <span class="tooltip rounded-lg bg-background text-text text-lg p-2 mt-5 -ml-5"
     >{tooltip}</span
   >
-  <FontAwesomeIcon class="text-text" icon="{icon}" /></button
+  <FontAwesomeIcon class="text-text" {icon} /></button
 >

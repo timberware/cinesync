@@ -1,33 +1,24 @@
 import { fail } from '@sveltejs/kit';
 import type { Lists, ListType } from '../../../ambient';
-import type { RequestEvent } from './$types.js';
+import type { Actions, PageServerLoad, RequestEvent } from './$types.js';
 import { env } from '$env/dynamic/private';
 
 const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
-/** @type {import('./$types').PageServerLoad} */
-export const load = async ({ fetch, locals, cookies }) => {
+export const load: PageServerLoad = async ({ fetch, locals }) => {
   const { user } = locals;
 
   if (!user) {
     return {};
   }
 
-  const cookie = cookies.get('Authorization');
-
   try {
     const [listResponse, sharedListsResponse] = await Promise.all([
       fetch(`${API}/lists?id=${user.id}`, {
-        method: 'GET',
-        headers: {
-          Authorization: cookie as string
-        }
+        method: 'GET'
       }),
       fetch(`${API}/lists?id=${user.id}&shared=true&`, {
-        method: 'GET',
-        headers: {
-          Authorization: cookie as string
-        }
+        method: 'GET'
       })
     ]);
 
@@ -47,40 +38,28 @@ export const load = async ({ fetch, locals, cookies }) => {
       Promise.all(
         lists.map((l: ListType) =>
           fetch(`${API}/movies?listId=${l.id}`, {
-            method: 'GET',
-            headers: {
-              Authorization: cookie as string
-            }
+            method: 'GET'
           })
         )
       ),
       Promise.all(
         sharedLists.map((l: ListType) =>
           fetch(`${API}/movies?listId=${l.id}`, {
-            method: 'GET',
-            headers: {
-              Authorization: cookie as string
-            }
+            method: 'GET'
           })
         )
       ),
       Promise.all(
         lists.map((l: ListType) =>
           fetch(`${API}/lists/${l.id}/sharees`, {
-            method: 'GET',
-            headers: {
-              Authorization: cookie as string
-            }
+            method: 'GET'
           })
         )
       ),
       Promise.all(
         sharedLists.map((l: ListType) =>
           fetch(`${API}/lists/${l.id}/sharees`, {
-            method: 'GET',
-            headers: {
-              Authorization: cookie as string
-            }
+            method: 'GET'
           })
         )
       )
@@ -117,10 +96,8 @@ export const load = async ({ fetch, locals, cookies }) => {
   }
 };
 
-/** @type {import('./$types').Actions} */
 export const actions = {
-  createList: async ({ request, fetch, cookies }: RequestEvent) => {
-    const cookie = cookies.get('Authorization');
+  createList: async ({ request, fetch }: RequestEvent) => {
     const data = await request.formData();
     const listName = data.get('list-name') as string;
 
@@ -131,10 +108,6 @@ export const actions = {
 
       const response = await fetch(`${API}/lists`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: cookie as string
-        },
         body: JSON.stringify(list)
       });
 
@@ -145,4 +118,4 @@ export const actions = {
       console.error(e);
     }
   }
-};
+} satisfies Actions;

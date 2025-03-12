@@ -58,7 +58,8 @@
         name="text"
         id="text"
         placeholder="what do you think about this list?"
-        required></textarea>
+        required
+      ></textarea>
       <div class="text-center">
         <button type="submit">submit</button>
       </div>
