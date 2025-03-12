@@ -4,10 +4,10 @@
   import Nav from '$lib/Nav/Nav.svelte';
   import Toasts from '$lib/Toast/Toasts.svelte';
   import { addToast } from '../../../store';
+  import type { PageData } from './$types';
   import { error, success } from './messages';
 
-  /** @type {import('./$types').PageData} */
-  export let data;
+  export let data: PageData;
   const { user, stats } = data;
 </script>
 

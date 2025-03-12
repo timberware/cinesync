@@ -1,8 +1,8 @@
 import { redirect } from '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types';
 
-/** @type {import('./$types').LayoutServerLoad} */
-export async function load({ url }) {
+export const load: LayoutServerLoad = async ({ url }) => {
   if (url.pathname === '/user') {
     redirect(301, '/user/lists');
   }
-}
+};

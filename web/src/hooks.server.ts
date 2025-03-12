@@ -5,15 +5,9 @@ import { env } from '$env/dynamic/private';
 const AUTH_PATHS = ['/login', '/', '/signup'];
 const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
-/** @type {import('@sveltejs/kit').Handle} */
 export const handle: Handle = async ({ event, resolve }) => {
-  const jwt = event.cookies.get('Authorization');
-
   const response = await event.fetch(`${API}/auth/whoami`, {
-    method: 'GET',
-    headers: {
-      Authorization: jwt as string
-    }
+    method: 'GET'
   });
 
   const user = await response.json();

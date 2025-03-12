@@ -25,7 +25,7 @@
     <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
   </button>
 </TopSection>
-<ListContainer lists="{lists}" />
+<ListContainer {lists} />
 
 {#if sharedLists.length}
   <div class="flex text-2xl mt-10 mb-4 mx-5 justify-between">
@@ -34,4 +34,4 @@
   <ListContainer lists="{sharedLists}" />
 {/if}
 
-<ListModal bind:showModal="{showModal}" />
+<ListModal bind:showModal />

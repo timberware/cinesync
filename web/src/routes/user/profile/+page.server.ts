@@ -1,12 +1,11 @@
 import { env } from '$env/dynamic/private';
 import { fail } from '@sveltejs/kit';
 import type { Stats } from '../../../ambient';
-import { AUTHORIZATION } from '../../../utils';
+import type { Actions, PageServerLoad } from './$types.js';
 
 const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
-/** @type {import('./$types').PageServerLoad} */
-export const load = async ({ fetch, locals, cookies }) => {
+export const load: PageServerLoad = async ({ fetch, locals }) => {
   const { user } = locals;
 
   if (!user) {
@@ -15,10 +14,7 @@ export const load = async ({ fetch, locals, cookies }) => {
 
   try {
     const userStats = await fetch(`${API}/users/${user.id}/stats`, {
-      method: 'GET',
-      headers: {
-        Authorization: cookies.get(AUTHORIZATION) as string
-      }
+      method: 'GET'
     });
 
     if (userStats.status !== 200) {
@@ -33,9 +29,8 @@ export const load = async ({ fetch, locals, cookies }) => {
   }
 };
 
-/** @type {import('./$types').Actions} */
 export const actions = {
-  saveAvatar: async ({ request, fetch, cookies }) => {
+  saveAvatar: async ({ request, fetch }) => {
     const data = await request.formData();
     const avatar = data.get('file') as File;
 
@@ -53,9 +48,6 @@ export const actions = {
     try {
       const response = await fetch(`${API}/users/avatar`, {
         method: 'POST',
-        headers: {
-          Authorization: cookies.get(AUTHORIZATION) as string
-        },
         body: formData
       });
 
@@ -66,4 +58,4 @@ export const actions = {
       console.error(e);
     }
   }
-};
+} satisfies Actions;

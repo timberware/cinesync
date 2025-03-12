@@ -25,7 +25,7 @@
   }
 </script>
 
-<Modal bind:showModal="{showModal}">
+<Modal bind:showModal>
   <div class=" max-w-5xl pt-4 pb-6 px-4 m-auto">
     <h2 class="font-bold text-2xl underline text-center mb-4">watched</h2>
     <div class="flex pt-2 pb-2 gap-4 justify-center flex-wrap">

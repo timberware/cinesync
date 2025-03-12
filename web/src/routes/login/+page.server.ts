@@ -1,15 +1,15 @@
 import { redirect, fail } from '@sveltejs/kit';
-import type { RequestEvent } from './$types.js';
 import { env } from '$env/dynamic/private';
-import { AUTHORIZATION } from '../../utils/consts.js';
+import { AUTHENTICATION } from '../../utils/consts.js';
+import setCookieParser from 'set-cookie-parser';
+import type { Actions } from './$types.js';
 
 const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
-/** @type {import('./$types').Actions} */
 export const actions = {
-  login: async ({ request, fetch, cookies, locals }: RequestEvent) => {
+  login: async ({ request, cookies, locals }) => {
     locals.user = null;
-    cookies.delete(AUTHORIZATION, {
+    cookies.delete(AUTHENTICATION, {
       path: '/'
     });
 
@@ -33,16 +33,19 @@ export const actions = {
         return fail(401);
       }
 
-      const jwt = await response.json();
-      cookies.set(AUTHORIZATION, `Bearer ${jwt.accessToken}`, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7,
-        httpOnly: true,
-        secure: false
-      });
+      const cookiesInResponse = response.headers.getSetCookie();
+      if (cookiesInResponse.length) {
+        const [cookie] = setCookieParser(cookiesInResponse);
+        cookies.set(AUTHENTICATION, cookie.value, {
+          path: cookie.path ?? '/',
+          httpOnly: cookie.httpOnly,
+          secure: cookie.secure,
+          expires: cookie.expires
+        });
+      }
     } catch (e) {
       console.error(e);
     }
     redirect(302, '/user/lists');
   }
-};
+} satisfies Actions;

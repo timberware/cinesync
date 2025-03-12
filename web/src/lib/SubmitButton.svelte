@@ -25,7 +25,7 @@
     {#if typeof icon === 'string'}
       {icon}
     {:else}
-      <FontAwesomeIcon class="text-text" icon="{icon}" />
+      <FontAwesomeIcon class="text-text" {icon} />
     {/if}
   </button>
 </form>

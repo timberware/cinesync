@@ -1,12 +1,10 @@
-import { json } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 import type { MovieWithLists, SearchResult } from '../../ambient.js';
 import { env } from '$env/dynamic/private';
-import { AUTHORIZATION } from '../../utils/consts.js';
 
 const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
-/** @type {import('./$types').RequestHandler} */
-export const GET = async ({ url, locals, fetch, cookies }) => {
+export const GET: RequestHandler = async ({ url, locals, fetch }) => {
   try {
     const search = url.searchParams.get('search');
 
@@ -15,11 +13,7 @@ export const GET = async ({ url, locals, fetch, cookies }) => {
     }
 
     const res = await fetch(`${API}/search?search=${search}&per_page=20`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        Authorization: cookies.get(AUTHORIZATION) as string
-      }
+      method: 'GET'
     });
 
     if (res.status !== 200) {

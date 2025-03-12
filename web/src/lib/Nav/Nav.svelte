@@ -18,7 +18,7 @@
     </a>
   </div>
   <div>
-    <Link href="/user/profile"><Avatar username="{username}" /></Link>
+    <Link href="/user/profile"><Avatar {username} /></Link>
     <Link href="/user/profile" hidden>{username}</Link>
     <div class="inline-block">
       <form method="POST" action="/logout?/logout">

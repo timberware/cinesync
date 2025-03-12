@@ -3,7 +3,7 @@
   export let showModal: boolean;
 </script>
 
-<Modal bind:showModal="{showModal}">
+<Modal bind:showModal>
   <form method="POST" action="lists?/createList">
     <div class="pt-4 pb-6">
       <h2 class="font-bold text-4xl underline text-center mb-4">list</h2>

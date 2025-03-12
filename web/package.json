@@ -29,6 +29,7 @@
     "@tsconfig/svelte": "^3.0.0",
     "@types/eslint": "^8.56.10",
     "@types/node": "^22.10.7",
+    "@types/set-cookie-parser": "^2.4.10",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.19.1",
@@ -37,8 +38,8 @@
     "eslint-plugin-svelte": "^2.46.1",
     "husky": "^8.0.1",
     "postcss": "^8.4.29",
-    "prettier": "2.7.1",
-    "prettier-plugin-svelte": "^2.10.1",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.3.2",
     "svelte": "^4.0.0",
     "svelte-check": "^3.4.3",
     "svelte-eslint-parser": "^0.43.0",
@@ -53,6 +54,7 @@
   "type": "module",
   "dependencies": {
     "octokit": "^4.1.2",
+    "set-cookie-parser": "^2.7.1",
     "uuid": "^9.0.1"
   }
 }

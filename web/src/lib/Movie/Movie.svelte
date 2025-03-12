@@ -14,7 +14,7 @@
 <Container>
   <div class="absolute flex top-1 right-1 gap-2 bg-secondary px-1 rounded-md z-10">
     <Watch movieId="{movie.id}" watched="{movie.watched}" />
-    <Delete listId="{listId}" movieId="{movie.id}" />
+    <Delete {listId} movieId="{movie.id}" />
   </div>
   <div class="w-40 mr-3 bg-black rounded-xl">
     <Image src="{getPosterUrl(movie.posterUrl)}" watched="{movie.watched}" />

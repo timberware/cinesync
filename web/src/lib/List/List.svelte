@@ -13,8 +13,8 @@
 <div class="w-60 mx-auto">
   <a href="{`/user/lists/${id}`}">
     <Container>
-      <Poster src="{imageUrl}" movies="{movies}" sharees="{sharees}" />
-      <ListTitle title="{title}" />
+      <Poster src="{imageUrl}" {movies} {sharees} />
+      <ListTitle {title} />
     </Container>
   </a>
 </div>
