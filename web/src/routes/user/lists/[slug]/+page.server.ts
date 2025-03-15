@@ -96,6 +96,9 @@ export const actions = {
     try {
       const response = await fetch(`${API}/lists/${listId}`, {
         method: 'PATCH',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify({
           isPrivate: !(isPrivate === 'true')
         })
@@ -138,6 +141,9 @@ export const actions = {
     try {
       const response = await fetch(`${API}/movies/lists/${listId}`, {
         method: 'PATCH',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify({
           movie: [
             {
@@ -168,6 +174,9 @@ export const actions = {
     try {
       const response = await fetch(`${API}/lists/${listId}/clone`, {
         method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify({ name })
       });
 
@@ -186,6 +195,9 @@ export const actions = {
     try {
       const response = await fetch(`${API}/lists/${listId}/toggleShareByUsername`, {
         method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify({ username })
       });
 
@@ -204,6 +216,9 @@ export const actions = {
     try {
       const response = await fetch(`${API}/lists/${listId}`, {
         method: 'PATCH',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify({ name })
       });
 
@@ -255,6 +270,9 @@ export const actions = {
     try {
       const response = await fetch(`${API}/lists/${listId}/comments`, {
         method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify({ text })
       });
 

@@ -87,7 +87,7 @@
       classes="h-4"
       icon="{faComments}"
       tooltip="display comments"
-      on:click="{() => (displaycomments = !displaycomments)}"
+      on:click="{() => (displayComments = !displayComments)}"
     />
   </div>
 </TopSection>

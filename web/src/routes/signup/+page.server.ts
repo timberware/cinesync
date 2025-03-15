@@ -14,6 +14,9 @@ export const actions = {
     try {
       const response = await fetch(`${API}/auth/signup`, {
         method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify({
           username,
           email,
