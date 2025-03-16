@@ -113,7 +113,13 @@
 <MoviesSection>
   {#if movies.length}
     {#each movies as movie (movie.id)}
-      <Movie listId="{list.id}" {movie} />
+      <Movie
+        listId="{list.id}"
+        {movie}
+        sharees="{sharees
+          .filter(s => s.watched?.includes(movie.id))
+          .map(m => m.username)}"
+      />
     {/each}
   {/if}
 </MoviesSection>

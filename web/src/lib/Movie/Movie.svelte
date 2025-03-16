@@ -6,15 +6,17 @@
   import Container from './Container.svelte';
   import Label from './Label.svelte';
   import { getPosterUrl } from '../../utils';
+  import Avatar from '$lib/Avatar.svelte';
 
   export let listId: string;
   export let movie: MovieType;
+  export let sharees: string[];
 </script>
 
 <Container>
-  <div class="absolute flex top-1 right-1 gap-2 bg-secondary px-1 rounded-md z-10">
-    <Watch movieId="{movie.id}" watched="{movie.watched}" />
+  <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md z-10">
     <Delete {listId} movieId="{movie.id}" />
+    <Watch movieId="{movie.id}" watched="{movie.watched}" />
   </div>
   <div class="w-40 mr-3 bg-black rounded-xl">
     <Image src="{getPosterUrl(movie.posterUrl)}" watched="{movie.watched}" />
@@ -41,4 +43,13 @@
       {movie.description}
     </p>
   </div>
+  {#if sharees.length}
+    <div class="overflow-y-auto px-3">
+      {#each sharees as sharee (sharee)}
+        <div class="py-1">
+          <Avatar username="{sharee}" />
+        </div>
+      {/each}
+    </div>
+  {/if}
 </Container>
