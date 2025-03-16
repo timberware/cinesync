@@ -52,9 +52,7 @@
     />
   {:else}
     <div class="{initialClass}">
-      <span class="tooltip rounded-lg bg-background text-text p-2 mt-5 -ml-5"
-        >{username}</span
-      >
+      <span class="tooltip rounded-lg bg-background text-text p-2 mt-5">{username}</span>
       {initial}
     </div>
   {/if}

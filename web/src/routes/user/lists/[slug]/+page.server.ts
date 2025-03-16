@@ -55,6 +55,7 @@ export const load: PageServerLoad = async ({ fetch, locals, params }) => {
     const watchedByUsers: Movies[] = await Promise.all(
       watchedByUsersResponse.map(r => r.json())
     );
+
     watchedByUsers[0].movies.forEach(movie => {
       const index = movies.findIndex(m => m.id === movie.id);
       if (index !== -1) {
@@ -62,6 +63,11 @@ export const load: PageServerLoad = async ({ fetch, locals, params }) => {
       }
     });
 
+    if (sharees.length) {
+      watchedByUsers.slice(1).forEach((w, i) => {
+        sharees[i].watched = w.movies.map(m => m.id);
+      });
+    }
     const comments = listInfo.comments.map(comment => {
       const user = userAndSharees.find(u => u.id === comment.userId);
 
