@@ -1,9 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { Lists, ListType } from '../../../ambient';
 import type { Actions, PageServerLoad, RequestEvent } from './$types.js';
-import { env } from '$env/dynamic/private';
-
-const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
+import { API } from '../../../utils';
 
 export const load: PageServerLoad = async ({ fetch, locals }) => {
   const { user } = locals;

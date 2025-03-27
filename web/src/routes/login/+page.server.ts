@@ -1,10 +1,7 @@
 import { redirect, fail } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { AUTHENTICATION } from '../../utils/consts.js';
+import { API, AUTHENTICATION } from '../../utils';
 import setCookieParser from 'set-cookie-parser';
 import type { Actions } from './$types.js';
-
-const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
 
 export const actions = {
   login: async ({ request, cookies, locals }) => {

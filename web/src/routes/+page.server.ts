@@ -1,8 +1,6 @@
 import { redirect } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
 import type { PageServerLoad } from './$types';
-
-const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
+import { API } from '../utils';
 
 export const load: PageServerLoad = async ({ fetch }) => {
   let status = 404;

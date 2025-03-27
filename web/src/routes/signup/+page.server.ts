@@ -1,8 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
 import type { Actions } from './$types.js';
-
-const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
+import { API } from '../../utils';
 
 export const actions = {
   signup: async ({ request, fetch }) => {

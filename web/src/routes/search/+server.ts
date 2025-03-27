@@ -1,8 +1,6 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import type { MovieWithLists, SearchResult } from '../../ambient.js';
-import { env } from '$env/dynamic/private';
-
-const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
+import { API } from '../../utils';
 
 export const GET: RequestHandler = async ({ url, locals, fetch }) => {
   try {

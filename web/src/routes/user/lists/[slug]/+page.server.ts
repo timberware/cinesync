@@ -1,9 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad, RequestEvent } from './$types.js';
 import type { ListInfoType, Movies, User } from '../../../../ambient.d';
-import { env } from '$env/dynamic/private';
-
-const API = process.env.API_HOST || env.API_HOST || 'http://localhost:4000';
+import { API } from '../../../../utils';
 
 export const load: PageServerLoad = async ({ fetch, locals, params }) => {
   const { slug: listId } = params;
