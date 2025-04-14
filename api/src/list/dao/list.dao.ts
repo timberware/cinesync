@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Role, User } from '@prisma/client';
 import { UpdateListDto } from '../dto/update-list.dto';
@@ -30,9 +29,9 @@ export class ListDao {
 
   async getLists(query: QueryDto) {
     const userCondition = {
-      user: {
+      listUser: {
         some: {
-          id: query.id,
+          userId: query.id,
         },
       },
     };
@@ -69,40 +68,40 @@ export class ListDao {
   }
 
   async getSharees(listId: string, currentUser: string) {
-    const { user } = await this.prisma.list.findUniqueOrThrow({
+    const list = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },
       include: {
-        user: {
+        listUser: {
           where: {
             NOT: {
-              id: currentUser,
+              userId: currentUser,
             },
           },
           orderBy: {
-            username: 'asc',
+            User: {
+              username: 'asc',
+            },
           },
-          select: {
-            id: true,
-            username: true,
-            email: true,
-            avatarName: true,
+          include: {
+            User: true,
           },
         },
       },
     });
 
-    return user;
+    return list.listUser.map((lu) => lu.User);
   }
 
   async createList(listName: string, userId: string) {
     return await this.prisma.list.create({
       data: {
-        id: uuidv4(),
         name: listName,
         isPrivate: true,
         creatorId: userId,
-        user: {
-          connect: { id: userId },
+        listUser: {
+          create: {
+            userId,
+          },
         },
       },
     });
@@ -111,7 +110,6 @@ export class ListDao {
   async updateListPrivacy(listId: string) {
     const list = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },
-      include: { user: true, listMovie: true },
     });
 
     return await this.prisma.list.update({
@@ -136,15 +134,6 @@ export class ListDao {
     });
 
     if (list.creatorId === user.id || user.role === Role.ADMIN) {
-      await this.prisma.user.update({
-        where: { id: list.creatorId },
-        data: {
-          list: {
-            disconnect: { id: listId },
-          },
-        },
-      });
-
       return await this.prisma.list.delete({
         where: { id: listId },
       });
@@ -152,18 +141,27 @@ export class ListDao {
   }
 
   async toggleShareList(listId: string, email: string, isShared: boolean) {
-    return await this.prisma.list.update({
-      where: { id: listId },
-      data: {
-        user: {
-          ...(isShared
-            ? {
-                disconnect: { email },
-              }
-            : {
-                connect: { email },
-              }),
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        email,
+      },
+    });
+
+    if (isShared) {
+      return await this.prisma.listUser.delete({
+        where: {
+          listId_userId: {
+            listId,
+            userId: user.id,
+          },
         },
+      });
+    }
+
+    return await this.prisma.listUser.create({
+      data: {
+        listId,
+        userId: user.id,
       },
     });
   }

@@ -73,10 +73,8 @@ export class MovieService {
 
     await Promise.all([
       this.cacheManager.del(`${userId}-movies`),
-      lists[0].map((l) =>
-        this.cacheManager.del(`${l.listId}-${userId}-movies`),
-      ),
-      lists[0].map((l) => this.cacheManager.del(`${l.listId}-movies`)),
+      lists[0].map((l) => this.cacheManager.del(`${l.id}-${userId}-movies`)),
+      lists[0].map((l) => this.cacheManager.del(`${l.id}-movies`)),
     ]);
 
     return await this.movieDao.updateWatchedStatus(

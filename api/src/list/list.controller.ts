@@ -71,6 +71,7 @@ export class ListController {
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @UseGuards(JwtAuthGuard)
   @Post('/')
+  @HttpCode(HttpStatus.CREATED)
   createList(@Body() { name }: CreateListDto, @CurrentUser() user: UserDto) {
     return this.listService.createList(name, user.id);
   }

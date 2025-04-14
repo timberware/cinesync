@@ -16,7 +16,7 @@ export class ListAuthGuard implements CanActivate {
     const list = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },
       include: {
-        user: true,
+        listUser: true,
       },
     });
 
@@ -30,7 +30,8 @@ export class ListAuthGuard implements CanActivate {
 
     const isCreator = list.creatorId === user.id;
     const isSharedWithUser =
-      list.user.find((sharedUser) => sharedUser.id === user.id) !== undefined;
+      list.listUser.find((sharedUser) => sharedUser.userId === user.id) !==
+      undefined;
 
     return isCreator || isSharedWithUser;
   }

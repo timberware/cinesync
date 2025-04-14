@@ -15,7 +15,7 @@ model List {
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
   listMovie ListMovie[]
-  user      User[]
+  listUser  ListUser[]
   comments  Comment[]
 }
 
@@ -45,18 +45,29 @@ model Movie {
   user        User[]
 }
 
+model ListUser {
+  listId      String   @map("list_id") @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+  lastVisited DateTime @default(now()) @map("last_visited")
+  List        List     @relation(fields: [listId], references: [id])
+  User        User     @relation(fields: [userId], references: [id])
+
+  @@id([listId, userId])
+}
+
 model User {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username       String    @unique
-  email          String    @unique
+  id             String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username       String     @unique
+  email          String     @unique
   password       String
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
   role           Role
-  avatarName     String?   @map("avatar_name")
-  list           List[]
-  friendsWith    Friends[] @relation("user_1")
-  friendsRequest Friends[] @relation("user_2")
+  avatarName     String?    @map("avatar_name")
+  listUser       ListUser[]
+  friendsWith    Friends[]  @relation("user_1")
+  friendsRequest Friends[]  @relation("user_2")
   comments       Comment[]
   movie          Movie[]
 }
@@ -88,7 +99,7 @@ model Image {
   id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name     String @unique
   image    Bytes
-  mimetype String @map("mime_type") @default("")
+  mimetype String @default("") @map("mime_type")
 }
 
 enum Role {

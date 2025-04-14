@@ -9,11 +9,11 @@ export class ExportService {
     const data = await this.userService.getUserData(userId);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, password, role, list, movie, ...userData } = data;
+    const { id, password, role, listUser, movie, ...userData } = data;
 
     const exportData = {
       ...userData,
-      lists: list,
+      lists: listUser.map((lu) => lu.List),
       watched: movie,
     };
 

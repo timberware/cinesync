@@ -165,14 +165,16 @@ export class MovieDao {
 
   getListsContainingMovie(userId: string, movieId: string) {
     return Promise.all([
-      this.prisma.listMovie.findMany({
+      this.prisma.list.findMany({
         where: {
-          movieId,
-          List: {
-            user: {
-              some: {
-                id: userId,
-              },
+          listMovie: {
+            some: {
+              movieId,
+            },
+          },
+          listUser: {
+            some: {
+              userId: userId,
             },
           },
         },
