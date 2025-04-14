@@ -106,10 +106,13 @@ export const actions = {
 
       const response = await fetch(`${API}/lists`, {
         method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
         body: JSON.stringify(list)
       });
 
-      if (response.status !== 200) {
+      if (response.status !== 201) {
         return fail(400);
       }
     } catch (e) {
