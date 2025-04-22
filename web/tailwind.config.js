@@ -16,9 +16,6 @@ export default {
       },
       brightness: {
         25: '.25'
-      },
-      fontFamily: {
-        mono: 'CourierPrime, courier'
       }
     }
   },

@@ -25,7 +25,7 @@
     };
   }}"
 >
-  <div class="max-w-md m-auto mt-5">
+  <div class="max-w-md m-auto p-3 mt-5 rounded-xl border-solid border-secondary border-2">
     <div class="flex pt-2 pb-2 justify-center">
       <label class="w-24 text-center" for="login">email</label>
       <input
@@ -48,14 +48,13 @@
         required
       />
     </div>
-  </div>
-  <div class="w-full bg-blue-500"></div>
-  <div class="flex max-w-xs m-auto pt-5 justify-around">
-    <button type="submit">login</button>
-  </div>
-  <div class="max-w-xs m-auto pt-5">
-    <div class="m-auto w-fit">you don't have an account?</div>
-    <div class="m-auto w-fit"><a href="/signup">sign up!</a></div>
+    <div class="flex max-w-xs m-auto pt-5 justify-around">
+      <button type="submit">login</button>
+    </div>
+    <div class="max-w-xs m-auto pt-5">
+      <div class="m-auto w-fit">you don't have an account?</div>
+      <div class="m-auto w-fit"><a href="/signup">sign up!</a></div>
+    </div>
   </div>
 </form>
 
