@@ -19,7 +19,7 @@ export class ShareListAuthGuard implements CanActivate {
     const { user } = request;
     const sharee = request.body.username || request.body.email;
     const listId = request.params.id || request.body.listId;
-    const { creatorId } = await this.listService.getList(listId);
+    const { creatorId } = await this.listService.getList(listId, user.id);
     const creator = await this.userService.getUser(creatorId);
 
     if (user.username === sharee || user.email === sharee) {

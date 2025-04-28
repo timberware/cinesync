@@ -11,6 +11,7 @@ import {
   HttpStatus,
   Param,
   Query,
+  Put,
 } from '@nestjs/common';
 import { CreateListDto, UpdateListDto } from './dto';
 import { CommentAuthorizationGuard } from '../comment/guard/comment-auth.guard';
@@ -50,15 +51,15 @@ export class ListController {
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
   @Public()
   @Get('/:id/public')
-  getPublicList(@Param('id') listId: string) {
-    return this.listService.getPublicList(listId);
+  getPublicList(@Param('id') listId: string, @CurrentUser() user: UserDto) {
+    return this.listService.getPublicList(listId, user.id);
   }
 
   @UseGuards(ListAuthGuard)
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  getList(@Param('id') listId: string) {
-    return this.listService.getList(listId);
+  getList(@Param('id') listId: string, @CurrentUser() user: UserDto) {
+    return this.listService.getList(listId, user.id);
   }
 
   @UseGuards(ListAuthGuard)
@@ -66,6 +67,14 @@ export class ListController {
   @Get('/:id/sharees')
   getSharees(@Param('id') listId: string, @CurrentUser() user: UserDto) {
     return this.listService.getSharees(listId, user.id);
+  }
+
+  @UseGuards(ListAuthGuard)
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id/last-visited')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  updateLastVisited(@Param('id') listId: string, @CurrentUser() user: UserDto) {
+    return this.listService.updateLastVisited(listId, user.id);
   }
 
   @UseInterceptors(RemoveListCreateFieldsInterceptor)
@@ -115,7 +124,7 @@ export class ListController {
       user.id,
     );
 
-    const list = await this.listService.getList(listId);
+    const list = await this.listService.getList(listId, user.id);
     const [listOwner, commenter] = await Promise.all([
       this.userService.getUser(list.creatorId),
       this.userService.getUser(user.id),
@@ -146,7 +155,7 @@ export class ListController {
     @CurrentUser() user: UserDto,
   ) {
     const { count } = await this.movieService.getMovies({ listId });
-    const originalList = await this.getList(listId);
+    const originalList = await this.listService.getList(listId, user.id);
     const clonedList = await this.listService.createList(
       name || originalList.name,
       user.id,

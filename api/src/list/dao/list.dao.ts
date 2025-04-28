@@ -4,27 +4,40 @@ import { Role, User } from '@prisma/client';
 import { UpdateListDto } from '../dto/update-list.dto';
 import { QueryDto } from '../dto/query.dto';
 import { PER_PAGE, PAGE_NUMBER } from '../../utils';
+import { ListDTO } from '../dto';
 
 @Injectable()
 export class ListDao {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getPublicList(listId: string) {
-    const list = await this.getList(listId);
+  async getPublicList(listId: string, userId: string) {
+    const list = await this.getList(listId, userId);
 
-    if (!list.isPrivate) {
-      return list;
+    if (list.isPrivate) {
+      throw new BadRequestException('List is private');
     }
 
-    throw new BadRequestException('List is private');
+    return list;
   }
 
-  async getList(listId: string) {
-    const list = await this.prisma.list.findUniqueOrThrow({
+  async getList(listId: string, userId: string) {
+    const list: ListDTO = await this.prisma.list.findUniqueOrThrow({
       where: { id: listId },
+      ...(userId && {
+        include: {
+          listUser: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              lastVisited: true,
+            },
+          },
+        },
+      }),
     });
 
-    return list;
+    return { ...list, lastVisited: list.listUser?.[0].lastVisited };
   }
 
   async getLists(query: QueryDto) {
@@ -49,7 +62,7 @@ export class ListDao {
           }),
     };
 
-    const [lists, count] = await Promise.all([
+    const [lists, count]: [ListDTO[], number] = await Promise.all([
       this.prisma.list.findMany({
         where: queryCondition,
         take: query.per_page || PER_PAGE,
@@ -57,14 +70,31 @@ export class ListDao {
         orderBy: {
           createdAt: 'desc',
         },
+        ...(query.id && {
+          include: {
+            listUser: {
+              where: {
+                userId: query.id,
+              },
+              select: {
+                lastVisited: true,
+              },
+            },
+          },
+        }),
       }),
-
       this.prisma.list.count({
         where: queryCondition,
       }),
     ]);
 
-    return { lists, count };
+    return {
+      lists: lists.map((l) => ({
+        ...l,
+        lastVisited: l.listUser?.[0].lastVisited,
+      })),
+      count,
+    };
   }
 
   async getSharees(listId: string, currentUser: string) {
@@ -162,6 +192,20 @@ export class ListDao {
       data: {
         listId,
         userId: user.id,
+      },
+    });
+  }
+
+  updateListUser(listId: string, userId: string) {
+    return this.prisma.listUser.update({
+      where: {
+        listId_userId: {
+          listId,
+          userId,
+        },
+      },
+      data: {
+        lastVisited: new Date(),
       },
     });
   }

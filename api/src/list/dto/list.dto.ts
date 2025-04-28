@@ -1,3 +1,4 @@
+import { List, ListUser } from '@prisma/client';
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 
@@ -19,6 +20,9 @@ export class ListItem {
 
   @Expose()
   updatedAt: Date;
+
+  @Expose()
+  lastVisited?: Date;
 }
 
 export class ListDto {
@@ -33,3 +37,5 @@ export class ListDto {
   @ValidateNested()
   list: ListItem[];
 }
+
+export type ListDTO = List & { listUser?: ListUser[] };
