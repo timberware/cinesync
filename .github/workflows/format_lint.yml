@@ -44,7 +44,7 @@ jobs:
       - name: Run eslint and prettier checks
         run: |
           cd web
-          npm install
+          npm ci
           npm run build
           npm run lint
           npm run format
@@ -67,7 +67,7 @@ jobs:
       - name: Run eslint and prettier checks
         run: |
           cd api
-          npm install
+          npm ci
           npm run build
           npm run lint
           npm run format

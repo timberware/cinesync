@@ -7,13 +7,14 @@ RUN apk update && apk add \
 WORKDIR "/cinesync"
 
 COPY package.json .
+COPY package-lock.json .
 COPY prisma prisma
 
 FROM build AS dependencies
 
 ARG DATABASE_URL
 
-RUN npm install
+RUN npm ci
 RUN npm install -g prisma
 RUN npm run db:generate
 

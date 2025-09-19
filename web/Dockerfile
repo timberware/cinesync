@@ -3,11 +3,12 @@ FROM node:22-alpine3.21 as build
 WORKDIR "/cinesync-web"
 
 COPY package.json .
+COPY package-lock.json .
 COPY static static
 
 FROM build AS dependencies
 
-RUN npm install
+RUN npm ci
 
 FROM dependencies as builder
 
