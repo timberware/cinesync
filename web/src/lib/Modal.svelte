@@ -51,11 +51,10 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
-  bind:this="{dialog}"
-  on:close="{() => (showModal = false)}"
-  on:click|self="{closeDialog}"
+  bind:this={dialog}
+  on:close={() => (showModal = false)}
+  on:click|self={closeDialog}
   class="w-11/12 sm:w-2/3 lg:w-2/4 xl:w-1/3 3xl:w-1/4 bg-background text-text rounded-xl"
 >
   <div class="relative" on:click|stopPropagation>

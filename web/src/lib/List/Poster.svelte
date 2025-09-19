@@ -10,5 +10,5 @@
 
 <div class="relative bg-primary rounded-xl mb-2 mx-auto">
   <ListInfo {movies} {sharees} />
-  <Image src="{src ? getPosterUrl(src) : LIST_PLACEHOLDER}" watched />
+  <Image src={src ? getPosterUrl(src) : LIST_PLACEHOLDER} watched />
 </div>

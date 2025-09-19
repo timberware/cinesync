@@ -9,7 +9,7 @@
   {#each lists as list (list.id)}
     <a
       class="block bg-secondary hover:bg-secondary-hover rounded-xl p-2 mt-2"
-      href="{`/user/lists/${list.id}`}">{list.name}</a
+      href={`/user/lists/${list.id}`}>{list.name}</a
     >
   {/each}
 </div>

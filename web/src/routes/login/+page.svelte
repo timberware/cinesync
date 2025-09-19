@@ -16,14 +16,14 @@
 <form
   method="POST"
   action="?/login"
-  use:enhance="{() => {
+  use:enhance={() => {
     return async ({ result }) => {
       if (result.type === 'failure') {
         addToast(error);
       }
       await applyAction(result);
     };
-  }}"
+  }}
 >
   <div class="max-w-md m-auto p-3 mt-5 rounded-xl border-solid border-secondary border-2">
     <div class="flex pt-2 pb-2 justify-center">
@@ -33,7 +33,7 @@
         type="email"
         name="email"
         id="login"
-        placeholder="{selectRandomDirector()}"
+        placeholder={selectRandomDirector()}
         required
       />
     </div>

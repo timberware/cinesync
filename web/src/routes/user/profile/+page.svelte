@@ -13,14 +13,14 @@
 
 <Toasts />
 
-<Nav username="{user.username}" />
+<Nav username={user.username} />
 <div class="sm:flex w-full justify-around mt-20 mx-auto">
   <div class="max-w-64 text-center mx-auto mb-8 sm:mb-0">
-    <Avatar username="{user.username}" isLarge />
+    <Avatar username={user.username} isLarge />
     <form
       method="POST"
       action="?/saveAvatar"
-      use:enhance="{() => {
+      use:enhance={() => {
         return async ({ result }) => {
           if (result.type === 'failure') {
             addToast(error);
@@ -29,7 +29,7 @@
           }
           await applyAction(result);
         };
-      }}"
+      }}
       enctype="multipart/form-data"
     >
       <input

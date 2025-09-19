@@ -11,9 +11,9 @@
 </script>
 
 <div class="w-60 mx-auto">
-  <a href="{`/user/lists/${id}`}">
+  <a href={`/user/lists/${id}`}>
     <Container>
-      <Poster src="{imageUrl}" {movies} {sharees} />
+      <Poster src={imageUrl} {movies} {sharees} />
       <ListTitle {title} />
     </Container>
   </a>

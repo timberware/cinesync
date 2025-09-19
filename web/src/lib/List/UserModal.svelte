@@ -31,7 +31,7 @@
     <div class="flex pt-2 pb-2 gap-4 justify-center flex-wrap">
       {#each watchedBySharee as movie (movie.id)}
         <div class="w-32">
-          <Image src="{getPosterUrl(movie.posterUrl)}" watched="{true}" />
+          <Image src={getPosterUrl(movie.posterUrl)} watched={true} />
         </div>
       {/each}
     </div>

@@ -15,11 +15,11 @@
 
 <Container>
   <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md z-10">
-    <Delete {listId} movieId="{movie.id}" />
-    <Watch movieId="{movie.id}" watched="{movie.watched}" />
+    <Delete {listId} movieId={movie.id} />
+    <Watch movieId={movie.id} watched={movie.watched} />
   </div>
   <div class="w-40 mr-3 bg-black rounded-xl">
-    <Image src="{getPosterUrl(movie.posterUrl)}" watched="{movie.watched}" />
+    <Image src={getPosterUrl(movie.posterUrl)} watched={movie.watched} />
   </div>
   <div class="w-full overflow-y-auto">
     <p>
@@ -47,7 +47,7 @@
     <div class="overflow-y-auto px-3">
       {#each sharees as sharee (sharee)}
         <div class="py-1">
-          <Avatar username="{sharee}" />
+          <Avatar username={sharee} />
         </div>
       {/each}
     </div>

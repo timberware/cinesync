@@ -10,11 +10,11 @@
     {#each lists as list (list.id)}
       <div class="w-full xl:w-1/4 lg:w-1/3 sm:w-1/2">
         <List
-          id="{list.id}"
-          title="{list.name}"
-          movies="{list.movies}"
-          sharees="{list.sharees}"
-          imageUrl="{list.posterUrl || ''}"
+          id={list.id}
+          title={list.name}
+          movies={list.movies}
+          sharees={list.sharees}
+          imageUrl={list.posterUrl || ''}
         />
       </div>
     {/each}

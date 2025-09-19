@@ -18,11 +18,11 @@
   const { user, lists, sharedLists } = data;
 </script>
 
-<Nav username="{user.username}" />
+<Nav username={user.username} />
 <TopSection>
   <Title>your lists</Title>
-  <button type="button" class="min-h-full" on:click="{() => (showModal = true)}">
-    <FontAwesomeIcon class="text-text" icon="{faPlusCircle}" />
+  <button type="button" class="min-h-full" on:click={() => (showModal = true)}>
+    <FontAwesomeIcon class="text-text" icon={faPlusCircle} />
   </button>
 </TopSection>
 <ListContainer {lists} />
@@ -31,7 +31,7 @@
   <div class="flex text-2xl mt-10 mb-4 mx-5 justify-between">
     <Title>shared with you</Title>
   </div>
-  <ListContainer lists="{sharedLists}" />
+  <ListContainer lists={sharedLists} />
 {/if}
 
 <ListModal bind:showModal />

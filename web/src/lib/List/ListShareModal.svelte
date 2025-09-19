@@ -8,11 +8,11 @@
   export let showShareListModal: boolean;
 </script>
 
-<Modal showModal="{showShareListModal}">
+<Modal showModal={showShareListModal}>
   <form
     method="POST"
     action="?/shareList"
-    use:enhance="{() => {
+    use:enhance={() => {
       return async ({ result }) => {
         if (result.type === 'failure') {
           addToast(shareListError);
@@ -23,7 +23,7 @@
         await applyAction(result);
         showShareListModal = false;
       };
-    }}"
+    }}
   >
     <div class="w-xl p-4">
       <h2 class="font-bold text-4xl underline text-center mb-4">share list</h2>
@@ -37,7 +37,7 @@
           placeholder="cinesync"
           required
         />
-        <input type="hidden" name="listId" value="{listId}" />
+        <input type="hidden" name="listId" value={listId} />
       </div>
     </div>
     <div class="flex pb-5 justify-around">

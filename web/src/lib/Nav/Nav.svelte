@@ -13,8 +13,8 @@
   <div class="flex gap-x-3 md:gap-x-5">
     <Link href="/user/lists">lists</Link>
     <Link href="/user/about">about</Link>
-    <a href="{CINESYNC_REPO}" target="_blank" rel="noreferrer">
-      <FontAwesomeIcon class="text-text" icon="{faGithub}" />
+    <a href={CINESYNC_REPO} target="_blank" rel="noreferrer">
+      <FontAwesomeIcon class="text-text" icon={faGithub} />
     </a>
   </div>
   <div>
@@ -23,7 +23,7 @@
     <div class="inline-block">
       <form method="POST" action="/logout?/logout">
         <button type="submit" class="text-text">
-          <FontAwesomeIcon class="text-text" icon="{faSignOut}" />
+          <FontAwesomeIcon class="text-text" icon={faSignOut} />
         </button>
       </form>
     </div>

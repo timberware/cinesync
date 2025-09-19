@@ -11,12 +11,12 @@
 
 <div class="absolute flex top-1 left-1 gap-2 bg-secondary px-1 rounded-md z-10">
   <div>
-    <FontAwesomeIcon class="text-text text-lg" icon="{faVideoCamera}" />
+    <FontAwesomeIcon class="text-text text-lg" icon={faVideoCamera} />
     {` ${movies}`}
   </div>
   {#if sharees !== 0}
     <div>
-      <FontAwesomeIcon class="text-trxt text-lg" icon="{faUserFriends}" />
+      <FontAwesomeIcon class="text-trxt text-lg" icon={faUserFriends} />
       {` ${sharees}`}
     </div>
   {/if}

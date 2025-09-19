@@ -12,7 +12,7 @@
 <form
   method="POST"
   action="?/cloneList"
-  use:enhance="{() => {
+  use:enhance={() => {
     return async ({ result }) => {
       if (result.type === 'failure') {
         addToast(clonedError);
@@ -21,9 +21,9 @@
       }
       await applyAction(result);
     };
-  }}"
+  }}
 >
-  <input type="hidden" name="listId" value="{listId}" />
-  <input type="hidden" name="name" value="{name}" />
-  <IconButton type="submit" icon="{faClone}" tooltip="clone list" />
+  <input type="hidden" name="listId" value={listId} />
+  <input type="hidden" name="name" value={name} />
+  <IconButton type="submit" icon={faClone} tooltip="clone list" />
 </form>

@@ -16,7 +16,7 @@
 <form
   method="POST"
   action="?/toggleWatched"
-  use:enhance="{() => {
+  use:enhance={() => {
     return async ({ result }) => {
       if (result.type === 'failure') {
         addToast(watchedError);
@@ -26,12 +26,12 @@
       }
       await applyAction(result);
     };
-  }}"
+  }}
 >
-  <input type="hidden" name="movieId" value="{movieId}" />
+  <input type="hidden" name="movieId" value={movieId} />
   <IconButton
     type="submit"
-    icon="{faEye}"
-    tooltip="{`tag as ${watched ? 'not watched' : 'watched'}`}"
+    icon={faEye}
+    tooltip={`tag as ${watched ? 'not watched' : 'watched'}`}
   />
 </form>

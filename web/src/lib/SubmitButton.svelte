@@ -10,10 +10,10 @@
   export let tooltip: string = '';
 </script>
 
-<form method="POST" action="{formAction}">
+<form method="POST" action={formAction}>
   {#if inputs.length}
     {#each inputs as input}
-      <input type="hidden" name="{input.name}" value="{input.value}" />
+      <input type="hidden" name={input.name} value={input.value} />
     {/each}
   {/if}
   <button class="has-tooltip" type="submit">

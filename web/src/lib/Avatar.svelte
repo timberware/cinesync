@@ -41,17 +41,12 @@
 </script>
 
 {#if loaded}
-  <img loading="lazy" class="{imageClass}" src="{fullPath}" alt="Avatar" />
+  <img loading="lazy" class={imageClass} src={fullPath} alt="Avatar" />
 {:else if failed}
   {#if isLarge}
-    <img
-      loading="lazy"
-      class="{imageClass}"
-      src="{PROFILE_IMAGE_PLACEHOLDER}"
-      alt="Avatar"
-    />
+    <img loading="lazy" class={imageClass} src={PROFILE_IMAGE_PLACEHOLDER} alt="Avatar" />
   {:else}
-    <div class="{initialClass}">
+    <div class={initialClass}>
       <span class="tooltip rounded-lg bg-background text-text p-2 mt-5">{username}</span>
       {initial}
     </div>
@@ -59,7 +54,7 @@
 {:else if loading}
   <img
     loading="lazy"
-    class="{imageClass}"
+    class={imageClass}
     src="https://c.tenor.com/On7kvXhzml4AAAAi/loading-gif.gif"
     alt="Loading..."
   />

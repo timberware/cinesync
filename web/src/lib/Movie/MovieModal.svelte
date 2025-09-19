@@ -28,7 +28,7 @@
   };
 </script>
 
-<Modal bind:showModal="{showMovieModal}">
+<Modal bind:showModal={showMovieModal}>
   <div class="p-4">
     <h2 class="font-bold text-4xl underline text-center mb-4">search</h2>
     <div class="flex pt-2 pb-2 mb-3 justify-center">
@@ -39,12 +39,12 @@
         name="movie-name"
         id="movie-name"
         placeholder="The Godfather"
-        bind:value="{search}"
+        bind:value={search}
         required
-        on:keypress="{handleKeyPress}"
+        on:keypress={handleKeyPress}
       />
-      <button class="pl-4" type="button" on:click="{handleOnClick}"
-        ><FontAwesomeIcon class="text-text text-md" icon="{faMagnifyingGlass}" /></button
+      <button class="pl-4" type="button" on:click={handleOnClick}
+        ><FontAwesomeIcon class="text-text text-md" icon={faMagnifyingGlass} /></button
       >
     </div>
     {#if movies.length}

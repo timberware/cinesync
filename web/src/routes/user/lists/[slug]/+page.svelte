@@ -43,51 +43,51 @@
 
 <Toasts />
 
-<Nav username="{user.username}" />
+<Nav username={user.username} />
 <TopSection>
   <Title>{list.name}</Title>
   <div class="flex gap-x-2">
     <IconButton
       type="button"
       classes="h-4"
-      icon="{faEdit}"
+      icon={faEdit}
       tooltip="edit name"
-      on:click="{() => (showListNameModal = true)}"
+      on:click={() => (showListNameModal = true)}
     />
     <IconButton
       type="button"
       classes="min-h-full"
-      icon="{faPlusCircle}"
+      icon={faPlusCircle}
       tooltip="add movie"
-      on:click="{() => (showModal = true)}"
+      on:click={() => (showModal = true)}
     />
     {#if list?.creatorId === user.id}
       <IconButton
         type="button"
         classes="min-h-full"
-        icon="{faShareNodes}"
+        icon={faShareNodes}
         tooltip="share list"
-        on:click="{() => (showShareListModal = true)}"
+        on:click={() => (showShareListModal = true)}
       />
       <SubmitButton
         formAction="?/togglePrivacy"
-        inputs="{[
+        inputs={[
           { name: 'listId', value: list.id },
           { name: 'isPrivate', value: list.isPrivate ? 'true' : 'false' }
-        ]}"
-        icon="{list.isPrivate ? faLock : faLockOpen}"
-        tooltip="{list.isPrivate ? 'private list' : 'public list'}"
+        ]}
+        icon={list.isPrivate ? faLock : faLockOpen}
+        tooltip={list.isPrivate ? 'private list' : 'public list'}
       />
-      <Delete listId="{list.id}" />
+      <Delete listId={list.id} />
     {:else}
-      <Clone name="{list.name}" listId="{list.id}" />
+      <Clone name={list.name} listId={list.id} />
     {/if}
     <IconButton
       type="button"
       classes="h-4"
-      icon="{faComments}"
+      icon={faComments}
       tooltip="display comments"
-      on:click="{() => (displayComments = !displayComments)}"
+      on:click={() => (displayComments = !displayComments)}
     />
   </div>
 </TopSection>
@@ -95,7 +95,7 @@
   {#if sharees?.length}
     <div class="flex gap-x-2">
       {#each sharees as sharee (sharee.email)}
-        <Avatar username="{sharee.username}" />
+        <Avatar username={sharee.username} />
       {/each}
     </div>
   {/if}
@@ -104,26 +104,24 @@
 {#if displayComments}
   <div
     class="mx-5"
-    in:slide="{{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}"
-    out:slide="{{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}"
+    in:slide={{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}
+    out:slide={{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}
   >
-    <Comment {comments} listId="{list.id}" />
+    <Comment {comments} listId={list.id} />
   </div>
 {/if}
 <MoviesSection>
   {#if movies.length}
     {#each movies as movie (movie.id)}
       <Movie
-        listId="{list.id}"
+        listId={list.id}
         {movie}
-        sharees="{sharees
-          .filter(s => s.watched?.includes(movie.id))
-          .map(m => m.username)}"
+        sharees={sharees.filter(s => s.watched?.includes(movie.id)).map(m => m.username)}
       />
     {/each}
   {/if}
 </MoviesSection>
 
-<ListShareModal bind:showShareListModal listId="{list.id}" />
-<ListNameModal bind:showListNameModal listId="{list.id}" />
-<MovieModal bind:showMovieModal="{showModal}" listId="{list.id}" />
+<ListShareModal bind:showShareListModal listId={list.id} />
+<ListNameModal bind:showListNameModal listId={list.id} />
+<MovieModal bind:showMovieModal={showModal} listId={list.id} />

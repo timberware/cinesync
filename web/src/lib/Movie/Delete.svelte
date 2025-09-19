@@ -13,7 +13,7 @@
 <form
   method="POST"
   action="?/deleteMovie"
-  use:enhance="{() => {
+  use:enhance={() => {
     return async ({ result }) => {
       if (result.type === 'failure') {
         addToast(deletedError);
@@ -23,9 +23,9 @@
       }
       await applyAction(result);
     };
-  }}"
+  }}
 >
-  <input type="hidden" name="listId" value="{listId}" />
-  <input type="hidden" name="movieId" value="{movieId}" />
-  <IconButton type="submit" icon="{faTrash}" tooltip="delete movie" />
+  <input type="hidden" name="listId" value={listId} />
+  <input type="hidden" name="movieId" value={movieId} />
+  <IconButton type="submit" icon={faTrash} tooltip="delete movie" />
 </form>

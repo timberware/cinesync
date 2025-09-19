@@ -17,10 +17,10 @@
 </script>
 
 <article
-  class="{`rounded-lg flex px-4 py-3 justify-around mx-auto mb-3 max-w-96 ${toastBgColor.get(
+  class={`rounded-lg flex px-4 py-3 justify-around mx-auto mb-3 max-w-96 ${toastBgColor.get(
     type
   )}
-   gap-x-2 align-baseline`}"
+   gap-x-2 align-baseline`}
   role="alert"
   transition:fade
 >
@@ -32,8 +32,8 @@
     <IconButton
       type="button"
       classes="text-text bg-transparent"
-      on:click="{() => dispatch('dismiss')}"
-      icon="{faClose}"
+      on:click={() => dispatch('dismiss')}
+      icon={faClose}
     />
   {/if}
 </article>

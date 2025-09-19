@@ -12,7 +12,7 @@
 <form
   method="POST"
   action="?/deleteList"
-  use:enhance="{() => {
+  use:enhance={() => {
     return async ({ result }) => {
       if (result.type === 'failure') {
         addToast(deletedError);
@@ -22,8 +22,8 @@
       }
       await applyAction(result);
     };
-  }}"
+  }}
 >
-  <input type="hidden" name="listId" value="{listId}" />
-  <IconButton type="submit" icon="{faTrash}" tooltip="delete List" />
+  <input type="hidden" name="listId" value={listId} />
+  <IconButton type="submit" icon={faTrash} tooltip="delete List" />
 </form>

@@ -21,7 +21,7 @@
         transition:fade
       >
         <div class="pb-2 mb-4 border-text border-b-2 border-solid">
-          <Avatar username="{comment.username ?? 'deleted user'}" />
+          <Avatar username={comment.username ?? 'deleted user'} />
           {comment.username ?? 'deleted user'}
         </div>
         <p>
@@ -39,7 +39,7 @@
     <form
       method="POST"
       action="?/submitComment"
-      use:enhance="{() => {
+      use:enhance={() => {
         return async ({ result, update }) => {
           if (result.type === 'failure') {
             addToast(error);
@@ -50,9 +50,9 @@
           }
           await applyAction(result);
         };
-      }}"
+      }}
     >
-      <input type="hidden" name="listId" value="{listId}" />
+      <input type="hidden" name="listId" value={listId} />
       <textarea
         class="text-background p-1 w-full h-16 rounded-md"
         name="text"

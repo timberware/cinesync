@@ -9,11 +9,11 @@
   export let showListNameModal: boolean;
 </script>
 
-<Modal showModal="{showListNameModal}">
+<Modal showModal={showListNameModal}>
   <form
     method="POST"
     action="?/updateListInfo"
-    use:enhance="{() => {
+    use:enhance={() => {
       return async ({ result }) => {
         if (result.type === 'failure') {
           addToast(updateNameError);
@@ -24,7 +24,7 @@
         await applyAction(result);
         showListNameModal = false;
       };
-    }}"
+    }}
   >
     <div class="w-xl p-4">
       <h2 class="font-bold text-4xl underline text-center mb-4">name</h2>
@@ -38,7 +38,7 @@
           placeholder="80s and 90s"
           required
         />
-        <input type="hidden" name="listId" value="{listId}" />
+        <input type="hidden" name="listId" value={listId} />
       </div>
     </div>
     <div class="flex pb-5 justify-around">

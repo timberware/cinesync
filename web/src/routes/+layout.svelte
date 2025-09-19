@@ -29,4 +29,4 @@
   <slot />
 </MainContainer>
 
-<Tag tag="{data.tag}" sticky="{isSticky}" />
+<Tag tag={data.tag} sticky={isSticky} />

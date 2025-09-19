@@ -28,9 +28,9 @@
 {#if loaded}
   <img
     loading="lazy"
-    class="{`transition-all ease-in-out duration-500 h-full w-full object-scale-down rounded-md ${
+    class={`transition-all ease-in-out duration-500 h-full w-full object-scale-down rounded-md ${
       !watched && ' brightness-25'
-    }`}"
+    }`}
     {src}
     alt="List"
   />
@@ -38,7 +38,7 @@
   <img
     loading="lazy"
     class="h-full w-full object-scale-down"
-    src="{LIST_PLACEHOLDER}"
+    src={LIST_PLACEHOLDER}
     alt="Not Found"
   />
 {:else if loading}

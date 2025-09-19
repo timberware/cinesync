@@ -9,7 +9,7 @@
   const { user } = data;
 </script>
 
-<Nav username="{user.username}" />
+<Nav username={user.username} />
 <div class="mt-7 max-w-6xl mx-auto xl:px-0 px-8">
   <h2 class="mb-3 text-2xl underline">cinesync</h2>
   <p>
@@ -36,10 +36,10 @@
     <a href="https://www.themoviedb.org/">
       <img
         loading="lazy"
-        src="{THE_MOVIE_DB_BIG_AVATAR}"
+        src={THE_MOVIE_DB_BIG_AVATAR}
         alt="TMDB logo"
-        height="{12}"
-        width="{165}"
+        height={12}
+        width={165}
       />
     </a>
     <p class="mt-1">
