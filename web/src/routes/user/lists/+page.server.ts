@@ -1,7 +1,8 @@
 import { fail } from '@sveltejs/kit';
 import type { Lists, ListType } from '../../../ambient';
-import type { Actions, PageServerLoad, RequestEvent } from './$types.js';
+import type { Actions, PageServerLoad } from './$types.js';
 import { API } from '../../../utils';
+import { createList } from './actions/createList';
 
 export const load: PageServerLoad = async ({ fetch, locals }) => {
   const { user } = locals;
@@ -95,28 +96,5 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 };
 
 export const actions = {
-  createList: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listName = data.get('list-name') as string;
-
-    try {
-      const list = {
-        name: listName
-      };
-
-      const response = await fetch(`${API}/lists`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(list)
-      });
-
-      if (response.status !== 201) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  createList
 } satisfies Actions;

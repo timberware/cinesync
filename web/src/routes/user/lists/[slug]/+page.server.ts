@@ -1,7 +1,16 @@
 import { fail } from '@sveltejs/kit';
-import type { Actions, PageServerLoad, RequestEvent } from './$types.js';
+import type { Actions, PageServerLoad } from './$types.js';
 import type { ListInfoType, Movies, User } from '../../../../ambient.d';
 import { API } from '../../../../utils';
+import { togglePrivacy } from './actions/togglePrivacy.js';
+import { deleteList } from './actions/deleteList.js';
+import { updateList } from './actions/updateList.js';
+import { cloneList } from './actions/cloneList.js';
+import { shareList } from './actions/shareList.js';
+import { updateListInfo } from './actions/updateListInfo.js';
+import { toggleWatched } from './actions/toggleWatch.js';
+import { deleteMovie } from './actions/deleteMovie.js';
+import { submitComment } from './actions/submitComment.js';
 
 export const load: PageServerLoad = async ({ fetch, locals, params }) => {
   const { slug: listId } = params;
@@ -92,199 +101,13 @@ export const load: PageServerLoad = async ({ fetch, locals, params }) => {
 };
 
 export const actions = {
-  togglePrivacy: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId');
-    const isPrivate = data.get('isPrivate');
-
-    try {
-      const response = await fetch(`${API}/lists/${listId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          isPrivate: !(isPrivate === 'true')
-        })
-      });
-
-      if (response.status !== 200) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  deleteList: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId');
-
-    try {
-      const response = await fetch(`${API}/lists/${listId}`, {
-        method: 'DELETE'
-      });
-
-      if (response.status !== 204) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  updateList: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId') as string;
-    const title = data.get('title') as string;
-    const description = data.get('description') as string;
-    const genre = data.get('genre') as string;
-    const releaseDate = data.get('releaseDate') as string;
-    const posterUrl = data.get('posterUrl') as string;
-    const rating = data.get('rating');
-    const tmdbId = data.get('tmdbId') as string;
-
-    try {
-      const response = await fetch(`${API}/movies/lists/${listId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          movie: [
-            {
-              title,
-              description,
-              genre: genre?.split('.'),
-              releaseDate,
-              posterUrl,
-              rating: Number(rating),
-              tmdbId: +tmdbId
-            }
-          ]
-        })
-      });
-
-      if (response.status !== 200) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  cloneList: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId');
-    const name = data.get('name');
-
-    try {
-      const response = await fetch(`${API}/lists/${listId}/clone`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ name })
-      });
-
-      if (response.status !== 201) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  shareList: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId');
-    const username = data.get('username');
-
-    try {
-      const response = await fetch(`${API}/lists/${listId}/toggleShareByUsername`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ username })
-      });
-
-      if (response.status !== 204) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  updateListInfo: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId');
-    const name = data.get('name');
-
-    try {
-      const response = await fetch(`${API}/lists/${listId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ name })
-      });
-
-      if (response.status !== 204) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  toggleWatched: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const movieId = data.get('movieId');
-
-    try {
-      const response = await fetch(`${API}/movies/${movieId}`, {
-        method: 'PATCH'
-      });
-
-      if (response.status !== 204) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  deleteMovie: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId');
-    const movieId = data.get('movieId');
-
-    try {
-      const response = await fetch(`${API}/movies/${movieId}/lists/${listId}`, {
-        method: 'DELETE'
-      });
-
-      if (response.status !== 204) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  submitComment: async ({ request, fetch }: RequestEvent) => {
-    const data = await request.formData();
-    const listId = data.get('listId');
-    const text = data.get('text');
-
-    try {
-      const response = await fetch(`${API}/lists/${listId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ text })
-      });
-
-      if (response.status !== 204) {
-        return fail(400);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  togglePrivacy,
+  deleteList,
+  updateList,
+  cloneList,
+  shareList,
+  updateListInfo,
+  toggleWatched,
+  deleteMovie,
+  submitComment
 } satisfies Actions;
