@@ -29,7 +29,7 @@ export type ListInfoType = {
   creatorId: string;
   createdAt: string;
   updatedAt: string;
-  comments: Comment[];
+  comments: CommentType[];
 };
 
 export type ListType = {
@@ -48,7 +48,7 @@ export type ListType = {
 export type Lists = {
   lists: ListType[];
   count: number;
-  comments: Comment[];
+  comments: CommentType[];
 };
 
 export type ToastTypes = 'info' | 'success' | 'error';
@@ -75,7 +75,7 @@ export type SearchResult = {
 };
 
 export type MovieWithLists = MovieType & { lists: ListType[] };
-export type Comment = {
+export type CommentType = {
   id: string;
   userId: string;
   username?: string;

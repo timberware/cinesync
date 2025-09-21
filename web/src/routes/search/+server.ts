@@ -31,5 +31,6 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
     return json(moviesWithLists);
   } catch (e) {
     console.error({ error: e });
+    return json([]);
   }
 };
