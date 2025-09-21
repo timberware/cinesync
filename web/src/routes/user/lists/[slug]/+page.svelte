@@ -26,24 +26,24 @@
   import Comment from '$lib/Comment/Comment.svelte';
   import type { PageData } from './$types';
 
-  export let data: PageData;
+  let { data }: PageData = $props();
 
   const { user } = data;
-  let showModal = false;
-  let showShareListModal = false;
-  let showListNameModal = false;
+  let showModal = $state(false);
+  let showShareListModal = $state(false);
+  let showListNameModal = $state(false);
 
-  $: movies = data.movies;
-  $: list = data.list;
-  $: sharees = data.sharees;
-  $: comments = data.comments;
+  let movies = $derived(data.movies);
+  let list = $derived(data.list);
+  let sharees = $derived(data.sharees);
+  let comments = $derived(data.comments);
 
-  $: displayComments = false;
+  let displayComments = $state(false);
 </script>
 
 <Toasts />
 
-<Nav username={user.username} />
+<Nav username={user.username ?? ''} />
 <TopSection>
   <Title>{list.name}</Title>
   <div class="flex gap-x-2">

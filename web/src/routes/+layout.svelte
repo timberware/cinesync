@@ -11,14 +11,16 @@
   import MainContainer from '$lib/MainContainer.svelte';
   import Tag from '$lib/Tag.svelte';
   import type { LayoutData } from './$types';
+  import type { Snippet } from 'svelte';
 
-  export let data: LayoutData;
+  let { data, children }: { data: LayoutData; children: Snippet } = $props();
 
   const extractTitle = (pathname: string) => pathname.replace('/user', '');
-  $: isSticky =
+  let isSticky = $derived(
     $page.url.pathname.includes('/user') &&
-    !$page.url.pathname.includes('/about') &&
-    !$page.url.pathname.includes('/profile');
+      !$page.url.pathname.includes('/about') &&
+      !$page.url.pathname.includes('/profile')
+  );
 </script>
 
 <svelte:head>
@@ -26,7 +28,7 @@
 </svelte:head>
 
 <MainContainer>
-  <slot />
+  {@render children()}
 </MainContainer>
 
 <Tag tag={data.tag} sticky={isSticky} />

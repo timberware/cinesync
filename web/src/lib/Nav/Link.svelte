@@ -1,12 +1,14 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  export let href: string;
-  export let hidden: boolean = false;
+  import type { Snippet } from 'svelte';
+
+  let { children, href, hidden }: { children: Snippet; href: string; hidden: boolean } =
+    $props();
 
   const comparePaths = (path1: string, path2: string): boolean =>
     path1.split('/').at(-1) === path2.split('/').at(-1);
 
-  $: isActive = comparePaths($page.url.pathname, href);
+  let isActive = $derived(comparePaths($page.url.pathname, href));
 </script>
 
 <a
@@ -15,5 +17,5 @@
     hidden && 'hidden sm:inline'
   }`} "
 >
-  <slot />
+  {@render children()}
 </a>

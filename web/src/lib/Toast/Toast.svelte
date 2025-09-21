@@ -1,12 +1,15 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, type Snippet } from 'svelte';
   import { fade } from 'svelte/transition';
   import IconButton from '$lib/IconButton.svelte';
   import { faClose } from '@fortawesome/free-solid-svg-icons';
   import { type ToastTypes } from '../../ambient.d';
 
-  export let type: ToastTypes;
-  export let dismissible = true;
+  let {
+    type,
+    dismissible = true,
+    children
+  }: { type: ToastTypes; dismissible: boolean; children: Snippet } = $props();
 
   const dispatch = createEventDispatcher();
   const toastBgColor = new Map<ToastTypes, string>([
@@ -25,7 +28,7 @@
   transition:fade
 >
   <div class="text-text md:text-xl sm:text-lg">
-    <slot />
+    {@render children()}
   </div>
 
   {#if dismissible}
