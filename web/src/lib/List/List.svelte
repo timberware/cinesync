@@ -18,7 +18,7 @@
   } = $props();
 </script>
 
-<div class="w-48 mx-auto">
+<div class="w-[192px] h-[325px] mx-auto">
   <a href={`/user/lists/${id}`}>
     <Container>
       <Poster src={imageUrl} {movies} {sharees} />

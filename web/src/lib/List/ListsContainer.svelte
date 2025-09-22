@@ -4,10 +4,12 @@
   const { lists } = $props();
 </script>
 
-<div class="flex flex-wrap gap-y-4 h-[calc(100vh-200px)] overflow-y-auto">
+<div
+  class="xl:grid-cols-5 lg:grid-cols-4 sm:grid-cols-3 grid h-[670px] overflow-y-auto auto-rows-min gap-y-4"
+>
   {#if lists?.length}
     {#each lists as list (list.id)}
-      <div class="w-full xl:w-1/5 lg:w-1/4 sm:w-1/3">
+      <div class="w-full h-min">
         <List
           id={list.id}
           title={list.name}
