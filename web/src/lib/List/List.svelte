@@ -3,14 +3,22 @@
   import Poster from '$lib/List/Poster.svelte';
   import ListTitle from '$lib/List/ListTitle.svelte';
 
-  export let title: string;
-  export let movies = 0;
-  export let sharees = 0;
-  export let imageUrl = '';
-  export let id = '';
+  const {
+    id,
+    title,
+    movies,
+    sharees,
+    imageUrl
+  }: {
+    id: string;
+    title: string;
+    movies: number;
+    sharees: number;
+    imageUrl: string;
+  } = $props();
 </script>
 
-<div class="w-60 mx-auto">
+<div class="w-48 mx-auto">
   <a href={`/user/lists/${id}`}>
     <Container>
       <Poster src={imageUrl} {movies} {sharees} />

@@ -4,7 +4,7 @@
   export let title = '';
 </script>
 
-<div class="w-full bg-background rounded-xl py-2 px-3">
+<div class="w-full bg-secondary rounded-xl py-2 px-3">
   <p class="truncate text-center">
     <Label>
       {title}

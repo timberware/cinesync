@@ -2,7 +2,7 @@
   import { page } from '$app/stores';
   import type { Snippet } from 'svelte';
 
-  let { children, href, hidden }: { children: Snippet; href: string; hidden: boolean } =
+  let { children, href, hidden }: { children: Snippet; href: string; hidden?: boolean } =
     $props();
 
   const comparePaths = (path1: string, path2: string): boolean =>

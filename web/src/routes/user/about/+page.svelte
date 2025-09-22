@@ -1,11 +1,10 @@
 <script lang="ts">
   import Nav from '$lib/Nav/Nav.svelte';
-  import type { User } from '../../../ambient';
   import { THE_MOVIE_DB_BIG_AVATAR } from '../../../utils';
+  import type { PageData } from './$types';
 
-  export let data: {
-    user: User;
-  };
+  let { data }: PageData = $props();
+
   const { user } = data;
 </script>
 

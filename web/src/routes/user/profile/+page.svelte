@@ -7,7 +7,7 @@
   import type { PageData } from './$types';
   import { error, success } from './messages';
 
-  export let data: PageData;
+  let { data }: PageData = $props();
   const { user, stats } = data;
 </script>
 

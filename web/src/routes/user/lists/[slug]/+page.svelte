@@ -43,7 +43,7 @@
 
 <Toasts />
 
-<Nav username={user.username ?? ''} />
+<Nav username={user.username} />
 <TopSection>
   <Title>{list.name}</Title>
   <div class="flex gap-x-2">

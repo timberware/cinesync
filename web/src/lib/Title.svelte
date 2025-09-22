@@ -1,9 +1,27 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
-  let { children }: { children: Snippet } = $props();
+  let {
+    children,
+    isActive = true,
+    onClick
+  }: {
+    children: Snippet;
+    isActive?: boolean;
+    onClick?: () => void;
+  } = $props();
+
+  const handleOnClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
 </script>
 
-<div class="underline underline-offset-8">
+<button
+  type="button"
+  onclick={handleOnClick}
+  class={`${isActive ? 'text-text' : 'text-primary'} hover:text-text active:text-text`}
+>
   {@render children()}
-</div>
+</button>
