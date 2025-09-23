@@ -78,6 +78,8 @@ jobs:
         run: |
           cd api
           pnpm i --frozen-lockfile
+          pnpm i -g prisma
+          pnpm run db:generate
           pnpm run build
           pnpm run lint
           pnpm run format

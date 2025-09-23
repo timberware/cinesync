@@ -2,13 +2,17 @@ FROM node:22-alpine3.21 as build
 
 WORKDIR "/cinesync-web"
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
 COPY package.json .
-COPY package-lock.json .
+COPY pnpm-lock.yaml .
 COPY static static
 
 FROM build AS dependencies
 
-RUN npm ci
+RUN pnpm i --frozen-lockfile
 
 FROM dependencies as builder
 
@@ -25,7 +29,7 @@ COPY postcss.config.js .
 COPY tailwind.config.js .
 COPY vite.config.ts .
 
-RUN npm run build
+RUN pnpm run build
 
 FROM build AS release
 
