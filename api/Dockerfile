@@ -4,19 +4,23 @@ RUN apk update && apk add \
   openssl \
   && rm -rf /var/cache/apk/*
 
-WORKDIR "/cinesync"
+WORKDIR "/cinesync-api"
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 COPY package.json .
-COPY package-lock.json .
+COPY pnpm-lock.yaml .
 COPY prisma prisma
 
 FROM build AS dependencies
 
 ARG DATABASE_URL
 
-RUN npm ci
-RUN npm install -g prisma
-RUN npm run db:generate
+RUN pnpm i --frozen-lockfile
+RUN pnpm install -g prisma
+RUN pnpm run db:generate
 
 # -------------------------------------
 FROM dependencies as builder
@@ -26,12 +30,12 @@ COPY tsconfig.json .
 COPY tsconfig.build.json .
 COPY nest-cli.json .
 
-RUN npm run build
+RUN pnpm run build
 
 # -------------------------------------
 FROM build AS release
 
-COPY --from=dependencies /cinesync/node_modules /cinesync/node_modules
-COPY --from=builder /cinesync/dist /cinesync/dist
+COPY --from=dependencies /cinesync-api/node_modules /cinesync/node_modules
+COPY --from=builder /cinesync-api/dist /cinesync/dist
 
-CMD ["sh", "-c", "npm run start:prod"]
+CMD ["sh", "-c", "pnpm run start:prod"]

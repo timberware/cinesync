@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - main 
-  push:
-    branches:
-      - main
 
 jobs:
   files-changed:
@@ -31,35 +28,29 @@ jobs:
       DATABASE_URL: 'postgresql://cinesync-dev:@BarelyAnInconvenience@@localhost:5432/cinesync-dev'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 10
+
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 22 
-          cache: npm
+          cache: pnpm
           cache-dependency-path: api/package.json
 
       - uses: docker/setup-buildx-action@v1
       - name: Instantiate a Postgres db for e2e testing
         run: docker compose up --build -d cinesync_db
       - name: Wait for Postgres become fully ready
-        run: npx --silent wait-on -t 10000 tcp:5432
+        run: pnpx --silent wait-on -t 10000 tcp:5432
       - name: Apply database migrations and generate a prisma client
-        run: cd api && npm run db:migrate && npm run db:generate
+        run: cd api && pnpm run db:migrate && pnpm run db:generate
 
-      # - name: Run tests
-      #   env:
-      #     JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      #     JWT_EXPIRATION_MS: ${{ secrets.JWT_EXPIRATION_MS }}
-      #     MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
-      #     MAILGUN_KEY: ${{ secrets.MAILGUN_KEY }}
-      #   run: |
-      #     cd api
-      #     npm install
-      #     npm run test
-      #     npm run test:e2e

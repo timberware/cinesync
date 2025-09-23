@@ -57,7 +57,7 @@ export class MovieService {
       await this.movieDao.updateMovie(this.tmdbToDao(movieData, eTag));
     } catch {
       throw new BadRequestException(
-        `error updating movie with tmdbId ${movieData.id}`,
+        `error updating movie with tmdbId ${movieData.id.toString()}`,
       );
     }
   }
@@ -73,8 +73,10 @@ export class MovieService {
 
     await Promise.all([
       this.cacheManager.del(`${userId}-movies`),
-      lists[0].map((l) => this.cacheManager.del(`${l.id}-${userId}-movies`)),
-      lists[0].map((l) => this.cacheManager.del(`${l.id}-movies`)),
+      Promise.all(
+        lists[0].map((l) => this.cacheManager.del(`${l.id}-${userId}-movies`)),
+      ),
+      Promise.all(lists[0].map((l) => this.cacheManager.del(`${l.id}-movies`))),
     ]);
 
     return await this.movieDao.updateWatchedStatus(

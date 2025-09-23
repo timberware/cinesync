@@ -54,12 +54,12 @@ export class SyncService {
       await this.cacheManager.clear();
 
       await Promise.all(
-        modifiedMovies.map((batch) => {
+        modifiedMovies.map((batch) =>
           this.movieService.updateMovie(
             batch.data as TMDBMovieDto,
             batch.headers.etag as string,
-          );
-        }),
+          ),
+        ),
       );
     }
 
