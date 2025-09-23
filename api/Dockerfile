@@ -35,7 +35,7 @@ RUN pnpm run build
 # -------------------------------------
 FROM build AS release
 
-COPY --from=dependencies /cinesync-api/node_modules /cinesync/node_modules
-COPY --from=builder /cinesync-api/dist /cinesync/dist
+COPY --from=dependencies /cinesync-api/node_modules /cinesync-api/node_modules
+COPY --from=builder /cinesync-api/dist /cinesync-api/dist
 
 CMD ["sh", "-c", "pnpm run start:prod"]
