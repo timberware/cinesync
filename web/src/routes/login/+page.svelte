@@ -11,8 +11,8 @@
 
 <Toasts />
 
-<header class="container xl:max-w-screen-xl lg:max-w-screen-lg mx-auto">
-  <h1 class="text-7xl max-w-fit m-auto mt-20">cinesync</h1>
+<header class="container xl:max-w-screen-xl lg:max-w-screen-lg mx-auto pt-20">
+  <h1 class="text-7xl max-w-fit m-auto">cinesync</h1>
 </header>
 
 <form

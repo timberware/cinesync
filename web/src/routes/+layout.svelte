@@ -16,10 +16,8 @@
   let { data, children }: { data: LayoutData; children: Snippet } = $props();
 
   const extractTitle = (pathname: string) => pathname.replace('/user', '');
-  let isSticky = $derived(
-    $page.url.pathname.includes('/user') &&
-      !$page.url.pathname.includes('/about') &&
-      !$page.url.pathname.includes('/profile')
+  let shouldDisplay = $derived(
+    !$page.url.pathname.includes('/login') && !$page.url.pathname.includes('/signit')
   );
 </script>
 
@@ -29,6 +27,8 @@
 
 <MainContainer>
   {@render children()}
-</MainContainer>
 
-<Tag tag={data.tag} sticky={isSticky} />
+  {#if shouldDisplay}
+    <Tag tag={data.tag} />
+  {/if}
+</MainContainer>

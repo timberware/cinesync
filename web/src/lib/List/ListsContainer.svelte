@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="xl:grid-cols-5 lg:grid-cols-4 sm:grid-cols-3 grid h-[670px] overflow-y-auto auto-rows-min gap-y-4"
+  class="xl:grid-cols-5 lg:grid-cols-4 sm:grid-cols-3 grid h-[calc(100vh-160px)] overflow-y-auto auto-rows-min gap-y-4"
 >
   {#if lists?.length}
     {#each lists as list (list.id)}

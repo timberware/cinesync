@@ -4,6 +4,6 @@
   let { children }: { children: Snippet } = $props();
 </script>
 
-<div class="flex text-2xl mt-10 justify-between">
+<div class="flex text-2xl justify-between mt-5">
   {@render children()}
 </div>
