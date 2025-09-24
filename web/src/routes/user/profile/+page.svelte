@@ -13,6 +13,10 @@
 
 <Toasts />
 
+<svelte:head>
+  <title>cinesync - /profile</title>
+</svelte:head>
+
 <Nav username={user.username} />
 <div class="sm:flex w-full justify-around mt-20 mx-auto">
   <div class="max-w-64 text-center mx-auto mb-8 sm:mb-0">

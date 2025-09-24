@@ -8,6 +8,10 @@
   const { user } = data;
 </script>
 
+<svelte:head>
+  <title>cinesync - /about</title>
+</svelte:head>
+
 <Nav username={user.username} />
 <div class="mt-7 max-w-6xl mx-auto xl:px-0 px-8">
   <h2 class="mb-3 text-2xl underline">cinesync</h2>

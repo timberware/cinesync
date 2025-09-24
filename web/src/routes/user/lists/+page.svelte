@@ -27,6 +27,10 @@
   ];
 </script>
 
+<svelte:head>
+  <title>cinesync - /lists</title>
+</svelte:head>
+
 <Nav username={user.username} />
 <TopSection>
   <div class="flex gap-x-4 px-2 bg-secondary rounded-t-2xl py-1">

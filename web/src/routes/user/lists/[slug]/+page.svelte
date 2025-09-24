@@ -43,6 +43,10 @@
 
 <Toasts />
 
+<svelte:head>
+  <title>{`cinesync - /${list.name}`}</title>
+</svelte:head>
+
 <Nav username={user.username} />
 <TopSection>
   <Title>{list.name}</Title>

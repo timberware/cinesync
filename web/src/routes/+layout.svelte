@@ -15,15 +15,10 @@
 
   let { data, children }: { data: LayoutData; children: Snippet } = $props();
 
-  const extractTitle = (pathname: string) => pathname.replace('/user', '');
   let shouldDisplay = $derived(
     !$page.url.pathname.includes('/login') && !$page.url.pathname.includes('/signit')
   );
 </script>
-
-<svelte:head>
-  <title>{`cinesync - ${extractTitle($page.url.pathname)}`}</title>
-</svelte:head>
 
 <MainContainer>
   {@render children()}
