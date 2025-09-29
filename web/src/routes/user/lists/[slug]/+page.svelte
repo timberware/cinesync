@@ -114,17 +114,21 @@
     <Comment {comments} listId={list.id} />
   </div>
 {/if}
-<MoviesSection>
-  {#if movies.length}
-    {#each movies as movie (movie.id)}
-      <Movie
-        listId={list.id}
-        {movie}
-        sharees={sharees.filter(s => s.watched?.includes(movie.id)).map(m => m.username)}
-      />
-    {/each}
-  {/if}
-</MoviesSection>
+<div class={'bg-secondary rounded-2xl  p-3'}>
+  <MoviesSection>
+    {#if movies.length}
+      {#each movies as movie (movie.id)}
+        <Movie
+          listId={list.id}
+          {movie}
+          sharees={sharees
+            .filter(s => s.watched?.includes(movie.id))
+            .map(m => m.username)}
+        />
+      {/each}
+    {/if}
+  </MoviesSection>
+</div>
 
 <ListShareModal bind:showShareListModal listId={list.id} />
 <ListNameModal bind:showListNameModal listId={list.id} />

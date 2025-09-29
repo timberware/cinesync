@@ -5,6 +5,6 @@
   let { children }: { children: Snippet } = $props();
 </script>
 
-<div class="w-full h-60 relative flex rounded-xl bg-secondary mx-5 p-3" transition:fade>
+<div class="w-full h-60 relative flex rounded-xl bg-background p-3" transition:fade>
   {@render children()}
 </div>
