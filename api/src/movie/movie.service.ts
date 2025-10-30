@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { MovieDao } from './dao/movie.dao';
@@ -9,6 +14,8 @@ import { QueryDto } from './dto/query.dto';
 
 @Injectable()
 export class MovieService {
+  private logger = new Logger(MovieService.name);
+
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private movieDao: MovieDao,
@@ -48,14 +55,15 @@ export class MovieService {
     return await this.movieDao.createMovies(movies, listId);
   }
 
-  getTMDBMovie(tmdbId: number, eTag: string) {
+  getTMDBMovie(tmdbId: number, eTag: string | null) {
     return this.tmdbDao.getTMDBMovie(tmdbId, eTag);
   }
 
   async updateMovie(movieData: TMDBMovieDto, eTag: string) {
     try {
       await this.movieDao.updateMovie(this.tmdbToDao(movieData, eTag));
-    } catch {
+    } catch (e) {
+      this.logger.error(e);
       throw new BadRequestException(
         `error updating movie with tmdbId ${movieData.id.toString()}`,
       );

@@ -5,6 +5,7 @@ import { Cache } from 'cache-manager';
 import { TMDBMovieDto } from './dto/tmdbMovie.dto';
 import { MovieService } from '../movie/movie.service';
 import { MovieDto } from '../movie/dto/movie.dto';
+import axios from 'node_modules/axios/index.cjs';
 
 @Injectable()
 export class SyncService {
@@ -27,21 +28,21 @@ export class SyncService {
     });
 
     const movieBatches = this.createBatches(movies, this.BATCH_SIZE);
-    const res = (
-      await Promise.all(
-        movieBatches.map((batch) =>
-          Promise.all(
-            batch.map((movie) =>
-              this.movieService.getTMDBMovie(movie.tmdbId, movie.eTag ?? ''),
-            ),
-          ),
-        ),
-      )
-    ).flat();
+    const fetchedMovies: (axios.AxiosResponse<TMDBMovieDto> | null)[] = [];
 
-    const modifiedMovies = res.filter(
+    for (const batch of movieBatches) {
+      const fetchedBatch = await Promise.all(
+        batch.map((movie) =>
+          this.movieService.getTMDBMovie(movie.tmdbId, movie.eTag ?? null),
+        ),
+      );
+
+      fetchedMovies.push(...fetchedBatch);
+    }
+
+    const modifiedMovies = fetchedMovies.filter(
       (response) =>
-        response.status && (response.status as HttpStatus) === HttpStatus.OK,
+        response?.status && (response.status as HttpStatus) === HttpStatus.OK,
     );
 
     const modifiedMoviesCount = modifiedMovies.length;
@@ -53,14 +54,26 @@ export class SyncService {
       this.logger.debug('Clearing all cache');
       await this.cacheManager.clear();
 
-      await Promise.all(
-        modifiedMovies.map((batch) =>
-          this.movieService.updateMovie(
-            batch.data as TMDBMovieDto,
-            batch.headers.etag as string,
+      const processed = await Promise.allSettled(
+        modifiedMovies
+          .filter((batch) => !!batch)
+          .map((batch) =>
+            this.movieService.updateMovie(
+              batch.data,
+              batch.headers.etag as string,
+            ),
           ),
-        ),
       );
+      const failed = processed.filter((p) => p.status === 'rejected');
+
+      const total = processed.length;
+      const failedCount = failed.length;
+      const succeededCount = total - failedCount;
+
+      this.logger.log(
+        `${total.toString()} movie(s) processed. ${succeededCount.toString()} succeeded, ${failedCount.toString()} failed`,
+      );
+      this.logger.debug({ errors: failed });
     }
 
     this.logger.log('Movie Refresh Job Completed');

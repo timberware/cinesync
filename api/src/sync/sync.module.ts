@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from '../prisma/prisma.module';
 import { MovieModule } from '../movie/movie.module';
 import { RedisOptions } from '../config/redisCache';
+import { SyncController } from './sync.controller';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RedisOptions } from '../config/redisCache';
     ScheduleModule.forRoot(),
     CacheModule.registerAsync(RedisOptions),
   ],
+  controllers: [SyncController],
   providers: [SyncService],
 })
 export class SyncModule {}

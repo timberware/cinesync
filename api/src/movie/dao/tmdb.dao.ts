@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { getTMDBUrl } from '../../utils';
+import { TMDBMovieDto } from '../../sync/dto/tmdbMovie.dto';
 
 @Injectable()
 export class TMDBDao {
@@ -18,14 +19,16 @@ export class TMDBDao {
       throw new InternalServerErrorException('Env var TMDB_TOKEN is missing');
   }
 
-  async getTMDBMovie(tmdbId: number, eTag: string) {
+  async getTMDBMovie(tmdbId: number, eTag: string | null) {
     const URL = getTMDBUrl(tmdbId);
 
-    const response = this.httpService.get(URL, {
+    const response = this.httpService.get<TMDBMovieDto>(URL, {
       headers: {
         Authorization: `Bearer ${this.TMDB_TOKEN}`,
         accept: 'application/json',
-        'If-None-Match': eTag,
+        ...(eTag && {
+          'If-None-Match': eTag,
+        }),
       },
     });
 
