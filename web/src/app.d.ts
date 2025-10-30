@@ -11,6 +11,13 @@ declare global {
         email: string;
         id: string;
       } | null;
+
+      pagination: {
+        curr: number;
+        prev: number;
+        next: number;
+        last: number;
+      } | null;
     }
     // interface PageData {}
     // interface Platform {}

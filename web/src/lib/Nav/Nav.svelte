@@ -11,7 +11,8 @@
 
 <nav class="pt-5 mx-5 md:text-xl sm:text-lg flex justify-between">
   <div class="flex gap-x-3 md:gap-x-5">
-    <Link href="/user/lists">home</Link>
+    <Link href="/user/lists">lists</Link>
+    <Link href="/user/shared">shared</Link>
     <Link href="/user/about">about</Link>
     <a href={CINESYNC_REPO} target="_blank" rel="noreferrer">
       <FontAwesomeIcon class="text-text" icon={faGithub} />

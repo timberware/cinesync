@@ -1,7 +1,6 @@
 import type { Lists, ListType, Pagination } from '../../../ambient';
-import type { Actions, PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types.js';
 import { API, parsePaginationInfo, PER_PAGE } from '../../../utils';
-import { createList } from './actions/createList';
 
 export const load: PageServerLoad = async ({ fetch, locals, url }) => {
   const { user } = locals;
@@ -13,12 +12,14 @@ export const load: PageServerLoad = async ({ fetch, locals, url }) => {
   try {
     const page = url.searchParams.get('page') ?? 0;
 
-    const listResponse = await fetch(
-      `${API}/lists?id=${user.id}&per_page=${PER_PAGE}&page_number=${page}`,
-      {
-        method: 'GET'
-      }
-    );
+    const [listResponse] = await Promise.all([
+      fetch(
+        `${API}/lists?id=${user.id}&shared=true&per_page=${PER_PAGE}&page_number=${page}`,
+        {
+          method: 'GET'
+        }
+      )
+    ]);
 
     if (listResponse.status !== 200) {
       return { user: user };
@@ -65,7 +66,3 @@ export const load: PageServerLoad = async ({ fetch, locals, url }) => {
     console.error(e);
   }
 };
-
-export const actions = {
-  createList
-} satisfies Actions;
