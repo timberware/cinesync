@@ -16,7 +16,7 @@ export class QueryDto {
   @IsInt()
   @Type(() => Number)
   @IsOptional()
-  per_page = 500;
+  per_page = 20;
 
   @IsInt()
   @Type(() => Number)

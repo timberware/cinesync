@@ -5,7 +5,7 @@
       "type": "node",
       "request": "launch",
       "name": "Debug",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "dev"],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"

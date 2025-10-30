@@ -68,7 +68,7 @@ export class ListDao {
         take: query.per_page || PER_PAGE,
         skip: (query.page_number || PAGE_NUMBER) * (query.per_page || PER_PAGE),
         orderBy: {
-          createdAt: 'desc',
+          name: 'asc',
         },
         ...(query.id && {
           include: {
