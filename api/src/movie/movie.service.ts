@@ -11,6 +11,7 @@ import { MovieDto } from './dto/movie.dto';
 import { TMDBMovieDto } from '../sync/dto/tmdbMovie.dto';
 import { TMDBDao } from './dao/tmdb.dao';
 import { QueryDto } from './dto/query.dto';
+import { PAGE_NUMBER, PER_PAGE } from 'src/utils';
 
 @Injectable()
 export class MovieService {
@@ -56,7 +57,7 @@ export class MovieService {
   }
 
   getTMDBMovie(tmdbId: number, eTag: string | null) {
-    return this.tmdbDao.getTMDBMovie(tmdbId, eTag);
+    return this.tmdbDao.getMovie(tmdbId, eTag);
   }
 
   async updateMovie(movieData: TMDBMovieDto, eTag: string) {
@@ -71,7 +72,11 @@ export class MovieService {
   }
 
   async updateWatchedStatus(movieId: string, userId: string) {
-    const { movies } = await this.getMovies({ userId });
+    const { movies } = await this.getMovies({
+      userId,
+      page_number: PAGE_NUMBER,
+      per_page: PER_PAGE,
+    });
 
     const hasWatched = movies.find(
       (watchedMovie) => watchedMovie.id === movieId,

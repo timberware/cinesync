@@ -57,6 +57,8 @@ export class MovieDao {
   }
 
   async getMovies(query: QueryDto) {
+    query.page_number = PAGE_NUMBER;
+    query.per_page = PER_PAGE;
     const queryCondition = {
       AND: [
         {
@@ -81,8 +83,7 @@ export class MovieDao {
     const [movies, count] = await Promise.all([
       this.prisma.movie.findMany({
         where: queryCondition,
-        take: query.per_page ?? PER_PAGE,
-        skip: (query.page_number ?? PAGE_NUMBER) * (query.per_page ?? PER_PAGE),
+        ...this.prisma.getPagination(query),
       }),
 
       this.prisma.movie.count({

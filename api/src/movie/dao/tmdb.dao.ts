@@ -19,7 +19,7 @@ export class TMDBDao {
       throw new InternalServerErrorException('Env var TMDB_TOKEN is missing');
   }
 
-  async getTMDBMovie(tmdbId: number, eTag: string | null) {
+  async getMovie(tmdbId: number, eTag: string | null) {
     const URL = getTMDBUrl(tmdbId);
 
     const response = this.httpService.get<TMDBMovieDto>(URL, {

@@ -31,6 +31,7 @@ import { QueryDto } from './dto/query.dto';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { UserDto } from './dto/sharee.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { PAGE_NUMBER, PER_PAGE } from 'src/utils';
 
 @Controller('lists')
 export class ListController {
@@ -154,7 +155,11 @@ export class ListController {
     @Body() { name }: { name: string },
     @CurrentUser() user: UserDto,
   ) {
-    const { count } = await this.movieService.getMovies({ listId });
+    const { count } = await this.movieService.getMovies({
+      listId,
+      page_number: PAGE_NUMBER,
+      per_page: PER_PAGE,
+    });
     const originalList = await this.listService.getList(listId, user.id);
     const clonedList = await this.listService.createList(
       name || originalList.name,

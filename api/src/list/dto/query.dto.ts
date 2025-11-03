@@ -1,7 +1,8 @@
-import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { BaseQueryDto } from 'src/common/dto/baseQuery.dto';
 
-export class QueryDto {
+export class QueryDto extends BaseQueryDto {
   @IsString()
   @IsOptional()
   id?: string;
@@ -12,14 +13,4 @@ export class QueryDto {
   @IsBoolean()
   @IsOptional()
   shared?: boolean = false;
-
-  @IsInt()
-  @Type(() => Number)
-  @IsOptional()
-  per_page = 20;
-
-  @IsInt()
-  @Type(() => Number)
-  @IsOptional()
-  page_number = 0;
 }

@@ -1,9 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Role, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 import { UpdateListDto } from '../dto/update-list.dto';
 import { QueryDto } from '../dto/query.dto';
-import { PER_PAGE, PAGE_NUMBER } from '../../utils';
 import { ListDTO } from '../dto';
 
 @Injectable()
@@ -49,24 +48,35 @@ export class ListDao {
       },
     };
 
-    const queryCondition = {
-      ...(query.shared
-        ? {
-            AND: {
-              NOT: { creatorId: query.id },
-              ...userCondition,
-            },
-          }
-        : {
-            AND: { creatorId: query.id, ...userCondition },
+    const queryCondition: Prisma.ListWhereInput = {
+      AND: [
+        {
+          ...(query.shared
+            ? {
+                NOT: { creatorId: query.id },
+                ...userCondition,
+              }
+            : {
+                creatorId: query.id,
+                ...userCondition,
+              }),
+        },
+        {
+          ...(query.search && {
+            OR: [
+              {
+                name: this.prisma.getPrismaSearch(query.search),
+              },
+            ],
           }),
+        },
+      ],
     };
 
     const [lists, count]: [ListDTO[], number] = await Promise.all([
       this.prisma.list.findMany({
         where: queryCondition,
-        take: query.per_page || PER_PAGE,
-        skip: (query.page_number || PAGE_NUMBER) * (query.per_page || PER_PAGE),
+        ...this.prisma.getPagination(query),
         orderBy: {
           name: 'asc',
         },

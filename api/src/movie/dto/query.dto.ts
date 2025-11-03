@@ -1,7 +1,7 @@
-import { Type } from 'class-transformer';
-import { IsString, IsOptional, IsInt } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
+import { BaseQueryDto } from 'src/common/dto/baseQuery.dto';
 
-export class QueryDto {
+export class QueryDto extends BaseQueryDto {
   @IsString()
   @IsOptional()
   userId?: string;
@@ -9,14 +9,4 @@ export class QueryDto {
   @IsString()
   @IsOptional()
   listId?: string;
-
-  @IsInt()
-  @Type(() => Number)
-  @IsOptional()
-  per_page? = 500;
-
-  @IsInt()
-  @Type(() => Number)
-  @IsOptional()
-  page_number? = 0;
 }

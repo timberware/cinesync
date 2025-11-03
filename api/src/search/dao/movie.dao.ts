@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { QueryDto } from '../dto/query.dto';
-import { PAGE_NUMBER, PER_PAGE } from '../../utils';
 
 @Injectable()
 export class MovieDao {
@@ -23,8 +22,7 @@ export class MovieDao {
           },
         },
       },
-      take: query.per_page ?? PER_PAGE,
-      skip: (query.page_number ?? PAGE_NUMBER) * (query.per_page ?? PER_PAGE),
+      ...this.prisma.getPagination(query),
     });
   }
 }
