@@ -42,7 +42,9 @@ export class SyncService {
 
     const modifiedMovies = fetchedMovies.filter(
       (response) =>
-        response?.status && (response.status as HttpStatus) === HttpStatus.OK,
+        response?.status &&
+        (response.status as HttpStatus) === HttpStatus.OK &&
+        !!response.data.poster_path,
     );
 
     const modifiedMoviesCount = modifiedMovies.length;
