@@ -70,17 +70,18 @@ export class AuthService {
 
   login(user: UserDto, response: Response) {
     const expirationTime = new Date();
-    const extraTime =
-      this.configService.getOrThrow<string>('JWT_EXPIRATION_MS');
+    const extraTime = Number(
+      this.configService.getOrThrow<string>('JWT_EXPIRATION_MS'),
+    );
 
     expirationTime.setMilliseconds(
-      expirationTime.getMilliseconds() + parseInt(extraTime, 10),
+      expirationTime.getMilliseconds() + extraTime,
     );
 
     const payload: TokenPayload = { userId: user.id };
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.getOrThrow<string>('JWT_SECRET'),
-      expiresIn: `${extraTime}ms`,
+      expiresIn: extraTime,
     });
 
     response.cookie('Authentication', accessToken, {

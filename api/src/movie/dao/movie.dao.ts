@@ -59,6 +59,7 @@ export class MovieDao {
   async getMovies(query: QueryDto) {
     query.page_number = PAGE_NUMBER;
     query.per_page = PER_PAGE;
+
     const queryCondition = {
       AND: [
         {
@@ -84,8 +85,10 @@ export class MovieDao {
       this.prisma.movie.findMany({
         where: queryCondition,
         ...this.prisma.getPagination(query),
+        orderBy: {
+          title: 'asc',
+        },
       }),
-
       this.prisma.movie.count({
         where: queryCondition,
       }),
@@ -94,12 +97,10 @@ export class MovieDao {
     let sortedMovies: Movie[] = [];
 
     if (query.listId && count) {
-      const m = movies.map((m) => m.id);
-
       const lm = await this.prisma.listMovie.findMany({
         where: {
           movieId: {
-            in: m,
+            in: movies.map((m) => m.id),
           },
           listId: query.listId,
         },
