@@ -24,9 +24,10 @@
   import Avatar from '$lib/Avatar.svelte';
   import ListNameModal from '$lib/List/ListNameModal.svelte';
   import Comment from '$lib/Comment/Comment.svelte';
-  import type { PageData } from './$types';
+  import type { PageProps } from './$types';
+  import Head from '$lib/Head.svelte';
 
-  let { data }: PageData = $props();
+  let { data }: PageProps = $props();
 
   const { user } = data;
   let showModal = $state(false);
@@ -43,9 +44,7 @@
 
 <Toasts />
 
-<svelte:head>
-  <title>{`cinesync - /${list.name}`}</title>
-</svelte:head>
+<Head title={`cinesync - /${list.name}`} />
 
 <Nav username={user.username} />
 <TopSection>

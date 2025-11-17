@@ -1,4 +1,4 @@
-import type { Lists, ListType, Pagination } from '../../../ambient';
+import type { Lists, ListType, PaginationType } from '../../../ambient';
 import type { PageServerLoad } from './$types.js';
 import { API, parsePaginationInfo, PER_PAGE } from '../../../utils';
 
@@ -27,7 +27,9 @@ export const load: PageServerLoad = async ({ fetch, locals, url }) => {
 
     const { lists }: Lists = await listResponse.json();
 
-    const pagination: Pagination = parsePaginationInfo(listResponse.headers.get('link'));
+    const pagination: PaginationType = parsePaginationInfo(
+      listResponse.headers.get('link')
+    );
 
     const [moviesInListsResponse, shareesResponse] = await Promise.all([
       Promise.all(

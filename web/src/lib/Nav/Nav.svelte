@@ -1,8 +1,6 @@
 <script lang="ts">
   import Link from './Link.svelte';
-  import { CINESYNC_REPO } from '../../utils';
-  import { faGithub } from '@fortawesome/free-brands-svg-icons';
-  import { faSignOut } from '@fortawesome/free-solid-svg-icons';
+  import { faSearch, faSignOut } from '@fortawesome/free-solid-svg-icons';
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import Avatar from '$lib/Avatar.svelte';
 
@@ -14,8 +12,8 @@
     <Link href="/user/lists">lists</Link>
     <Link href="/user/shared">shared</Link>
     <Link href="/user/about">about</Link>
-    <a href={CINESYNC_REPO} target="_blank" rel="noreferrer">
-      <FontAwesomeIcon class="text-text" icon={faGithub} />
+    <a href="/user/search">
+      <FontAwesomeIcon class="text-text" icon={faSearch} />
     </a>
   </div>
   <div>

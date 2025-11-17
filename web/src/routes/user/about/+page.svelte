@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Head from '$lib/Head.svelte';
   import Nav from '$lib/Nav/Nav.svelte';
   import { THE_MOVIE_DB_BIG_AVATAR } from '../../../utils';
   import type { PageData } from './$types';
@@ -8,9 +9,7 @@
   const { user } = data;
 </script>
 
-<svelte:head>
-  <title>cinesync - /about</title>
-</svelte:head>
+<Head title="cinesync - /about" />
 
 <Nav username={user.username} />
 <div class="mt-7 max-w-6xl mx-auto xl:px-0 px-8">

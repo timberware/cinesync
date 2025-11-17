@@ -62,8 +62,8 @@
       </p>
       <p class="break-normal">
         <Label>genres</Label>:
-        {#each movie.genre as genre (genre)}
-          <span>{genre} </span>
+        {#each movie.genre as genre, i}
+          <span>{`${genre}${i < movie.genre.length - 1 ? ', ' : ''}`}</span>
         {/each}
       </p>
       <p class="break-normal">

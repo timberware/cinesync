@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'CourierPrime';
-  src: url('./CourierPrime-Regular.ttf');
+  src: url('/fonts/CourierPrime-Regular.ttf');
 }
 
 @layer base {

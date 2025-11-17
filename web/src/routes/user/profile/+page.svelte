@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance, applyAction } from '$app/forms';
   import Avatar from '$lib/Avatar.svelte';
+  import Head from '$lib/Head.svelte';
   import Nav from '$lib/Nav/Nav.svelte';
   import Toasts from '$lib/Toast/Toasts.svelte';
   import { addToast } from '../../../store';
@@ -13,9 +14,7 @@
 
 <Toasts />
 
-<svelte:head>
-  <title>cinesync - /profile</title>
-</svelte:head>
+<Head title="cinesync - /profile" />
 
 <Nav username={user.username} />
 <div class="sm:flex w-full justify-around mt-20 mx-auto">

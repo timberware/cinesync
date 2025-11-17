@@ -11,7 +11,8 @@ export default [
       '**/static/**',
       '**/test/**',
       '**/*.spec.ts',
-      '**/eslint.config.mjs'
+      '**/eslint.config.mjs',
+      '**/node_modules/**'
     ]
   },
   ...eslintPluginSvelte.configs['flat/recommended'],

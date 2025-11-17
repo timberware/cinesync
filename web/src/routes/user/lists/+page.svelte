@@ -7,15 +7,14 @@
   import TopSection from '$lib/TopSection.svelte';
   import type { PageProps } from './$types';
   import Pagination from '$lib/Pagination.svelte';
+  import Head from '$lib/Head.svelte';
 
   let { data }: PageProps = $props();
 
   let showModal = $state(false);
 </script>
 
-<svelte:head>
-  <title>cinesync - /lists</title>
-</svelte:head>
+<Head title="cinesync - /lists" />
 
 <Nav username={data.user?.username ?? 'someone'} />
 <TopSection>

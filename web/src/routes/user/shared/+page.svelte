@@ -6,13 +6,12 @@
   import Pagination from '$lib/Pagination.svelte';
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+  import Head from '$lib/Head.svelte';
 
   let { data }: PageProps = $props();
 </script>
 
-<svelte:head>
-  <title>cinesync - /shared</title>
-</svelte:head>
+<Head title="cinesync - /shared" />
 
 <Nav username={data.user?.username ?? 'someone'} />
 <TopSection>

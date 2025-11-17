@@ -1,14 +1,16 @@
-import type { Pagination } from '../ambient';
+import type { PaginationType } from '../ambient';
 
 type PaginationTag = 'curr' | 'prev' | 'next' | 'last';
 
-export const parsePaginationInfo = (s: string | null): Pagination => {
-  let result = {
-    curr: '0',
-    prev: '0',
-    next: '0',
-    last: '0'
-  };
+export const DEFAULT_PAGINATION: PaginationType = {
+  curr: '0',
+  prev: '0',
+  next: '0',
+  last: '0'
+};
+
+export const parsePaginationInfo = (s: string | null): PaginationType => {
+  let result = DEFAULT_PAGINATION;
 
   if (!s) return result;
 

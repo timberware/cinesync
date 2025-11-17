@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
   import {
     faBackwardFast,
     faBackwardStep,
@@ -10,8 +8,8 @@
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import type { PaginationType } from '../ambient';
 
-  let { tags }: { tags: PaginationType } = $props();
-  const path = $page.url.pathname.includes('lists') ? 'lists' : 'shared';
+  let { tags, currentPage = $bindable() }: { tags: PaginationType; currentPage: string } =
+    $props();
 </script>
 
 <div class="flex justify-end">
@@ -20,7 +18,7 @@
   >
     <button
       onclick={() => {
-        goto(`/user/${path}?page=0`);
+        currentPage = '0';
       }}
       disabled={tags.curr === '0'}
     >
@@ -28,7 +26,7 @@
     </button>
     <button
       onclick={() => {
-        goto(`/user/${path}?page=${tags.prev}`);
+        currentPage = tags.prev;
       }}
       disabled={tags.curr === '0'}
     >
@@ -39,7 +37,7 @@
     </div>
     <button
       onclick={() => {
-        goto(`/user/${path}?page=${tags.next}`);
+        currentPage = tags.next;
       }}
       disabled={tags.curr === tags.last}
     >
@@ -47,7 +45,7 @@
     </button>
     <button
       onclick={() => {
-        goto(`/user/${path}?page=${tags.last}`);
+        currentPage = tags.last;
       }}
       disabled={tags.curr === tags.last}
     >

@@ -84,7 +84,7 @@ export type CommentType = {
   updatedAt: string;
 };
 
-export type Pagination = {
+export type PaginationType = {
   curr: string;
   prev: string;
   next: string;
