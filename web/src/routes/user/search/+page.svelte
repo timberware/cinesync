@@ -71,7 +71,7 @@
       onkeyup={handleInput}
       placeholder="search..."
       autocomplete="on"
-      class={'text-text bg-secondary text-base border-b-2 border-primary mx-2 px-2 outline-none'}
+      class={'text-text bg-secondary text-base border-b-2 border-primary mx-2 px-2 outline-hidden'}
     />
   </div>
 </TopSection>

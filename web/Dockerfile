@@ -25,8 +25,6 @@ ENV PUBLIC_API_HOST ${PUBLIC_API_HOST}
 COPY src src
 COPY tsconfig.json .
 COPY svelte.config.js .
-COPY postcss.config.js .
-COPY tailwind.config.js .
 COPY vite.config.ts .
 
 RUN pnpm run build

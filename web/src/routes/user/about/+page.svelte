@@ -2,16 +2,14 @@
   import Head from '$lib/Head.svelte';
   import Nav from '$lib/Nav/Nav.svelte';
   import { THE_MOVIE_DB_BIG_AVATAR } from '../../../utils';
-  import type { PageData } from './$types';
+  import type { PageProps } from './$types';
 
-  let { data }: PageData = $props();
-
-  const { user } = data;
+  let { data }: PageProps = $props();
 </script>
 
 <Head title="cinesync - /about" />
 
-<Nav username={user.username} />
+<Nav username={data.user?.username ?? ''} />
 <div class="mt-7 max-w-6xl mx-auto xl:px-0 px-8">
   <h2 class="mb-3 text-2xl underline">cinesync</h2>
   <p>

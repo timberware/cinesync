@@ -9,7 +9,9 @@
   } from '../utils';
 </script>
 
-<footer class="container xl:max-w-screen-xl lg:max-w-screen-lg mx-auto absolute bottom-3">
+<footer
+  class="container xl:max-w-(--breakpoint-xl) lg:max-w-(--breakpoint-lg) mx-auto absolute bottom-3"
+>
   <div class="flex gap-3 max-w-fit m-auto">
     <div class="pt-1">powered by</div>
     <div>

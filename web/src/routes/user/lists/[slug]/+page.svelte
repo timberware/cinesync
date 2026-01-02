@@ -29,7 +29,6 @@
 
   let { data }: PageProps = $props();
 
-  const { user } = data;
   let showModal = $state(false);
   let showShareListModal = $state(false);
   let showListNameModal = $state(false);
@@ -44,11 +43,11 @@
 
 <Toasts />
 
-<Head title={`cinesync - /${list.name}`} />
+<Head title={`cinesync - /${list?.name}`} />
 
-<Nav username={user.username} />
+<Nav username={data.user?.username ?? ''} />
 <TopSection>
-  <Title>{list.name}</Title>
+  <Title>{list?.name}</Title>
   <div class="flex gap-x-2">
     <IconButton
       type="button"
@@ -64,7 +63,7 @@
       tooltip="add movie"
       on:click={() => (showModal = true)}
     />
-    {#if list?.creatorId === user.id}
+    {#if list?.creatorId === data.user?.id}
       <IconButton
         type="button"
         classes="min-h-full"
@@ -75,15 +74,15 @@
       <SubmitButton
         formAction="?/togglePrivacy"
         inputs={[
-          { name: 'listId', value: list.id },
-          { name: 'isPrivate', value: list.isPrivate ? 'true' : 'false' }
+          { name: 'listId', value: list?.id ?? '' },
+          { name: 'isPrivate', value: list?.isPrivate ? 'true' : 'false' }
         ]}
-        icon={list.isPrivate ? faLock : faLockOpen}
-        tooltip={list.isPrivate ? 'private list' : 'public list'}
+        icon={list?.isPrivate ? faLock : faLockOpen}
+        tooltip={list?.isPrivate ? 'private list' : 'public list'}
       />
-      <Delete listId={list.id} />
+      <Delete listId={list?.id ?? ''} />
     {:else}
-      <Clone name={list.name} listId={list.id} />
+      <Clone name={list?.name ?? ''} listId={list?.id ?? ''} />
     {/if}
     <IconButton
       type="button"
@@ -110,17 +109,17 @@
     in:slide={{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}
     out:slide={{ axis: 'y', duration: 800, delay: 150, easing: quartOut }}
   >
-    <Comment {comments} listId={list.id} />
+    <Comment comments={comments ?? []} listId={list?.id ?? ''} />
   </div>
 {/if}
 <div class={'bg-secondary rounded-2xl  p-3'}>
   <MoviesSection>
-    {#if movies.length}
+    {#if movies?.length}
       {#each movies as movie (movie.id)}
         <Movie
-          listId={list.id}
+          listId={list?.id ?? ''}
           {movie}
-          sharees={sharees
+          sharees={(sharees ?? [])
             .filter(s => s.watched?.includes(movie.id))
             .map(m => m.username)}
         />
@@ -129,6 +128,6 @@
   </MoviesSection>
 </div>
 
-<ListShareModal bind:showShareListModal listId={list.id} />
-<ListNameModal bind:showListNameModal listId={list.id} />
-<MovieModal bind:showMovieModal={showModal} listId={list.id} />
+<ListShareModal bind:showShareListModal listId={list?.id ?? ''} />
+<ListNameModal bind:showListNameModal listId={list?.id ?? ''} />
+<MovieModal bind:showMovieModal={showModal} listId={list?.id ?? ''} />

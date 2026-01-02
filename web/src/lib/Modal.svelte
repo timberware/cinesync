@@ -1,4 +1,6 @@
-<style>
+<style lang="postcss">
+  @reference "tailwindcss";
+
   dialog {
     border-radius: 0.8em;
     border: none;

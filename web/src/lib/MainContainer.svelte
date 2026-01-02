@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="container xl:max-w-screen-xl lg:max-w-screen-lg sm:max-w-screen-sm max-w-xs mx-auto h-screen"
+  class="container xl:max-w-(--breakpoint-xl) lg:max-w-(--breakpoint-lg) sm:max-w-(--breakpoint-sm) max-w-xs mx-auto h-screen"
 >
   {@render children()}
 </div>

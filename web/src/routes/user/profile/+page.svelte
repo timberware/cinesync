@@ -5,21 +5,20 @@
   import Nav from '$lib/Nav/Nav.svelte';
   import Toasts from '$lib/Toast/Toasts.svelte';
   import { addToast } from '../../../store';
-  import type { PageData } from './$types';
+  import type { PageProps } from './$types';
   import { error, success } from './messages';
 
-  let { data }: PageData = $props();
-  const { user, stats } = data;
+  let { data }: PageProps = $props();
 </script>
 
 <Toasts />
 
 <Head title="cinesync - /profile" />
 
-<Nav username={user.username} />
+<Nav username={data.user?.username ?? ''} />
 <div class="sm:flex w-full justify-around mt-20 mx-auto">
   <div class="max-w-64 text-center mx-auto mb-8 sm:mb-0">
-    <Avatar username={user.username} isLarge />
+    <Avatar username={data.user?.username ?? ''} isLarge />
     <form
       method="POST"
       action="?/saveAvatar"
@@ -50,10 +49,10 @@
   <div
     class="max-w-md sm:max-w-xl mx-auto text-xl sm:text-2xl grid content-evenly pl-8 sm:pl-0"
   >
-    <div>email: {user.email}</div>
-    <div>lists: {stats.listCount}</div>
-    <div>movies: {stats.moviesCount}</div>
-    <div>shared with you: {stats.sharedListCount}</div>
-    <div>comments: {stats.commentsCount}</div>
+    <div>email: {data.user?.email}</div>
+    <div>lists: {data.stats?.listCount}</div>
+    <div>movies: {data.stats?.moviesCount}</div>
+    <div>shared with you: {data.stats?.sharedListCount}</div>
+    <div>comments: {data.stats?.commentsCount}</div>
   </div>
 </div>

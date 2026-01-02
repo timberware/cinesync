@@ -1,10 +1,3 @@
-<style lang="postcss">
-  :global(html) {
-    background-color: theme(colors.background);
-    color: theme(colors.text);
-  }
-</style>
-
 <script lang="ts">
   import { page } from '$app/stores';
   import '../app.css';

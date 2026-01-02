@@ -1,16 +1,42 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@font-face {
-  font-family: 'CourierPrime';
-  src: url('/fonts/CourierPrime-Regular.ttf');
+@theme {
+  --color-background: #0f0f0f;
+  --color-text: #f7f7f7;
+  --color-primary: #999999;
+  --color-secondary: #1f1f1f;
+  --color-secondary-hover: #2f2f2f;
+  --color-accent: #858585;
+  --color-error: #9e3641;
+  --color-info: #999999;
+  --color-success: #2b6963;
+
+  --brightness-25: 0.25;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@layer utilities {
+  @font-face {
+    font-family: 'CourierPrime';
+    src: url('/fonts/CourierPrime-Regular.ttf');
+  }
 }
 
 @layer base {
   html {
     font-family: 'CourierPrime';
     font-size: 16px;
+    background-color: theme(--color-background);
+    color: theme(--color-text);
   }
 }
 

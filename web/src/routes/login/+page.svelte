@@ -11,7 +11,9 @@
 
 <Toasts />
 
-<header class="container xl:max-w-screen-xl lg:max-w-screen-lg mx-auto pt-20">
+<header
+  class="container xl:max-w-(--breakpoint-xl) lg:max-w-(--breakpoint-lg) mx-auto pt-20"
+>
   <h1 class="text-7xl max-w-fit m-auto">cinesync</h1>
 </header>
 
