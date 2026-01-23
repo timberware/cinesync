@@ -33,7 +33,7 @@
     <Input>
       <label class="w-24 text-center" for="login">email</label>
       <input
-        class="text-background pl-1 w-60"
+        class="text-background bg-text pl-1 w-60"
         type="email"
         name="email"
         id="login"
@@ -44,7 +44,7 @@
     <Input>
       <label class="w-24 text-center" for="password">password</label>
       <input
-        class="text-background pl-1 w-60"
+        class="text-background bg-text pl-1 w-60"
         type="password"
         name="password"
         id="password"

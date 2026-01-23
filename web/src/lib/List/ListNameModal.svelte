@@ -31,7 +31,7 @@
       <div class="flex pt-2 pb-2 mx-auto">
         <label class="w-24 text-right pr-4" for="name">name</label>
         <input
-          class="text-background pl-1"
+          class="text-background bg-text pl-1"
           type="text"
           name="name"
           id="name"

@@ -10,7 +10,7 @@
       <div class="flex pt-2 pb-2 justify-center">
         <label class="mr-4 text-right" for="list-name">name</label>
         <input
-          class="text-background pl-1"
+          class="text-background bg-text pl-1"
           type="text"
           name="list-name"
           id="list-name"

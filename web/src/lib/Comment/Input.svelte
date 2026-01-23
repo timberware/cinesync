@@ -28,7 +28,7 @@
   >
     <input type="hidden" name="listId" value={listId} />
     <textarea
-      class="text-background p-1 w-full h-16 rounded-md"
+      class="text-background bg-text p-1 w-full h-16 rounded-md"
       name="text"
       id="text"
       placeholder="what do you think about this list?"

@@ -1,10 +1,9 @@
-<style lang="postcss">
-  @reference "tailwindcss";
-
+<style>
   dialog {
     border-radius: 0.8em;
     border: none;
     padding: 0;
+    margin: auto;
   }
   dialog::backdrop {
     background: rgba(0, 0, 0, 0.8);

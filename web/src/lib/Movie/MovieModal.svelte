@@ -34,7 +34,7 @@
     <div class="flex pt-2 pb-2 mb-3 justify-center">
       <label class="text-right pr-4" for="list-name">title</label>
       <input
-        class=" text-background pl-1"
+        class=" text-background bg-text pl-1"
         type="text"
         name="movie-name"
         id="movie-name"
