@@ -6,11 +6,11 @@ export class ImageService {
   constructor(private imageDao: ImageDao) {}
 
   async getImage(username: string) {
-    return this.imageDao.getImage(username);
+    return await this.imageDao.getImage(username);
   }
 
   async createImage(username: string, mimetype: string, image: Buffer) {
-    return this.imageDao.createImage(username, mimetype, image);
+    return await this.imageDao.createImage(username, mimetype, image);
   }
 
   deleteImage(username: string) {

@@ -93,7 +93,7 @@ export class ListService {
     const l = await this.getLists({
       id: sharee[0].id,
       shared: true,
-    } as QueryDto);
+    });
     const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
     this.notificationService.send(
@@ -126,7 +126,7 @@ export class ListService {
     const l = await this.getLists({
       id: sharee[0].id,
       shared: true,
-    } as QueryDto);
+    });
     const isShared = !!l.lists.find((shareeList) => shareeList.id === listId);
 
     this.notificationService.send(

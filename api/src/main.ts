@@ -41,7 +41,6 @@ async function bootstrap() {
       return response;
     },
     (error) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       if (error.response.status === HttpStatus.NOT_MODIFIED) return error;
     },
   );

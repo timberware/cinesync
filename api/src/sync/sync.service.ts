@@ -43,7 +43,8 @@ export class SyncService {
     const modifiedMovies = fetchedMovies.filter(
       (response) =>
         response?.status &&
-        (response.status as HttpStatus) === HttpStatus.OK &&
+        // eslint-disable-next-line
+        response.status === HttpStatus.OK &&
         !!response.data.poster_path,
     );
 
