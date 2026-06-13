@@ -1,4 +1,4 @@
-FROM node:22-alpine3.21 as build
+FROM node:24-alpine3.24 as build
 
 RUN apk update && apk add \
   openssl \
@@ -8,7 +8,7 @@ WORKDIR "/cinesync-api"
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 
 COPY package.json .
 COPY pnpm-lock.yaml .
@@ -38,4 +38,4 @@ FROM build AS release
 COPY --from=dependencies /cinesync-api/node_modules /cinesync-api/node_modules
 COPY --from=builder /cinesync-api/dist /cinesync-api/dist
 
-CMD ["sh", "-c", "pnpm run start:prod"]
+CMD ["sh", "-c", "pnpm run start:prod"
